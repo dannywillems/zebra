@@ -1,0 +1,211 @@
+<!doctype html><html lang=en dir=ltr class="docs-wrapper plugin-docs plugin-id-default docs-version-current docs-doc-page docs-doc-id-cryptographic-correctness-practices" data-has-hydrated=false><head><meta charset=UTF-8><meta name=generator content="Docusaurus v3.10.1"><title data-rh=true>Cryptographic Correctness Practices | Zebra Onboarding</title><meta data-rh=true name=viewport content="width=device-width, initial-scale=1.0"/><meta data-rh=true name=twitter:card content=summary_large_image /><meta data-rh=true property=og:url content=https://dannywillems.github.io/zebra/cryptographic-correctness-practices /><meta data-rh=true property=og:locale content=en /><meta data-rh=true name=docusaurus_locale content=en /><meta data-rh=true name=docsearch:language content=en /><meta data-rh=true name=docusaurus_version content=current /><meta data-rh=true name=docusaurus_tag content=docs-default-current /><meta data-rh=true name=docsearch:version content=current /><meta data-rh=true name=docsearch:docusaurus_tag content=docs-default-current /><meta data-rh=true property=og:title content="Cryptographic Correctness Practices | Zebra Onboarding"/><meta data-rh=true name=description content="Constant-time discipline, test vectors, batch verification, and what the audit checklist actually checks."/><meta data-rh=true property=og:description content="Constant-time discipline, test vectors, batch verification, and what the audit checklist actually checks."/><link data-rh=true rel=icon href=/zebra/img/favicon.ico /><link data-rh=true rel=canonical href=https://dannywillems.github.io/zebra/cryptographic-correctness-practices /><link data-rh=true rel=alternate href=https://dannywillems.github.io/zebra/cryptographic-correctness-practices hreflang=en /><link data-rh=true rel=alternate href=https://dannywillems.github.io/zebra/cryptographic-correctness-practices hreflang=x-default /><script data-rh=true type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","item":"https://dannywillems.github.io/zebra/cryptographic-correctness-practices","name":"Cryptographic Correctness Practices","position":1}]}</script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css type=text/css integrity=sha384-nB0miv6/jRmo5EGIE6RDQE0etf4GvjBR1bkf4pcUk2TprLGa0k7/rJkRnCu6WSt6 crossorigin=anonymous><link rel=stylesheet href=/zebra/assets/css/styles.c575bf6a.css /><script src=/zebra/assets/js/runtime~main.a1056f18.js defer></script><script src=/zebra/assets/js/main.efc16056.js defer></script></head><body><svg style="display: none;"><defs>
+<symbol id=theme-svg-external-link viewBox="0 0 24 24"><path fill=currentColor d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme-ae3")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}(),function(){try{for(var[t,e]of new URLSearchParams(window.location.search).entries())if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}(),document.documentElement.setAttribute("data-announcement-bar-initially-dismissed",function(){try{return"true"===localStorage.getItem("docusaurus.announcement.dismiss-ae3")}catch(t){}return!1}())</script><div id=__docusaurus><link rel=preload as=image href=/zebra/img/favicon.ico /><div role=region aria-label="Skip to main content"><a class=skipToContent_fXgn href=#__docusaurus_skipToContent_fallback>Skip to main content</a></div><div class="theme-announcement-bar announcementBar_mb4j" style=background-color:#fef3c7;color:#78350f role=banner><div class="content_knG7 announcementBarContent_xLdY">This site is auto-generated with Claude Code and may be wrong. The code in the Zebra repository is the law. Always cross-check against <a href=https://github.com/ZcashFoundation/zebra>ZcashFoundation/zebra</a> and the <a href=https://zips.z.cash/protocol/protocol.pdf>Zcash protocol spec</a>.</div></div><nav aria-label=Main class="theme-layout-navbar navbar navbar--fixed-top"><div class=navbar__inner><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded=false class="navbar__toggle clean-btn" type=button><svg width=30 height=30 viewBox="0 0 30 30" aria-hidden=true><path stroke=currentColor stroke-linecap=round stroke-miterlimit=10 stroke-width=2 d="M4 7h22M4 15h22M4 23h22"/></svg></button><a class=navbar__brand href=/zebra/><div class=navbar__logo><img src=/zebra/img/favicon.ico alt="Zebra Onboarding" class="themedComponent_mlkZ themedComponent--light_NVdE"/><img src=/zebra/img/favicon.ico alt="Zebra Onboarding" class="themedComponent_mlkZ themedComponent--dark_xIcU"/></div><b class="navbar__title text--truncate">Zebra Onboarding</b></a><a aria-current=page class="navbar__item navbar__link navbar__link--active" href=/zebra/>Course</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href=https://github.com/dannywillems/zebra/tree/onboarding/onboarding target=_blank rel="noopener noreferrer" class="navbar__item navbar__link">Fork (onboarding branch)<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a><a href=https://github.com/ZcashFoundation/zebra target=_blank rel="noopener noreferrer" class="navbar__item navbar__link">Upstream<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type=button disabled title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width=24 height=24 aria-hidden=true class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill=currentColor d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"/></svg><svg viewBox="0 0 24 24" width=24 height=24 aria-hidden=true class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill=currentColor d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"/></svg><svg viewBox="0 0 24 24" width=24 height=24 aria-hidden=true class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill=currentColor d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"/></svg></button></div><div class=navbarSearchContainer_Bca1><div class="navbar__search searchBarContainer_NW3z" dir=ltr><input placeholder=Search aria-label=Search class="navbar__search-input searchInput_YFbd" value="" /><div class="loadingRing_RJI3 searchBarLoadingRing_YnHq"><div></div><div></div><div></div><div></div></div></div></div></div></div><div role=presentation class=navbar-sidebar__backdrop></div></nav><div id=__docusaurus_skipToContent_fallback class="theme-layout-main main-wrapper mainWrapper_z2l0"><div class=docsWrapper_hBAB><button aria-label="Scroll back to top" class="clean-btn theme-back-to-top-button backToTopButton_sjWU" type=button></button><div class=docRoot_UBD9><aside class="theme-doc-sidebar-container docSidebarContainer_YfHR"><div class=sidebarViewport_aRkj><div class=sidebar_njMd><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG menuWithAnnouncementBar_GW3s"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/><span title="Zebra Onboarding" class=linkLabel_WmDU>Zebra Onboarding</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/architecture><span title="Workspace, Dependency Graph, and Build" class=linkLabel_WmDU>Workspace, Dependency Graph, and Build</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/zebra-chain><span title="zebra-chain: The Data Model" class=linkLabel_WmDU>zebra-chain: The Data Model</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/cryptography><span title="Cryptography in Zebra" class=linkLabel_WmDU>Cryptography in Zebra</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/consensus-and-state><span title="Consensus and State" class=linkLabel_WmDU>Consensus and State</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/network-and-rpc><span title="Networking and JSON-RPC" class=linkLabel_WmDU>Networking and JSON-RPC</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/zebrad-and-tower><span title="zebrad and the Tower Pattern" class=linkLabel_WmDU>zebrad and the Tower Pattern</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/testing-build-ci><span title="Testing, Build, and CI" class=linkLabel_WmDU>Testing, Build, and CI</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/references><span title="External References and Specs" class=linkLabel_WmDU>External References and Specs</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/threat-model><span title="Threat Model" class=linkLabel_WmDU>Threat Model</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/incidents-and-audits><span title="Incidents and Audits" class=linkLabel_WmDU>Incidents and Audits</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class="menu__link menu__link--active" aria-current=page href=/zebra/cryptographic-correctness-practices><span title="Cryptographic Correctness Practices" class=linkLabel_WmDU>Cryptographic Correctness Practices</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/protocol-history-and-governance><span title="Protocol History and Governance" class=linkLabel_WmDU>Protocol History and Governance</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/reading-the-spec><span title="Reading the Zcash Protocol Specification" class=linkLabel_WmDU>Reading the Zcash Protocol Specification</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/zips-and-ceremonies><span title="ZIPs and Trusted Setup Ceremonies" class=linkLabel_WmDU>ZIPs and Trusted Setup Ceremonies</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/nu7-and-future-work><span title="NU7 and Future Work" class=linkLabel_WmDU>NU7 and Future Work</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/formalisation-opportunities><span title="Formalisation Opportunities" class=linkLabel_WmDU>Formalisation Opportunities</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/zcashd-parity-and-consensus-split><span title="zcashd Parity and Consensus Split Risk" class=linkLabel_WmDU>zcashd Parity and Consensus Split Risk</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/mempool-mining-and-wallet-ecosystem><span title="Mempool, Mining, and the Wallet Ecosystem" class=linkLabel_WmDU>Mempool, Mining, and the Wallet Ecosystem</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/observability-and-debugging><span title="Observability and Debugging" class=linkLabel_WmDU>Observability and Debugging</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/time-clocks-and-difficulty><span title="Time, Clocks, and Difficulty Adjustment" class=linkLabel_WmDU>Time, Clocks, and Difficulty Adjustment</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/glossary><span title=Glossary class=linkLabel_WmDU>Glossary</span></a><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-1 menu__list-item"><a class=menu__link href=/zebra/first-90-days><span title="First 90 Days" class=linkLabel_WmDU>First 90 Days</span></a></ul></nav></div></div></aside><main class=docMainContainer_TBSr><div class="container padding-top--md padding-bottom--lg"><div class=row><div class="col docItemCol_VOVn"><div class=docItemContainer_Djhp><article><nav class="theme-doc-breadcrumbs breadcrumbsContainer_Z_bl" aria-label=Breadcrumbs><ul class=breadcrumbs><li class=breadcrumbs__item><a aria-label="Home page" class=breadcrumbs__link href=/zebra/><svg viewBox="0 0 24 24" class=breadcrumbHomeIcon_YNFT><path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z" fill=currentColor /></svg></a><li class="breadcrumbs__item breadcrumbs__item--active"><span class=breadcrumbs__link>Cryptographic Correctness Practices</span></ul></nav><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_ITEo"><button type=button class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><div class="theme-doc-markdown markdown"><header><h1>Cryptographic Correctness Practices</h1></header>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=why-this-chapter-exists>Why This Chapter Exists<a href=#why-this-chapter-exists class=hash-link aria-label="Direct link to Why This Chapter Exists" title="Direct link to Why This Chapter Exists" translate=no>​</a></h2>
+<p>Zebra is not a crypto library, but it consumes them and gets the parts where it composes them wrong at its peril. This chapter is the checklist: constant-time discipline, batch verification, test vectors, malleability.</p>
+<p>The engineering discipline that turns mathematically correct
+cryptography into operationally correct cryptography. This file is
+the checklist you should mentally run through every time you review
+or write code that touches crypto.</p>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=constant-time-discipline>Constant-time Discipline<a href=#constant-time-discipline class=hash-link aria-label="Direct link to Constant-time Discipline" title="Direct link to Constant-time Discipline" translate=no>​</a></h2>
+<p>A constant-time operation runs in time independent of secret inputs.
+The threat is a remote attacker measuring response time to recover
+key bits.</p>
+<p>Which crates promise constant time:</p>
+<ul>
+<li class=""><code>secp256k1</code>: yes, derived from libsecp256k1.</li>
+<li class=""><code>ed25519-zebra</code> / <code>ed25519-dalek</code>: scalar ops constant time;
+signature verification path uses variable-time multiscalar (this
+is fine because verification inputs are public).</li>
+<li class=""><code>jubjub</code>, <code>pasta_curves</code>, <code>bls12_381</code>: scalar field ops aim for
+constant time; documentation lists exceptions explicitly.</li>
+<li class=""><code>bellman</code>, <code>halo2_proofs</code>: verification is variable-time; proving
+needs care if proving keys are secret (they are in normal Zcash
+use).</li>
+<li class=""><code>sha2</code>, <code>blake2b_simd</code>, <code>blake2s_simd</code>: constant time on
+reasonable inputs (no secret-length truncation).</li>
+</ul>
+<p>In Zebra specifically, the node holds no secret keys. There is no
+real timing-attack surface from the node side. The discipline
+matters when reviewing libraries Zebra depends on, and when
+reviewing wallet code that does depend on Zebra crates indirectly.</p>
+<p>Review checklist:</p>
+<ul>
+<li class="">does this code branch on secret data?</li>
+<li class="">does this code index into a table by secret bits?</li>
+<li class="">does this code use <code>==</code> on byte arrays containing secrets? (Use
+<code>subtle::ConstantTimeEq</code> instead.)</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=canonical-encoding>Canonical Encoding<a href=#canonical-encoding class=hash-link aria-label="Direct link to Canonical Encoding" title="Direct link to Canonical Encoding" translate=no>​</a></h2>
+<p>ZIP-216 generalized: every consensus-critical encoding must have
+exactly one valid byte representation. Two encodings that decode to
+the same value but differ in bytes are a malleability surface and
+potentially a consensus-split surface.</p>
+<p>What to check when wrapping a new primitive:</p>
+<ul>
+<li class="">does the underlying library enforce canonicity on decode, or does
+it accept multiple equivalent encodings?</li>
+<li class="">can field elements be encoded with the high bit unset? (Most curve
+libraries do; some do not. Verify per type.)</li>
+<li class="">can group elements be encoded with the sign bit ambiguous? (Yes
+for most short-Weierstrass and Edwards curves with compressed
+encoding.)</li>
+<li class="">can a varint or <code>CompactSize</code> be encoded with more bytes than
+necessary? Bitcoin and Zcash require minimal encoding.</li>
+</ul>
+<p>Review checklist:</p>
+<ul>
+<li class="">decode then re-encode and compare bytes. The decode-encode-decode
+round-trip must be a fixed point.</li>
+<li class="">proptest: for any byte string, if it parses, it must round-trip
+back to itself.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=signature-and-proof-malleability>Signature and Proof Malleability<a href=#signature-and-proof-malleability class=hash-link aria-label="Direct link to Signature and Proof Malleability" title="Direct link to Signature and Proof Malleability" translate=no>​</a></h2>
+<p>Malleability is the ability to mutate a valid signature or proof
+into a different valid one for the same message.</p>
+<p>For each scheme in use:</p>
+<ul>
+<li class="">ECDSA: low-s normalization is required (and enforced by
+libzcash_script per Bitcoin BIP-146 and ZIP-208).</li>
+<li class="">Ed25519: ZIP-215 strict rules eliminate the small-subgroup and
+non-canonical encoding malleability paths.</li>
+<li class="">RedJubjub / RedPallas: re-randomization is <em>intended</em>, but the
+randomized key must still verify the same message. Mutation
+without secret knowledge should be infeasible.</li>
+<li class="">Groth16: knowledge-of-exponent makes proof randomization without
+the secret infeasible, but the encoding (A, B, C) can be malleated
+by adding zero-pairs to the underlying scheme. Read the spec.</li>
+<li class="">Halo2 IPA: proofs include explicit randomness commitments;
+malleability bounds are part of the IPA security argument.</li>
+</ul>
+<p>Review checklist:</p>
+<ul>
+<li class="">does this scheme treat the message-plus-signature pair as binding,
+or only the message under a known key?</li>
+<li class="">can two distinct signatures verify for the same (key, message)?
+If yes, document why this is acceptable here.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=batch-verification-soundness>Batch Verification Soundness<a href=#batch-verification-soundness class=hash-link aria-label="Direct link to Batch Verification Soundness" title="Direct link to Batch Verification Soundness" translate=no>​</a></h2>
+<p>Batch verifiers reduce a set of n equations to a single equation
+using random linear combinations. They are sound under the bilinear
+or DLOG assumption when the random scalars are uniform and
+unpredictable to the prover.</p>
+<p>What to check in <code>zebra-consensus/src/primitives/</code>:</p>
+<ul>
+<li class="">random scalars come from an OS RNG, not a deterministic source.</li>
+<li class="">batch size is bounded so a malicious prover cannot exhaust memory.</li>
+<li class="">the fallback path (<code>tower-fallback</code>) re-verifies items
+individually when the batch fails. Otherwise an attacker can
+invalidate a whole block by inserting a single bad item.</li>
+</ul>
+<p>Review checklist:</p>
+<ul>
+<li class="">where do the randomizers come from?</li>
+<li class="">is the batch verifier sound under the same assumptions as the
+individual verifier?</li>
+<li class="">is the failure mode "reject the batch and surface the bad item"
+rather than "reject everything in the batch silently"?</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=domain-separation-and-personal-strings>Domain Separation and Personal Strings<a href=#domain-separation-and-personal-strings class=hash-link aria-label="Direct link to Domain Separation and Personal Strings" title="Direct link to Domain Separation and Personal Strings" translate=no>​</a></h2>
+<p>Every BLAKE2 call in Zcash uses a personal string. Most call sites
+have a fixed personal string in the spec; some are parameterized
+(notably ZIP-244).</p>
+<p>What to check:</p>
+<ul>
+<li class="">is the personal string exactly 8 bytes? (Some libraries truncate
+or pad silently.)</li>
+<li class="">is it the same bytes the spec specifies?</li>
+<li class="">is it included in every hash invocation in this code path, not
+just the first one?</li>
+<li class="">if the personal string is parameterized, is the parameter the one
+the spec defines? (ZIP-244 mixes consensus branch ID into multiple
+personalizations.)</li>
+</ul>
+<p>Review checklist:</p>
+<ul>
+<li class="">find every BLAKE2 call site in the change.</li>
+<li class="">map each to a spec section.</li>
+<li class="">compare the bytes literally, not the constant name.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=edge-cases-identity-zero-small-subgroup>Edge Cases: Identity, Zero, Small Subgroup<a href=#edge-cases-identity-zero-small-subgroup class=hash-link aria-label="Direct link to Edge Cases: Identity, Zero, Small Subgroup" title="Direct link to Edge Cases: Identity, Zero, Small Subgroup" translate=no>​</a></h2>
+<p>Cryptographic operations have edge cases that are rarely covered by
+vector tests. Examples:</p>
+<ul>
+<li class="">identity point on the curve: many algorithms have a special case
+for the identity; some libraries silently return zero or panic.</li>
+<li class="">zero scalar: a "signature" with a zero scalar is often valid or
+invalid in unexpected ways; the spec should rule one way.</li>
+<li class="">small-subgroup elements: Edwards curves like Ed25519 have an
+8-torsion subgroup. ZIP-215 mandates explicit rejection.</li>
+<li class="">field elements above the modulus: see canonical encoding above.</li>
+<li class="">recipient is sender: shielded transactions where the sender is
+also the recipient can exercise out-viewing-key paths that are
+rarely tested.</li>
+</ul>
+<p>Review checklist:</p>
+<ul>
+<li class="">generate identity, zero, and small-subgroup test inputs and
+exercise the new code with them.</li>
+<li class="">proptest with biased generators that produce these cases more
+often than uniform.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=randomness>Randomness<a href=#randomness class=hash-link aria-label="Direct link to Randomness" title="Direct link to Randomness" translate=no>​</a></h2>
+<ul>
+<li class=""><code>rand::rngs::OsRng</code> for security-relevant randomness.</li>
+<li class="">never <code>rand::thread_rng()</code> for nonces in cryptographic
+signatures.</li>
+<li class="">per ZIP-32 derivation, randomness from a deterministic source is
+acceptable for diversifier search but not for spend authorizers.</li>
+</ul>
+<p>Review checklist:</p>
+<ul>
+<li class="">find every <code>rand::</code> call site.</li>
+<li class="">classify each as "ok to be predictable" or "must be unpredictable".</li>
+<li class="">if "must be unpredictable", confirm <code>OsRng</code> or equivalent.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=trusted-setup-assumptions>Trusted Setup Assumptions<a href=#trusted-setup-assumptions class=hash-link aria-label="Direct link to Trusted Setup Assumptions" title="Direct link to Trusted Setup Assumptions" translate=no>​</a></h2>
+<p>Sapling Groth16 verification is sound under the q-PKE assumption
+<em>given</em> the trusted setup was honest. If the MPC was fully
+compromised, no Sapling proof verifies meaningful statements.
+Orchard Halo2 has no setup, so this concern does not apply.</p>
+<p>What this means for review:</p>
+<ul>
+<li class="">never invent a new Groth16 application in Zcash without a
+corresponding ceremony plan.</li>
+<li class="">when wrapping new shielded crypto, prefer schemes without trusted
+setup if a credible alternative exists.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=the-spec-is-the-source-of-truth-rule>The "Spec Is the Source of Truth" Rule<a href=#the-spec-is-the-source-of-truth-rule class=hash-link aria-label='Direct link to The "Spec Is the Source of Truth" Rule' title='Direct link to The "Spec Is the Source of Truth" Rule' translate=no>​</a></h2>
+<p>When the spec and the code disagree, the spec wins. When the spec
+and the C++ reference implementation disagree, the spec wins, but
+expect a network compatibility incident if you fix only one side.</p>
+<p>Concrete practice:</p>
+<ul>
+<li class="">every consensus-critical port should link to the spec section and
+to the matching <code>zcash/zcash</code> C++ line, as the <code>zebra-script</code>
+doc comments do.</li>
+<li class="">when you find a discrepancy, file an issue on the <code>zcash/zips</code>
+repo before changing code.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=a-review-checklist-you-can-paste-into-pr-reviews>A Review Checklist You Can Paste Into PR Reviews<a href=#a-review-checklist-you-can-paste-into-pr-reviews class=hash-link aria-label="Direct link to A Review Checklist You Can Paste Into PR Reviews" title="Direct link to A Review Checklist You Can Paste Into PR Reviews" translate=no>​</a></h2>
+<div class="language-text codeBlockContainer_Ckt0 theme-code-block" style=--prism-color:#393A34;--prism-background-color:#f6f8fa><div class=codeBlockContent_QJqH><pre tabindex=0 class="prism-code language-text codeBlock_bY9V thin-scrollbar" style=color:#393A34;background-color:#f6f8fa><code class=codeBlockLines_e6Vv><div class=token-line style=color:#393A34><span class="token plain">- [ ] constant-time concerns documented for any secret-input code.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] all encodings canonical; round-trip property test added.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] no new malleability surface (signature, proof, message).</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] batch verifier paired with item-level fallback.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] every BLAKE2 / SHA / hash call has the correct personal /</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">      domain-separator bytes, verified against the spec.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] edge cases tested: identity, zero, small subgroup, recipient</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">      = sender, max values, min values.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] randomness sources classified.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] trusted-setup assumption noted if applicable.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] spec section linked in the PR description.</span><br/></div><div class=token-line style=color:#393A34><span class="token plain">- [ ] for any ported zcashd behavior, the C++ source line is linked.</span><br/></div></code></pre></div></div>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=see-also>See Also<a href=#see-also class=hash-link aria-label="Direct link to See Also" title="Direct link to See Also" translate=no>​</a></h2>
+<ul>
+<li class="">09-threat-model.md.</li>
+<li class="">10-incidents-and-audits.md (every incident is a failure of one
+item on this checklist).</li>
+<li class="">the Zcash Protocol Specification, sections 4 and 5.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=spec-pointers>Spec Pointers<a href=#spec-pointers class=hash-link aria-label="Direct link to Spec Pointers" title="Direct link to Spec Pointers" translate=no>​</a></h2>
+<ul>
+<li class=""><a href=https://datatracker.ietf.org/doc/html/rfc7748 target=_blank rel="noopener noreferrer" class="">RFC 7748</a> for X25519 (used in note encryption).</li>
+<li class=""><a href=https://datatracker.ietf.org/doc/html/rfc8032 target=_blank rel="noopener noreferrer" class="">RFC 8032</a> for Ed25519 (where Zebra still consumes it).</li>
+<li class="">Zcash spec section 5 for the primitives used by the protocol.</li>
+</ul>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id=exercises>Exercises<a href=#exercises class=hash-link aria-label="Direct link to Exercises" title="Direct link to Exercises" translate=no>​</a></h2>
+<ol>
+<li class="">Find one place in Zebra where a secret-dependent branch could leak timing. Confirm it is gated by a constant-time primitive.</li>
+<li class="">Identify a test vector imported from the protocol spec and confirm it round-trips.</li>
+<li class="">Add a benchmark that exercises batch verification on a synthetic 100-signature workload. Compare against single-signature throughput.</li>
+</ol></div><footer class="theme-doc-footer docusaurus-mt-lg"><div class="row margin-top--sm theme-doc-footer-edit-meta-row"><div class="col noPrint_WFHX"><a href=https://github.com/dannywillems/zebra/edit/onboarding/onboarding/docs/11-cryptographic-correctness-practices.md target=_blank rel="noopener noreferrer" class=theme-edit-this-page><svg fill=currentColor height=20 width=20 viewBox="0 0 40 40" class=iconEdit_Z9Sw aria-hidden=true><g><path d="m34.5 11.7l-3 3.1-6.3-6.3 3.1-3q0.5-0.5 1.2-0.5t1.1 0.5l3.9 3.9q0.5 0.4 0.5 1.1t-0.5 1.2z m-29.5 17.1l18.4-18.5 6.3 6.3-18.4 18.4h-6.3v-6.2z"/></g></svg>Edit this page</a></div><div class="col lastUpdated_JAkA"></div></div></footer></article><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href=/zebra/incidents-and-audits><div class=pagination-nav__sublabel>Previous</div><div class=pagination-nav__label>Incidents and Audits</div></a><a class="pagination-nav__link pagination-nav__link--next" href=/zebra/protocol-history-and-governance><div class=pagination-nav__sublabel>Next</div><div class=pagination-nav__label>Protocol History and Governance</div></a></nav></div></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar theme-doc-toc-desktop"><ul class="table-of-contents table-of-contents__left-border"><li><a href=#why-this-chapter-exists class="table-of-contents__link toc-highlight">Why This Chapter Exists</a><li><a href=#constant-time-discipline class="table-of-contents__link toc-highlight">Constant-time Discipline</a><li><a href=#canonical-encoding class="table-of-contents__link toc-highlight">Canonical Encoding</a><li><a href=#signature-and-proof-malleability class="table-of-contents__link toc-highlight">Signature and Proof Malleability</a><li><a href=#batch-verification-soundness class="table-of-contents__link toc-highlight">Batch Verification Soundness</a><li><a href=#domain-separation-and-personal-strings class="table-of-contents__link toc-highlight">Domain Separation and Personal Strings</a><li><a href=#edge-cases-identity-zero-small-subgroup class="table-of-contents__link toc-highlight">Edge Cases: Identity, Zero, Small Subgroup</a><li><a href=#randomness class="table-of-contents__link toc-highlight">Randomness</a><li><a href=#trusted-setup-assumptions class="table-of-contents__link toc-highlight">Trusted Setup Assumptions</a><li><a href=#the-spec-is-the-source-of-truth-rule class="table-of-contents__link toc-highlight">The "Spec Is the Source of Truth" Rule</a><li><a href=#a-review-checklist-you-can-paste-into-pr-reviews class="table-of-contents__link toc-highlight">A Review Checklist You Can Paste Into PR Reviews</a><li><a href=#see-also class="table-of-contents__link toc-highlight">See Also</a><li><a href=#spec-pointers class="table-of-contents__link toc-highlight">Spec Pointers</a><li><a href=#exercises class="table-of-contents__link toc-highlight">Exercises</a></ul></div></div></div></div></main></div></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="row footer__links"><div class="theme-layout-footer-column col footer__col"><div class=footer__title>Source</div><ul class="footer__items clean-list"><li class=footer__item><a href=https://github.com/dannywillems/zebra/tree/onboarding/onboarding target=_blank rel="noopener noreferrer" class=footer__link-item>This course (onboarding branch)<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a><li class=footer__item><a href=https://github.com/ZcashFoundation/zebra target=_blank rel="noopener noreferrer" class=footer__link-item>Upstream Zebra<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a></ul></div><div class="theme-layout-footer-column col footer__col"><div class=footer__title>Specifications</div><ul class="footer__items clean-list"><li class=footer__item><a href=https://zips.z.cash/protocol/protocol.pdf target=_blank rel="noopener noreferrer" class=footer__link-item>Zcash protocol spec (PDF)<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a><li class=footer__item><a href=https://zips.z.cash/ target=_blank rel="noopener noreferrer" class=footer__link-item>ZIPs index<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a><li class=footer__item><a href=https://zcash.github.io/halo2/ target=_blank rel="noopener noreferrer" class=footer__link-item>Halo2 book<svg width=13.5 height=13.5 aria-label="(opens in new tab)" class=iconExternalLink_nPIU><use href=#theme-svg-external-link /></svg></a></ul></div></div><div class="footer__bottom text--center"><div class=footer__copyright>Zebra Onboarding course. Code excerpts (c) the Zcash Foundation, MIT or Apache-2.0. Pinned to v4.4.1.</div></div></div></footer></div></body>
