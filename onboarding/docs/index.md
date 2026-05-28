@@ -1,18 +1,17 @@
 ---
 sidebar_position: 0
 title: "Zebra Onboarding"
-description: "A personal, code-anchored course on the Zcash full node in Rust. Read this to start writing PRs, not to admire the architecture."
+description: "A code-anchored course on the Zcash full node in Rust. Designed to support PR work, not to admire the architecture."
 slug: /
 ---
 
 # Zebra Onboarding
 
-This is a personal onboarding course for [Zebra](https://github.com/ZcashFoundation/zebra), the Rust implementation of a Zcash full node maintained by the Zcash Foundation. The course is the kind of document that I, the reader, would have wanted when I first opened the repo, in the order I would have wanted to read it.
+This is a code-anchored onboarding course for [Zebra](https://github.com/ZcashFoundation/zebra), the Rust implementation of a Zcash full node maintained by the Zcash Foundation. The course exists to take a reader from "opened the repo" to "can plausibly open a PR" in days rather than weeks, in the order that the dependency graph of the code itself dictates.
 
-The audience is one person (me, the maintainer of this fork). It is written in the second person because that turned out to be the clearest voice, not because it is meant to teach anyone in particular.
+The course is written in an impersonal, technical voice. When the prose addresses the reader directly, it uses "the reader" or the imperative, not "I" or "we".
 
-<!-- prettier-ignore-start -->
-:::warning Auto-generated. May be wrong.
+:::warning[Auto-generated and may be wrong]
 
 This entire site was auto-generated using [Claude Code](https://claude.com/claude-code) by reading the Zebra source tree, the [Zcash protocol specification](https://zips.z.cash/protocol/protocol.pdf), and a stack of audit reports. Errors will have been introduced.
 
@@ -26,9 +25,9 @@ This entire site was auto-generated using [Claude Code](https://claude.com/claud
 - The [Halo 2 book](https://zcash.github.io/halo2/) for the Orchard proving system.
 - Published audits: [NCC Group 2020](https://research.nccgroup.com/wp-content/uploads/2020/07/NCC_Group_ZFND_Zebra_Halo2-2020-08-31_v1.0.pdf), [Trail of Bits 2021](https://github.com/trailofbits/publications/), and the [Zcash Foundation security index](https://zfnd.org/zcash-security/).
 
-If you find a wrong claim, the easiest fix is to open an issue or PR on the [onboarding branch of the fork](https://github.com/dannywillems/zebra/tree/onboarding/onboarding). Use the "Edit this page" link at the bottom of each chapter to jump straight to the Markdown source.
+Corrections belong on the [onboarding branch of the fork](https://github.com/dannywillems/zebra/tree/onboarding/onboarding) as a normal issue or PR. The "Edit this page" link at the bottom of each chapter jumps straight to the Markdown source.
+
 :::
-<!-- prettier-ignore-end -->
 
 ## Notation
 

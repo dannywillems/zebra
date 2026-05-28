@@ -24,11 +24,11 @@ that lands first or alongside.
 Indicators of NU7 in this repo:
 
 - `NetworkUpgrade::Nu7` variant in
-  `zebra-chain/src/parameters/network_upgrade.rs`.
+  [`zebra-chain/src/parameters/network_upgrade.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/parameters/network_upgrade.rs).
 - the `cfg(zcash_unstable, values("nu7"))` lint-allowed config flag
   in `Cargo.toml`. Code gated on `nu7` is implementing-not-active.
 - consensus branch IDs and activation heights pinned in
-  `zebra-chain/src/parameters/network/constants.rs`. Activation
+  [`zebra-chain/src/parameters/network/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/parameters/network/constants.rs). Activation
   heights for NU7 may be placeholders until governance ratifies.
 
 ## Candidate Features
@@ -46,7 +46,7 @@ extensions.
 
 What to read:
 
-- ZIP-227, ZIP-228, ZIP-229 (the ZSA family; check current numbering).
+- [ZIP-227](https://zips.z.cash/zip-0227), [ZIP-228](https://zips.z.cash/zip-0228), [ZIP-229](https://zips.z.cash/zip-0229) (the ZSA family; check current numbering).
 - the QEDIT prototype work (the original implementation).
 - the `orchard-zsa` branch of the `orchard` crate.
 
@@ -129,7 +129,7 @@ integration into Zebra.
 - 12-protocol-history-and-governance.md.
 - 14-zips-and-ceremonies.md.
 - `book/src/dev/ecc-updates.md` for the Zebra-side update process.
-- `zebra-chain/src/parameters/network_upgrade.rs` for the variants
+- [`zebra-chain/src/parameters/network_upgrade.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/parameters/network_upgrade.rs) for the variants
   currently declared.
 
 ## Spec Pointers

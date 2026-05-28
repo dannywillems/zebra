@@ -40,14 +40,14 @@ Inside Zebra, those primitives appear in three places:
    serialization.
 2. `zebra-consensus/src/primitives/` for the verifier services
    (Tower services with batching).
-3. `zebra-script` for the FFI to `libzcash_script`.
+3. [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) for the FFI to `libzcash_script`.
 
 ## Hash Functions
 
 The Zcash hash function zoo:
 
-- `BLAKE2b-256`: txid for v5+, ZIP-244 sighash, ZIP-221 history
-  tree, ZIP-216 jubjub canonical encoding domain separation. Personal
+- `BLAKE2b-256`: txid for v5+, [ZIP-244](https://zips.z.cash/zip-0244) sighash, [ZIP-221](https://zips.z.cash/zip-0221) history
+  tree, [ZIP-216](https://zips.z.cash/zip-0216) jubjub canonical encoding domain separation. Personal
   string is part of the input. Provided by `blake2b_simd`.
 - `BLAKE2b-512`: pre-NU5 transaction binding signatures, some key
   derivations. Provided by `blake2b_simd`.
@@ -62,7 +62,7 @@ The Zcash hash function zoo:
   tree. Provided by `sapling-crypto`.
 - `Sinsemilla`: Orchard note commitments and Orchard commitment
   tree. Provided by `orchard` and wrapped at
-  `zebra-chain/src/orchard/sinsemilla.rs`.
+  [`zebra-chain/src/orchard/sinsemilla.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/orchard/sinsemilla.rs).
 - `FF1 (AES-128 based)`: diversifier derivation for Sapling/Orchard.
   Provided by ECC crates.
 - `MiMC, Poseidon`: not used in mainnet Zcash today; Halo2 circuits
@@ -77,17 +77,17 @@ the spec.
 ## Signature Schemes
 
 - ECDSA over secp256k1: transparent transactions, exactly like
-  Bitcoin. Used in `zebra-script` via libzcash_script. The Rust
+  Bitcoin. Used in [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) via libzcash_script. The Rust
   side uses `secp256k1`.
 - Ed25519: Sprout JoinSplit signatures. Provided by `ed25519-zebra`,
   a ZF-maintained crate with stricter signature malleability rules
-  (ZIP-215). Verifier at
+  ([ZIP-215](https://zips.z.cash/zip-0215)). Verifier at
   `zebra-consensus/src/primitives/ed25519/`.
 - RedJubjub: Sapling spend authorization and binding signatures, a
-  Schnorr scheme over Jubjub. Defined in ZIP-200 / Sapling spec
+  Schnorr scheme over Jubjub. Defined in [ZIP-200](https://zips.z.cash/zip-0200) / Sapling spec
   section 4.1.6. Provided by `redjubjub`. Verifier at
   `zebra-consensus/src/primitives/redjubjub/`.
-- RedPallas: same construction over Pallas, used by Orchard. ZIP-221
+- RedPallas: same construction over Pallas, used by Orchard. [ZIP-221](https://zips.z.cash/zip-0221)
   family. Provided by `reddsa`. Verifier at
   `zebra-consensus/src/primitives/redpallas/`.
 
@@ -95,7 +95,7 @@ All four verifiers in `zebra-consensus/src/primitives/` are Tower
 services wrapped in batch-control middleware. They accept verify
 requests, accumulate them into a batch, verify the batch, and on batch
 failure fall back to per-signature verification using
-`tower-fallback`. This is the architecture worth studying first
+[`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback). This is the architecture worth studying first
 because it shows up again for proof systems.
 
 ## Commitment and Randomness
@@ -114,8 +114,8 @@ because it shows up again for proof systems.
 The anchor is the load-bearing primitive for shielded transfers. A
 shielded spend does not name which note it is spending; that would
 deanonymize the sender. Instead, the spender proves in zero
-knowledge that "the note I am spending is one of the leaves under
-this Merkle root", and the verifier checks that the cited root,
+knowledge that the spent note is one of the leaves under a given
+Merkle root, and the verifier checks that the cited root,
 the **anchor**, matches some earlier block's final treestate. The
 anchor is therefore both a cryptographic object (a Merkle root
 over note commitments) and a consensus object (the on-chain record
@@ -128,9 +128,9 @@ commitments. The anchor is its root.
 
 | Pool    | Leaf hash                     | Tree depth | Root type             | Code                                                                  |
 | ------- | ----------------------------- | ---------- | --------------------- | --------------------------------------------------------------------- |
-| Sprout  | SHA-256 (truncated)           | 29         | `[u8; 32]`            | `zebra-chain/src/sprout/tree.rs`                                      |
-| Sapling | Pedersen hash on Jubjub       | 32         | `jubjub::Base` (`Fq`) | `zebra-chain/src/sapling/tree.rs`                                     |
-| Orchard | Sinsemilla hash on Pallas     | 32         | `pallas::Base`        | `zebra-chain/src/orchard/tree.rs`                                     |
+| Sprout  | SHA-256 (truncated)           | 29         | `[u8; 32]`            | [`zebra-chain/src/sprout/tree.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sprout/tree.rs)                                      |
+| Sapling | Pedersen hash on Jubjub       | 32         | `jubjub::Base` (`Fq`) | [`zebra-chain/src/sapling/tree.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tree.rs)                                     |
+| Orchard | Sinsemilla hash on Pallas     | 32         | `pallas::Base`        | [`zebra-chain/src/orchard/tree.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/orchard/tree.rs)                                     |
 
 The Sapling and Orchard roots wrap a single field element of the
 relevant curve's base field. The tree depths are fixed by the
@@ -252,7 +252,7 @@ There is a subtle floor: the anchor must refer to the **final**
 treestate of an earlier block, not an intermediate state inside the
 current block. This prevents a transaction from spending a note
 that was created by another transaction in the same block. Tests
-for the rule live in `zebra-state/src/service/check/tests/anchors.rs`.
+for the rule live in [`zebra-state/src/service/check/tests/anchors.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/tests/anchors.rs).
 
 ### Failure Modes
 
@@ -268,7 +268,7 @@ for the rule live in `zebra-state/src/service/check/tests/anchors.rs`.
   not all of the current block's commitments, a transaction can
   spend a note created earlier in the same block, breaking the
   intended ordering. Caught by tests under
-  `zebra-state/src/service/check/tests/anchors.rs`.
+  [`zebra-state/src/service/check/tests/anchors.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/tests/anchors.rs).
 - **MultiSet underflow on reorg.** Because identical anchors can
   repeat across heights, the non-finalized state stores anchors
   as a `MultiSet`. Decrementing past zero on a rollback is a logic
@@ -288,7 +288,7 @@ state recomputes anchors on a reorg.
 ## Key Derivation
 
 - BIP-32 for transparent keys.
-- ZIP-32 for shielded keys (Sapling and Orchard), provided by the
+- [ZIP-32](https://zips.z.cash/zip-0032) for shielded keys (Sapling and Orchard), provided by the
   `zip32` crate.
 - diversifier derivation uses FF1.
 - viewing key hierarchy: spending key gives spend authority and
@@ -298,8 +298,8 @@ state recomputes anchors on a reorg.
 
 ## Note Encryption
 
-ZIP-216 / spec section 4.7. Implemented in `zcash_note_encryption`,
-re-exported through `zebra-chain/src/primitives/zcash_note_encryption.rs`.
+[ZIP-216](https://zips.z.cash/zip-0216) / spec section 4.7. Implemented in `zcash_note_encryption`,
+re-exported through [`zebra-chain/src/primitives/zcash_note_encryption.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/primitives/zcash_note_encryption.rs).
 
 Sapling and Orchard note encryption use the same generic framework
 with different KDF inputs and curve parameters. Both use
@@ -327,12 +327,12 @@ Two systems in use:
    compiled-in constants. Provided by `bellman` (proving) and
    `bls12_381` (curve).
 2. Halo2 (Orchard): NU5+ Orchard Action proofs. Verifier at
-   `zebra-consensus/src/primitives/halo2.rs`. Provided by
+   [`zebra-consensus/src/primitives/halo2.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/halo2.rs). Provided by
    `halo2_proofs` (the implementation Zebra depends on is the
    `zcash-halo2` fork pinned at workspace version `0.3` via
    `halo2 = "0.3"`).
 
-`zebra-consensus/src/primitives/sapling.rs` is the place where
+[`zebra-consensus/src/primitives/sapling.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/sapling.rs) is the place where
 Sapling-specific verifying logic is glued. The Groth16 module
 delegates batched verification to `bellman` and adds Tower
 batching on top so a whole block's spend and output proofs can be
@@ -348,30 +348,30 @@ Things to study in this area:
   IPA opening checks but the multiscalar multiplications can be
   combined across instances.
 - the "batch then fall back" pattern, implemented with
-  `tower-batch-control` + `tower-fallback`. When the batch fails,
+  [`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control) + [`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback). When the batch fails,
   the offending item is identified by re-verifying each item in the
   batch.
 
 ## Script Verification
 
-`zebra-script` is the FFI boundary. The Rust API is
+[`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) is the FFI boundary. The Rust API is
 `CachedFfiTransaction` which:
 
 - holds a `zebra_chain::Transaction` and the `transparent::Output`s
   it spends,
-- precomputes the `SigHasher` (the ZIP-244 sighash for v5+ or the
+- precomputes the `SigHasher` (the [ZIP-244](https://zips.z.cash/zip-0244) sighash for v5+ or the
   v4 sighash for older transactions),
 - exposes `is_valid(input_index)` which calls the C++ interpreter
   via `libzcash_script` to verify the script.
 
-Read `zebra-script/src/lib.rs` carefully. Two cryptographic details
+Read [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) carefully. Two cryptographic details
 appear inline there:
 
 1. v5+ transaction hash type validation. Valid hash types are
    `{0x01, 0x02, 0x03, 0x81, 0x82, 0x83}`. Anything else is rejected
    immediately, matching zcashd's `SighashType::parse`.
 2. v5+ `SIGHASH_SINGLE` without a corresponding output is rejected
-   (ZIP-244 section S.2a). This is the exact mismatch fixed by
+   ([ZIP-244](https://zips.z.cash/zip-0244) section S.2a). This is the exact mismatch fixed by
    release v4.4.1 in the recent commit history at `1ec1078e2`.
 
 The function also documents a workaround for a libzcash_script
@@ -388,7 +388,7 @@ the toggle.
 
 ## The `Sigops` Trait
 
-`zebra-script/src/lib.rs` defines `Sigops` (legacy sigop count) and
+[`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) defines `Sigops` (legacy sigop count) and
 the free function `p2sh_sigop_count` (P2SH sigop count). Both must
 match zcashd's exact behavior, including the coinbase scriptSig
 contribution and the "non-push-only redeem script returns 0 sigops"
@@ -400,7 +400,7 @@ consensus-critical port should link the reference C++ source.
 
 Zcash uses Equihash(200, 9) with `ZcashPoW` personalization. The
 solution is 1344 bytes. The verifier is in the `equihash` crate;
-Zebra wraps it at `zebra-chain/src/work/equihash.rs`. There is no
+Zebra wraps it at [`zebra-chain/src/work/equihash.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/work/equihash.rs). There is no
 Zebra-side implementation of the algorithm; we just verify.
 
 ## groth16 Trusted Setup Parameters
@@ -418,9 +418,9 @@ Zebra and zcashd embed them. See the user-facing doc
   (consensus changes).
 - the Sapling paper (Hopwood, Bowe, Hornby, Wilcox-O'Hearn, 2016).
 - the Orchard book and the halo2 book.
-- ZIP-32 (HD wallets for shielded), ZIP-200 (Sapling), ZIP-216
-  (jubjub canonical encoding), ZIP-221 (history tree), ZIP-243
-  (Sapling sighash), ZIP-244 (NU5 txid and sighash).
+- [ZIP-32](https://zips.z.cash/zip-0032) (HD wallets for shielded), [ZIP-200](https://zips.z.cash/zip-0200) (Sapling), [ZIP-216](https://zips.z.cash/zip-0216)
+  (jubjub canonical encoding), [ZIP-221](https://zips.z.cash/zip-0221) (history tree), [ZIP-243](https://zips.z.cash/zip-0243)
+  (Sapling sighash), [ZIP-244](https://zips.z.cash/zip-0244) (NU5 txid and sighash).
 
 ## Suggested Exercises
 
@@ -428,7 +428,7 @@ Zebra and zcashd embed them. See the user-facing doc
    proof is verified. List every crate it touches.
 2. open `zebra-consensus/src/primitives/groth16/` and answer: what
    is a "batch", how is it formed, and what happens when it fails?
-3. read `zebra-script/src/lib.rs` end to end. Identify every place
+3. read [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) end to end. Identify every place
    where a sighash decision would differ between v4 and v5+.
 4. find every call site of `blake2b_simd::Params::new()` across the
    workspace and list the personal strings used. (Hint: `grep -rn
@@ -442,6 +442,6 @@ Zebra and zcashd embed them. See the user-facing doc
 
 ## Exercises
 
-1. Find a Pedersen commitment call site in `zebra-chain` and list the inputs (the message and the randomness). Where does the randomness come from?
+1. Find a Pedersen commitment call site in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) and list the inputs (the message and the randomness). Where does the randomness come from?
 2. The `equihash` proof-of-work uses parameters `(n, k) = (200, 9)` on mainnet. Find where they are encoded and confirm the chosen path length matches the spec.
 3. Identify one Sinsemilla call site in Orchard code and explain in one sentence what is being committed to.

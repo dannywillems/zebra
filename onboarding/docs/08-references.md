@@ -37,10 +37,10 @@ which onboarding file they support.
 - Sapling spec: https://github.com/zcash/zips/blob/main/protocol/
   sapling.pdf (this is the source of the Sapling design; the unified
   spec subsumes it).
-- ZIP-32 (HD wallets for shielded), ZIP-203 (transaction expiry),
-  ZIP-216 (jubjub canonical encoding), ZIP-221 (history tree),
-  ZIP-225 (v5 transaction format), ZIP-239 (block sync over
-  bitcoin-style protocol), ZIP-244 (NU5 txid and sighash).
+- [ZIP-32](https://zips.z.cash/zip-0032) (HD wallets for shielded), [ZIP-203](https://zips.z.cash/zip-0203) (transaction expiry),
+  [ZIP-216](https://zips.z.cash/zip-0216) (jubjub canonical encoding), [ZIP-221](https://zips.z.cash/zip-0221) (history tree),
+  [ZIP-225](https://zips.z.cash/zip-0225) (v5 transaction format), [ZIP-239](https://zips.z.cash/zip-0239) (block sync over
+  bitcoin-style protocol), [ZIP-244](https://zips.z.cash/zip-0244) (NU5 txid and sighash).
 - The `librustzcash` repo: https://github.com/zcash/librustzcash.
 
 ## File 03 (Cryptography)
@@ -55,16 +55,16 @@ which onboarding file they support.
 - Sinsemilla: Orchard book chapter on the hash.
 - Pedersen: Sapling spec section 5.4.7.
 - BLAKE2 RFC 7693. Watch the personal string usage everywhere.
-- RedJubjub and RedDSA: ZIP-200 plus the `redjubjub` and `reddsa`
+- RedJubjub and RedDSA: [ZIP-200](https://zips.z.cash/zip-0200) plus the `redjubjub` and `reddsa`
   crates.
-- Ed25519 ZIP-215 strict verification: see `ed25519-zebra` README.
+- Ed25519 [ZIP-215](https://zips.z.cash/zip-0215) strict verification: see `ed25519-zebra` README.
 - Equihash: Biryukov and Khovratovich, "Equihash: Asymmetric Proof-
   of-Work Based on the Generalized Birthday Problem".
 
 ## File 04 (Consensus and State)
 
-- ZIP-244 for sighash and authdigest.
-- ZIP-216 for jubjub canonical encoding (relevant to verifier
+- [ZIP-244](https://zips.z.cash/zip-0244) for sighash and authdigest.
+- [ZIP-216](https://zips.z.cash/zip-0216) for jubjub canonical encoding (relevant to verifier
   correctness).
 - Zebra RFC 0002 Parallel Verification.
 - Zebra RFC 0004 Asynchronous Script Verification.
@@ -81,7 +81,7 @@ which onboarding file they support.
 - Bitcoin P2P protocol docs: https://en.bitcoin.it/wiki/Protocol_
   documentation. Used as the base; Zcash overlays its own messages
   and version bits.
-- ZIP-239 for Zcash-specific block sync semantics.
+- [ZIP-239](https://zips.z.cash/zip-0239) for Zcash-specific block sync semantics.
 - Lightwalletd protocol: https://github.com/zcash/lightwalletd.
 - zcashd JSON-RPC reference (zcashd source `src/rpc/`).
 - Zebra mempool spec: `book/src/dev/mempool-specification.md`.

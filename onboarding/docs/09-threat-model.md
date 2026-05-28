@@ -45,7 +45,7 @@ transactions to the IP that first announced them.
 Defenses in Zebra:
 
 - `isolated/`: anonymized peer connections for outbound user txs.
-  Per `zebra-network/src/lib.rs`, Tor support is currently disabled
+  Per [`zebra-network/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/lib.rs), Tor support is currently disabled
   pending an `arti-client` dep update. The TCP anonymized path is
   available.
 - inventory de-duplication: each tx is announced once per peer, not
@@ -69,7 +69,7 @@ The note encryption library is `zcash_note_encryption`.
 Connection-time fingerprinting (user-agent string, supported
 services, message order) can identify Zebra vs zcashd. Zebra
 deliberately uses a `zcashd`-compatible user agent prefix to blend
-in. See `zebra-network/src/constants.rs`.
+in. See [`zebra-network/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/constants.rs).
 
 ## Consensus Adversaries
 
@@ -86,7 +86,7 @@ can attempt reorgs. Zebra's defenses:
   validity is checked, which is faster, but the checkpoint hash also
   serves as a hard upper bound on rewriting history below it.
 - difficulty adjustment: per-block target rolling median based on
-  `PoWMedianBlockSpan` (see ZIP-208 and `zebra-chain/src/work/
+  `PoWMedianBlockSpan` (see [ZIP-208](https://zips.z.cash/zip-0208) and `zebra-chain/src/work/
   difficulty/`).
 
 What this does not defend against: small reorgs within the
@@ -133,7 +133,7 @@ Anyone trying to forge proofs, signatures, or hashes.
 
 - ECDSA: secp256k1 is well-studied; Zebra inherits Bitcoin defenses.
   Low-s normalization is enforced.
-- Ed25519: Zebra uses `ed25519-zebra` with ZIP-215 strict
+- Ed25519: Zebra uses `ed25519-zebra` with [ZIP-215](https://zips.z.cash/zip-0215) strict
   verification rules to eliminate signature malleability that was
   permitted in early Sprout-era specs.
 - RedJubjub / RedPallas: Schnorr-style. The randomizer for spend
@@ -180,7 +180,7 @@ Anyone exploiting bugs in the node itself.
   upper bound on its allocation.
 - request floods: defended by Tower backpressure, bounded channels,
   inbound queue overflow drops the connection.
-- mempool flooding: defended by ZIP-401 anti-DoS (size, fee, weight
+- mempool flooding: defended by [ZIP-401](https://zips.z.cash/zip-0401) anti-DoS (size, fee, weight
   limits).
 - proof verification timeouts: bound on per-block verification time.
 - panic-on-DoS: clippy lints `unwrap_used`, `expect_used`, `panic`
@@ -194,7 +194,7 @@ messages must explain why the invariant holds" are the discipline.
 
 ### Ffi Memory Issues
 
-`zebra-script` is the unsafe boundary. The wrapper is single-
+[`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) is the unsafe boundary. The wrapper is single-
 crate so the rest of the workspace can keep `unsafe_code = "deny"`.
 The `comparison-interpreter` feature runs a parallel Rust
 implementation against the C++ one to catch divergence.

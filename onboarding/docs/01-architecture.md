@@ -56,45 +56,45 @@ Three rules to remember:
 
 1. dependencies flow downward only. Lower crates must not depend on
    higher ones.
-2. `zebra-chain` is sync-only. No async, no tokio, no Tower.
-3. `zebra-node-services` exists to break what would otherwise be
+2. [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) is sync-only. No async, no tokio, no Tower.
+3. [`zebra-node-services`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-node-services) exists to break what would otherwise be
    cyclic dependencies between crates that need each other's service
    trait shapes (mempool, RPC, state).
 
 ## Per-crate Role at a Glance
 
-- `zebra-chain`: the consensus-critical data type layer. Blocks,
+- [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain): the consensus-critical data type layer. Blocks,
   transactions (v1 through v5/v6), Sprout/Sapling/Orchard primitives,
   parameters, network upgrades, serialization, work and difficulty,
   history trees, value pools.
-- `zebra-script`: thin wrapper around `libzcash_script` (the C++
+- [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script): thin wrapper around `libzcash_script` (the C++
   Zcash script interpreter from zcashd). Lives in its own crate so
   the `unsafe_code` deny attribute can stay on for the rest of the
   workspace.
-- `zebra-consensus`: semantic verification. Verifies blocks and
+- [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus): semantic verification. Verifies blocks and
   transactions as Tower services. Holds verifier batches for Groth16,
   Halo2, RedJubjub, RedPallas, Ed25519.
-- `zebra-state`: contextual verification plus storage. Splits writes
+- [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state): contextual verification plus storage. Splits writes
   (`Request`) from reads (`ReadRequest`). Holds the finalized state
   in RocksDB and the non-finalized state as a tree of forks.
-- `zebra-network`: Tower-based P2P. Encapsulates the Bitcoin-derived
+- [`zebra-network`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network): Tower-based P2P. Encapsulates the Bitcoin-derived
   Zcash wire protocol and exposes a `PeerSet` service representing
   "the rest of the network".
-- `zebra-rpc`: JSON-RPC (zcashd-compatible) and indexer gRPC.
-- `zebra-node-services`: shared service trait aliases (`Mempool`,
+- [`zebra-rpc`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc): JSON-RPC (zcashd-compatible) and indexer gRPC.
+- [`zebra-node-services`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-node-services): shared service trait aliases (`Mempool`,
   `RpcClient`, etc.), no logic.
-- `zebrad`: the binary. CLI commands, abscissa-based application,
+- [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad): the binary. CLI commands, abscissa-based application,
   components (sync, inbound, mempool, miner, metrics, tracing). It
   wires everything together.
-- `tower-batch-control`: middleware that batches requests so an
+- [`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control): middleware that batches requests so an
   inner service can verify them with a batch verifier. Used for
   Groth16, Halo2, RedJubjub, RedPallas, Ed25519.
-- `tower-fallback`: middleware that retries a request on a fallback
+- [`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback): middleware that retries a request on a fallback
   service. Used for batched verifiers that can fall back to a
   per-item verifier on batch failure.
-- `zebra-test`: shared test infrastructure, fixed test vectors,
+- [`zebra-test`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-test): shared test infrastructure, fixed test vectors,
   network fixtures.
-- `zebra-utils`: standalone utilities (checkpoint generation,
+- [`zebra-utils`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-utils): standalone utilities (checkpoint generation,
   block hash computation, search-issue, openapi generator, etc.).
 
 ## The Workspace Cargo File
@@ -130,7 +130,7 @@ From the README:
 
 - Rust toolchain. `rust-toolchain.toml` pins `channel = "stable"`.
   Per `Cargo.toml`, the workspace MSRV is 1.85.1 for libraries and
-  the `zebrad` binary itself targets 1.91 per `AGENTS.md`.
+  the [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) binary itself targets 1.91 per `AGENTS.md`.
 - libclang (for bindgen, used by RocksDB).
 - a C++ compiler (for `libzcash_script` and RocksDB).
 - protoc, optional, only required for some gRPC paths.
@@ -153,7 +153,7 @@ sync against testnet and are the most realistic end-to-end test.
 
 ## Feature Flags Worth Knowing
 
-From `zebrad/src/lib.rs` doc comments:
+From [`zebrad/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebrad/src/lib.rs) doc comments:
 
 - `progress-bar`: progress bars in the terminal; default on.
 - `prometheus`: export metrics on `/metrics`.
@@ -168,9 +168,9 @@ From `zebrad/src/lib.rs` doc comments:
 - `elasticsearch`: writes block data to Elasticsearch (experimental).
 - `internal-miner`: in-process miner, testnet only.
 - `indexer`: enables the indexer-specific request/response types in
-  `zebra-state` and `zebra-rpc`.
+  [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state) and [`zebra-rpc`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc).
 
-For the `zebra-state` crate specifically, the `proptest-impl` and
+For the [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state) crate specifically, the `proptest-impl` and
 `indexer` features unlock additional public re-exports
 (`zebra-state/src/lib.rs`).
 
@@ -188,8 +188,8 @@ For the `zebra-state` crate specifically, the `proptest-impl` and
 ## What You Should Be Able to Do After Reading This File
 
 - name each of the 12 crates and what it owns.
-- explain why `zebra-chain` is sync-only.
-- explain why `zebra-script` and `zebra-node-services` exist as
+- explain why [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) is sync-only.
+- explain why [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) and [`zebra-node-services`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-node-services) exist as
   separate crates.
 - locate any cryptographic dependency in `Cargo.toml`.
 - run the full CI sequence locally.
@@ -204,4 +204,4 @@ For the `zebra-state` crate specifically, the `proptest-impl` and
 
 1. Open `Cargo.toml` and list every workspace member that is *not* declared here but exists on disk (hint: there are at least two). Explain why each is excluded.
 2. Run `cargo test -p zebra-chain block::serialize::tests::block_test_vectors` and identify which test vectors are loaded. Cite the file and line.
-3. Add a `zebra-script` test that fails on purpose (e.g. assert false). Confirm `cargo test --workspace` catches it. Revert.
+3. Add a [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) test that fails on purpose (e.g. assert false). Confirm `cargo test --workspace` catches it. Revert.

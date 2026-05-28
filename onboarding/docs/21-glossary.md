@@ -30,7 +30,7 @@ height, against which a spend's authentication path is checked.
 Each shielded pool has its own tree and its own anchors. The spend
 must show a path to an anchor that the chain has previously seen.
 
-**AuthDigest**: the ZIP-244 authorization digest. Commits to the
+**AuthDigest**: the [ZIP-244](https://zips.z.cash/zip-0244) authorization digest. Commits to the
 authorizing data (signatures, proofs) of a v5+ transaction
 separately from the txid. Allows recomputing the txid without
 seeing the authorizations.
@@ -62,16 +62,16 @@ Groth16.
 ## C
 
 **Canonical encoding**: the unique valid byte representation of a
-field element, group element, or other consensus object. ZIP-216
+field element, group element, or other consensus object. [ZIP-216](https://zips.z.cash/zip-0216)
 mandates canonical Jubjub encoding from NU5.
 
 **Coinbase transaction**: the first transaction in every block.
 Has no transparent inputs other than the block-height-encoding
 scriptSig; produces the block subsidy plus fees, possibly with
-shielded outputs (post-Heartwood ZIP-213).
+shielded outputs (post-Heartwood [ZIP-213](https://zips.z.cash/zip-0213)).
 
 **Consensus branch ID**: a u32 identifying the active network
-upgrade. Mixed into sighash personal strings (ZIP-244). Each NU
+upgrade. Mixed into sighash personal strings ([ZIP-244](https://zips.z.cash/zip-0244)). Each NU
 has one.
 
 **Commitment**: a binding, hiding commitment to a value. In Zcash:
@@ -94,7 +94,7 @@ Zcash.
 (n=200, k=9), solution size 1344 bytes.
 
 **Expiry height**: a transaction field defining the highest block
-height at which the transaction is valid. ZIP-203.
+height at which the transaction is valid. [ZIP-203](https://zips.z.cash/zip-0203).
 
 ## F
 
@@ -117,7 +117,7 @@ to spend.
 **Genesis block**: the first block in the chain. Has special
 status in the consensus rules (no PoW check or different check, no
 predecessor MTP, etc.). Mainnet genesis hash is in
-`zebra-chain/src/block/genesis.rs`.
+[`zebra-chain/src/block/genesis.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/block/genesis.rs).
 
 **Groth16**: a pairing-based zk-SNARK with constant-size proofs.
 Used by Sapling Spend, Sapling Output, and Sprout-on-Groth16
@@ -129,7 +129,7 @@ proofs.
 setup. Implemented in `halo2_proofs`.
 
 **Heartwood**: the July 2020 network upgrade. Added the chain
-history MMR (ZIP-221) and shielded coinbase support (ZIP-213).
+history MMR ([ZIP-221](https://zips.z.cash/zip-0221)) and shielded coinbase support ([ZIP-213](https://zips.z.cash/zip-0213)).
 
 **History tree**: the chain-history MMR introduced at Heartwood. A
 Merkle Mountain Range over block-level commitments. Root is
@@ -159,7 +159,7 @@ prime-order subgroup of BLS12-381.
 ## L
 
 **Lightwalletd**: the original ECC light-client server. Sits in
-front of `zcashd` or `zebrad` and exposes a gRPC interface for
+front of `zcashd` or [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) and exposes a gRPC interface for
 light clients.
 
 ## M
@@ -171,10 +171,10 @@ light clients.
 recipient-to-sender messages. Padded with zeros if unused.
 
 **Mempool**: the validator-side queue of unconfirmed but valid
-transactions. Subject to ZIP-401 anti-DoS rules.
+transactions. Subject to [ZIP-401](https://zips.z.cash/zip-0401) anti-DoS rules.
 
 **MMR**: Merkle Mountain Range. The tree shape used by the chain
-history tree (ZIP-221).
+history tree ([ZIP-221](https://zips.z.cash/zip-0221)).
 
 **MTP**: Median Time Past. The median of the previous 11 block
 timestamps. Used for difficulty adjustment and lock-time checks.
@@ -253,8 +253,8 @@ note plaintexts to recipients. Reused with parameter variations
 for Orchard.
 
 **Sighash**: the transaction digest signed by a transparent or
-shielded spend authorization. v4 uses ZIP-243 sighash; v5+ uses
-ZIP-244.
+shielded spend authorization. v4 uses [ZIP-243](https://zips.z.cash/zip-0243) sighash; v5+ uses
+[ZIP-244](https://zips.z.cash/zip-0244).
 
 **Sigops**: signature-verification operations counted for block-
 size cost. Both inputs and outputs contribute; P2SH redeem scripts
@@ -291,13 +291,13 @@ and their balances. The "T" pool in TZE notation.
 
 **UFVK / UnifiedFullViewingKey**: a viewing key combining FVKs from
 multiple shielded pools (Sapling, Orchard, transparent) into one
-encodable string. ZIP-316.
+encodable string. [ZIP-316](https://zips.z.cash/zip-0316).
 
 **UIVK / UnifiedIncomingViewingKey**: the unified version of IVK.
 
 **Unified address**: a payment address that contains components
 from multiple pools, allowing wallets to choose the best pool for
-incoming funds. ZIP-316.
+incoming funds. [ZIP-316](https://zips.z.cash/zip-0316).
 
 **UTXO**: unspent transaction output. The Bitcoin-style transparent
 spendable record.
@@ -314,7 +314,7 @@ commitment to a note's value. Used in the binding signature.
 **Value pool**: the total balance held in a specific shielded pool.
 Tracked by the state service.
 
-**v5 transaction**: NU5-era transaction format. ZIP-225.
+**v5 transaction**: NU5-era transaction format. [ZIP-225](https://zips.z.cash/zip-0225).
 
 ## W
 

@@ -45,7 +45,7 @@ References:
 - spec appendices: hash personalizations table.
 - `librustzcash` source: grep `Personal::`.
 
-### ZIP-244 Transaction Id and Sighash
+### [ZIP-244](https://zips.z.cash/zip-0244) Transaction Id and Sighash
 
 A purely deterministic, finitely-typed computation: given a
 transaction, compute a 32-byte digest. Recursive structure mirrors
@@ -61,7 +61,7 @@ Formalisation work:
 
 This is the most concrete, smallest, most useful first target.
 
-### Canonical Encoding (ZIP-216)
+### Canonical Encoding ([ZIP-216](https://zips.z.cash/zip-0216))
 
 A round-trip property: for any byte string, `parse` then `encode`
 is identity, and `parse` rejects non-canonical inputs. Lean's
@@ -74,7 +74,7 @@ pattern.
 
 ### Amount and Value-balance Arithmetic
 
-`zebra-chain/src/amount.rs` and `value_balance.rs` encode
+[`zebra-chain/src/amount.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/amount.rs) and `value_balance.rs` encode
 consensus-critical integer-arithmetic invariants. The type system
 already prevents some classes of bug; a Lean formalisation could
 prove the type discipline correct.
@@ -88,7 +88,7 @@ function of the last `PoWAveragingWindow` blocks. Formalising the
 arithmetic over the rolling window would catch off-by-one errors
 that have caused testnet incidents in PoW chains.
 
-### History Tree (ZIP-221)
+### History Tree ([ZIP-221](https://zips.z.cash/zip-0221))
 
 An incremental MMR with explicit balance and root computation.
 Mathlib already has trees; a formalisation here is constructing the
@@ -171,7 +171,7 @@ proofs.
 
 In rough order of impact-per-week:
 
-1. ZIP-244 sighash formalisation with all test vectors as
+1. [ZIP-244](https://zips.z.cash/zip-0244) sighash formalisation with all test vectors as
    `decide`-able propositions. Two to four weeks of work; immediately
    useful.
 2. canonical encoding round-trip lemmas for Jubjub and Pallas

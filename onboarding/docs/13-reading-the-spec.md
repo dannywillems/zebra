@@ -58,7 +58,7 @@ conventions you must internalize:
   unless the prose says otherwise.
 
 Hash inputs are explicitly bracketed; do not be casual about the
-order of concatenation. ZIP-244 bugs have come from getting the
+order of concatenation. [ZIP-244](https://zips.z.cash/zip-0244) bugs have come from getting the
 order wrong.
 
 ## Normative vs Non-normative
@@ -97,7 +97,7 @@ A first pass should give you:
    know; pause on commitment schemes, key derivation, value pool,
    note encryption.
 3. read the **concrete protocol** section sequentially. Compare each
-   subsection to the corresponding directory in `zebra-chain` and
+   subsection to the corresponding directory in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) and
    `librustzcash`.
 4. for each network upgrade you are implementing or auditing, read
    the matching consensus-changes section.
@@ -105,19 +105,19 @@ A first pass should give you:
 Second pass: each time you touch a piece of code, open the
 corresponding spec section and read alongside.
 
-## Worked Example: ZIP-244 Transaction Id
+## Worked Example: [ZIP-244](https://zips.z.cash/zip-0244) Transaction Id
 
 Pick this as your first deep dive. The flow:
 
 1. open the spec section on transaction identifiers. The v5 txid is
    computed by hashing per-pool digests under a personal-string
    tree.
-2. open `zebra-chain/src/transaction/txid.rs`. Identify which
+2. open [`zebra-chain/src/transaction/txid.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/transaction/txid.rs). Identify which
    function corresponds to which spec equation.
 3. open `zcash_primitives` (via the dependency) and find the
    underlying digest construction.
-4. open ZIP-244 itself. Cross-reference with the spec text.
-5. open `zebra-script/src/lib.rs` `calculate_sighash` and trace
+4. open [ZIP-244](https://zips.z.cash/zip-0244) itself. Cross-reference with the spec text.
+5. open [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) `calculate_sighash` and trace
    the sighash variant of the same computation.
 
 You should be able to point at any byte of a v5 transaction and say
@@ -131,7 +131,7 @@ A rough mapping from spec sections to Zebra source you can use as a
 two-way table:
 
 - consensus rules for block headers: spec sections 7.1 to 7.5;
-  `zebra-chain/src/block/`, `zebra-consensus/src/block/check.rs`.
+  `zebra-chain/src/block/`, [`zebra-consensus/src/block/check.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/block/check.rs).
 - transaction validity: spec section 7.1 family;
   `zebra-consensus/src/transaction/`.
 - transparent script: spec section 4.6 and Bitcoin script docs;
@@ -141,11 +141,11 @@ two-way table:
 - Sapling: spec section 4.5 (KDF), 4.7 (note encryption), 4.10
   (Spend proof), 4.11 (Output proof);
   `zebra-chain/src/sapling/`, `zebra-consensus/src/primitives/
-  groth16/`, `zebra-consensus/src/primitives/sapling.rs`.
+  groth16/`, [`zebra-consensus/src/primitives/sapling.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/sapling.rs).
 - Orchard: spec section 4.9-4.13 family; `zebra-chain/src/orchard/`,
-  `zebra-consensus/src/primitives/halo2.rs`.
-- ZIP-244 txid and sighash: spec section 5 family;
-  `zebra-chain/src/transaction/txid.rs`, `sighash.rs`.
+  [`zebra-consensus/src/primitives/halo2.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/halo2.rs).
+- [ZIP-244](https://zips.z.cash/zip-0244) txid and sighash: spec section 5 family;
+  [`zebra-chain/src/transaction/txid.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/transaction/txid.rs), `sighash.rs`.
 - history tree: spec section 7.7; `zebra-chain/src/history_tree/`.
 - difficulty: spec section 7.6; `zebra-chain/src/work/difficulty/`.
 
@@ -188,6 +188,6 @@ template, not gospel.
 
 ## Exercises
 
-1. Pick one consensus rule in the spec and find its implementation in `zebra-consensus`. Cite both.
+1. Pick one consensus rule in the spec and find its implementation in [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus). Cite both.
 2. Identify one piece of notation in the spec that is also used in Zebra code (e.g. for a hash function or a field operation). Confirm the names match.
 3. Find a spec section whose corresponding code lives in more than one crate. Explain in one sentence why.

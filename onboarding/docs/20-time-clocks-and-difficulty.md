@@ -41,7 +41,7 @@ For each new block, the block timestamp must satisfy:
 Implementation:
 - past bound is checked in `zebra-state/src/service/check/`.
 - future bound is checked at block reception, in
-  `zebra-consensus`.
+  [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus).
 
 ## Why MTP Exists
 
@@ -68,7 +68,7 @@ window. The relevant constants (per the spec):
 - `PoWMaxAdjustDown` / `PoWMaxAdjustUp`: bounded adjustment per
   block.
 - `PoWTargetSpacing`: target seconds per block. Halved at Blossom
-  (ZIP-208) from 150 to 75 seconds.
+  ([ZIP-208](https://zips.z.cash/zip-0208)) from 150 to 75 seconds.
 
 The algorithm: compute the MTP-based actual time elapsed over the
 last `PoWAveragingWindow` blocks; compute the expected elapsed time
@@ -76,7 +76,7 @@ last `PoWAveragingWindow` blocks; compute the expected elapsed time
 target by their ratio, clamped to the up/down bounds.
 
 Implementation:
-- algorithm in `zebra-state/src/service/check/difficulty.rs` (or
+- algorithm in [`zebra-state/src/service/check/difficulty.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/difficulty.rs) (or
   similar; verify in the current tree).
 - relevant constants in `zebra-chain/src/work/difficulty/`.
 - the RFC discussion is in `book/src/dev/rfcs/0006-contextual-
@@ -87,7 +87,7 @@ Implementation:
 A time-warp attack tries to bias the difficulty algorithm by
 stamping blocks with carefully chosen timestamps. Bitcoin's
 adjustment-every-2016-blocks scheme has a well-known time-warp
-exposure that Bitcoin Cash patched (ZIP-208-like fix).
+exposure that Bitcoin Cash patched ([ZIP-208](https://zips.z.cash/zip-0208)-like fix).
 
 Zcash's per-block adjustment dramatically reduces but does not
 eliminate this exposure. The bounded `PoWMaxAdjustDown` /
@@ -105,7 +105,7 @@ Things to verify when reviewing time-related code:
 
 Blossom (December 2019) halved `PoWTargetSpacing` from 150s to 75s
 and adjusted the founders' reward / subsidy schedule to match. The
-sub-protocol changes are in ZIP-208. The implementation must select
+sub-protocol changes are in [ZIP-208](https://zips.z.cash/zip-0208). The implementation must select
 the right `PoWTargetSpacing` based on block height; this is a
 height-dependent constant.
 
@@ -115,7 +115,7 @@ spacing is the post-Blossom value above the activation height.
 ## Transaction Expiry
 
 Transactions carry an `expiryHeight` field (since Overwinter,
-ZIP-203). A transaction is invalid if included in a block at a
+[ZIP-203](https://zips.z.cash/zip-0203)). A transaction is invalid if included in a block at a
 height greater than `expiryHeight` (with `expiryHeight == 0`
 meaning "no expiry").
 
@@ -124,7 +124,7 @@ exceeds their `expiryHeight`. See file 18.
 
 ## The Network-adjusted-time Clock
 
-`zebra-network` samples peer clock offsets during the `version`
+[`zebra-network`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network) samples peer clock offsets during the `version`
 handshake. The local "now" is then median-adjusted. This is used
 purely for the future-bound on incoming block timestamps.
 
@@ -146,7 +146,7 @@ clock offset metric and alert operators to large drift.
 
 ## Suggested Exercises
 
-1. find `header.time` in `zebra-chain/src/block/header.rs`. Where
+1. find `header.time` in [`zebra-chain/src/block/header.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/block/header.rs). Where
    is it bounded above, and where is it bounded below?
 2. find the MTP computation. Confirm it uses the previous 11
    blocks, not including the current one.
@@ -158,17 +158,17 @@ clock offset metric and alert operators to large drift.
 ## See Also
 
 - `book/src/dev/rfcs/0006-contextual-difficulty.md`.
-- ZIP-203 (transaction expiry).
-- ZIP-208 (Blossom block time changes).
+- [ZIP-203](https://zips.z.cash/zip-0203) (transaction expiry).
+- [ZIP-208](https://zips.z.cash/zip-0208) (Blossom block time changes).
 - Bitcoin time-warp literature for context.
 
 ## Spec Pointers
 
 - Zcash protocol spec section 7.6 (block header) and 7.7.5 (difficulty).
-- ZIP 208 (blossom timing rules).
+- [ZIP 208](https://zips.z.cash/zip-0208) (blossom timing rules).
 
 ## Exercises
 
-1. Find the median-time-past implementation in `zebra-chain` and confirm the window length.
+1. Find the median-time-past implementation in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) and confirm the window length.
 2. Identify the difficulty-adjustment function and step through one example.
 3. Add a test that submits a block with `time = now + 3 hours` to verification and confirm it is rejected.

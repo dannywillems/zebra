@@ -92,7 +92,7 @@ time.
 - `sync.checkpoint.height` vs `state.committed.height`: how far
   behind the writer is from the verifier.
 - `peer.outbound.count`: peer pool health.
-- `mempool.size_bytes`: mempool utilization vs ZIP-401 weight
+- `mempool.size_bytes`: mempool utilization vs [ZIP-401](https://zips.z.cash/zip-0401) weight
   budget.
 - `tx::verify.duration`: per-tx verification cost. Spikes indicate
   pathological transactions or verifier batch failures.
@@ -177,9 +177,9 @@ The `health/` component exposes liveness and readiness HTTP probes.
 Documented at `book/src/user/health.md`. Used by Kubernetes
 deployments to know when to restart Zebra.
 
-## A Personal Debugging Kit
+## A Reference Debugging Kit
 
-What I would have ready before day one of operations work:
+The toolset to have ready before day one of operations work:
 
 - a running mainnet Zebra in Docker with logs persisted to disk.
 - Prometheus and Grafana with the standard metrics dashboard.
@@ -199,7 +199,7 @@ What I would have ready before day one of operations work:
 ## Spec Pointers
 
 - [tracing](https://docs.rs/tracing/latest/tracing/) documentation.
-- `metrics` crate, used by `zebrad` for the Prometheus endpoint.
+- `metrics` crate, used by [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) for the Prometheus endpoint.
 
 ## Exercises
 

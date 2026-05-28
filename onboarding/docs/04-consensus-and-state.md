@@ -8,20 +8,20 @@ description: "Checkpoint vs semantic verification, the finalized RocksDB store, 
 
 ## Why This Chapter Exists
 
-A consensus bug here splits the chain. The chapter is what separates "I know the format" (chapter 02) from "I can change a verification rule without breaking mainnet". You must leave knowing the difference between checkpoint verification, semantic verification, and what `ReadRequest` vs `Request` actually does in `zebra-state`.
+A consensus bug here splits the chain. The chapter is what separates "I know the format" (chapter 02) from "I can change a verification rule without breaking mainnet". You must leave knowing the difference between checkpoint verification, semantic verification, and what `ReadRequest` vs `Request` actually does in [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state).
 
 Verification in Zebra is split into three telescoping levels, taken
-straight from the module-level doc in `zebra-consensus/src/lib.rs`:
+straight from the module-level doc in [`zebra-consensus/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/lib.rs):
 
 1. structural validity: format and structure. Enforced by the type
-   definitions in `zebra-chain`. If you cannot construct it, it is
+   definitions in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain). If you cannot construct it, it is
    not a valid Zcash object.
 2. semantic validity: could-be-valid given some chain state. Spend
    proofs verify, signatures verify, value balance is correct. This
-   is what `zebra-consensus` enforces.
+   is what [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus) enforces.
 3. contextual validity: actually valid in the context of a specific
    chain state. UTXO is unspent, nullifier is unrevealed, treestate
-   anchor exists. This is what `zebra-state` enforces when blocks
+   anchor exists. This is what [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state) enforces when blocks
    are committed.
 
 ## zebra-consensus
@@ -77,7 +77,7 @@ funding-stream payouts (FRs since Canopy, then NSM since NU6).
 
 `MAX_BLOCK_SIGOPS` is exported. The "what counts as a sigop" rule
 matches zcashd's `GetLegacySigOpCount + GetP2SHSigOpCount`. The
-matching code is in `zebra-script/src/lib.rs` (see `Sigops` trait
+matching code is in [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) (see `Sigops` trait
 and `p2sh_sigop_count`).
 
 ### Transaction Verification
@@ -86,19 +86,19 @@ and `p2sh_sigop_count`).
 Tower service. The service:
 
 - pulls every previous output the transaction spends from
-  `zebra-state` (via `AwaitUtxo` requests),
+  [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state) (via `AwaitUtxo` requests),
 - builds a `CachedFfiTransaction` and dispatches script verifications
   to the script verifier batch,
 - dispatches shielded proof verifications to the Groth16 / Halo2
   verifiers,
 - dispatches signature verifications to Ed25519, RedJubjub,
   RedPallas verifiers,
-- enforces ZIP-244 sighash / authdigest / txid as needed,
+- enforces [ZIP-244](https://zips.z.cash/zip-0244) sighash / authdigest / txid as needed,
 - checks value balance and binding signatures,
 - waits for all of these to resolve and returns a single result.
 
 Each spawned subtask is itself a Tower service call, batched by
-`tower-batch-control`. This is the structural reason Zebra is faster
+[`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control). This is the structural reason Zebra is faster
 than zcashd at verification: every cryptographic check is batched and
 parallelized.
 
@@ -111,8 +111,8 @@ listed in `03-cryptography.md`. Each follows the same pattern:
    or proof + statement),
 2. a batch type that accumulates items,
 3. a Tower service that exposes a `verify(item)` request and uses
-   `tower-batch-control` to drain the queue,
-4. a fallback per-item service used by `tower-fallback` on batch
+   [`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control) to drain the queue,
+4. a fallback per-item service used by [`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback) on batch
    failure.
 
 `primitives/sapling.rs` is the Sapling-specific glue. `groth16/`
@@ -125,7 +125,7 @@ cryptographic correctness lives in Zebra proper.
 
 ### Script
 
-`script/` is a thin Tower wrapper around `zebra-script`. It
+`script/` is a thin Tower wrapper around [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script). It
 serializes script verifications so a single FFI call is in flight at
 a time per input but batches verifications across inputs across a
 block.
@@ -164,7 +164,7 @@ encoding live in `disk_format/`. Read these in order:
 3. `zebra_db/` for the typed read/write API.
 
 There is a schema version constant in
-`zebra-state/src/constants.rs`. Any change to disk layout requires
+[`zebra-state/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/constants.rs). Any change to disk layout requires
 bumping it and writing migration code. The dev book has a chapter on
 this: `book/src/dev/state-db-upgrades.md`.
 
@@ -240,7 +240,7 @@ state-transition function.
 | `sprout_note_commitment_tree`       | Latest Sprout tree state, for incremental updates.              |
 | `sapling_note_commitment_tree`      | Latest Sapling tree state, for incremental updates.             |
 | `orchard_note_commitment_tree`      | Latest Orchard tree state, for incremental updates.             |
-| `history_tree`                      | The MMR chain history tree (ZIP 221, NU5 and later).            |
+| `history_tree`                      | The MMR chain history tree ([ZIP 221](https://zips.z.cash/zip-0221), NU5 and later).            |
 | `tip_chain_value_pool`              | Per-pool cumulative balance (the "turnstile" invariant).        |
 
 See [chapter 03's anchor section](./03-cryptography.md) for the
@@ -262,8 +262,8 @@ in practice, the indexes are populated as blocks are finalized.
 | `tx_loc_by_transparent_addr_loc`       | Per-address list of transactions touching it.                     |
 | `utxo_loc_by_transparent_addr_loc`     | Per-address list of UTXO locations (`getaddressutxos`).           |
 | `tx_loc_by_spent_out_loc`              | Inverse of `utxo_by_out_loc`: which tx spent which output.        |
-| `sapling_note_commitment_subtree`      | Sapling subtree roots (ZIP 307 / lightwalletd shard streaming).   |
-| `orchard_note_commitment_subtree`      | Orchard subtree roots (ZIP 307 / lightwalletd shard streaming).   |
+| `sapling_note_commitment_subtree`      | Sapling subtree roots ([ZIP 307](https://zips.z.cash/zip-0307) / lightwalletd shard streaming).   |
+| `orchard_note_commitment_subtree`      | Orchard subtree roots ([ZIP 307](https://zips.z.cash/zip-0307) / lightwalletd shard streaming).   |
 
 The `balance_by_transparent_addr` column is the only family that
 uses a RocksDB merge operator (`fetch_add_balance_and_received`),
@@ -287,15 +287,15 @@ Three categories of data that often surprise newcomers:
   successor), [Zallet](https://github.com/zcash/wallet), and
   third-party wallets keep their own databases and consume Zebra
   over RPC. See [chapter 18](./18-mempool-mining-and-wallet-ecosystem.md).
-- **The mempool.** Unmined transactions live in `zebra-node-services`
-  / `zebra-rpc` in-memory structures. They are intentionally not
+- **The mempool.** Unmined transactions live in [`zebra-node-services`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-node-services)
+  / [`zebra-rpc`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc) in-memory structures. They are intentionally not
   persisted: an unexpected restart drops the mempool, the network
   refills it.
 - **Peer reputation, address book, gossip state.** Owned by
-  `zebra-network`; persisted separately under the cache dir (see
+  [`zebra-network`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network); persisted separately under the cache dir (see
   the network config) and decoupled from consensus state.
 
-The boundary is enforced architecturally: only `zebra-state` opens
+The boundary is enforced architecturally: only [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state) opens
 the `state/` database, and it exposes typed `Request` / `ReadRequest`
 surfaces. A wallet feature that "just adds one column family" is
 out of Zebra's scope and gets closed at review.
@@ -359,7 +359,7 @@ inspection is either "read the logs" or "open RocksDB directly".
 - **Forgetting to bump `DATABASE_FORMAT_VERSION`** after a breaking
   change in `disk_format/`. The on-disk bytes diverge from what the
   reader expects and a silent corruption ships in the next release.
-  The constant is at `zebra-state/src/constants.rs`; the upgrade
+  The constant is at [`zebra-state/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/constants.rs); the upgrade
   procedure is in `book/src/dev/state-db-upgrades.md`.
 - **Treating an indexing column as consensus-critical.** If a
   consensus check starts reading from `tx_loc_by_hash` or any other
@@ -382,7 +382,7 @@ inspection is either "read the logs" or "open RocksDB directly".
 Each `Chain` is a sequence of blocks plus the deltas they cause
 (treestates, nullifier sets, UTXO set, history tree, value pools).
 The crate documents the read/write split in
-`zebra-state/src/lib.rs`: writes go through `Request`, reads through
+[`zebra-state/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/lib.rs): writes go through `Request`, reads through
 `ReadRequest`. They are separate Tower services and only the read
 service is cheap to clone.
 
@@ -429,7 +429,7 @@ This is RFC 0001 ("Pipelinable Block Lookup"). It is the architectural
 basis for parallel block verification.
 
 Crucially, every `AwaitUtxo` (and every commit) must be wrapped in a
-timeout, called out at the top of `zebra-state/src/lib.rs`:
+timeout, called out at the top of [`zebra-state/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/lib.rs):
 
 > Await UTXO and block commit requests should be wrapped in a
 > timeout, because:
@@ -452,17 +452,17 @@ timeout, called out at the top of `zebra-state/src/lib.rs`:
    the value?
 4. given a 101-block reorg attempt, where exactly is it rejected?
 5. find the place where `MAX_BLOCK_SIGOPS` is checked. Now find
-   every place in `zebra-script` that would contribute to that
+   every place in [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) that would contribute to that
    total.
 
 ## Spec Pointers
 
 - Zcash protocol spec sections 3 (consensus rules) and 7.7 (block subsidy and reward).
 - ZIPs 200 to 226 cover the Sapling-to-NU5 consensus deltas.
-- `zebra-state/src/constants.rs`: the canonical database-format version.
+- [`zebra-state/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/constants.rs): the canonical database-format version.
 
 ## Exercises
 
-1. Find one consensus rule in `zebra-consensus` that has a corresponding spec citation and confirm the citation matches the relevant section.
-2. Trace the path of a single block from `zebrad` to the finalized state. Name every Tower service it passes through.
+1. Find one consensus rule in [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus) that has a corresponding spec citation and confirm the citation matches the relevant section.
+2. Trace the path of a single block from [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) to the finalized state. Name every Tower service it passes through.
 3. Add a debug log in the non-finalized state showing the depth at which a fork resolves. Run a regtest sync and confirm the log fires.

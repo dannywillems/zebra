@@ -24,29 +24,29 @@ are not. This file gives you the narrative.
   Zerocash with BCTV14 SNARKs over BN254 (Barreto-Naehrig 254-bit
   curve).
 - 2018 June: Overwinter network upgrade. Replay protection,
-  transaction expiry (ZIP-203), versioning groundwork.
+  transaction expiry ([ZIP-203](https://zips.z.cash/zip-0203)), versioning groundwork.
 - 2018 October: Sapling network upgrade. The big one. Replaces
   BCTV14 with Groth16 over BLS12-381. Introduces a new shielded
   pool with much smaller proofs (~200 bytes), faster generation
   (seconds on a phone, not minutes on a server), and hierarchical
-  deterministic keys (ZIP-32). The Sapling MPC ceremony provided
+  deterministic keys ([ZIP-32](https://zips.z.cash/zip-0032)). The Sapling MPC ceremony provided
   the trusted setup. Simultaneously fixes the BCTV14 soundness flaw
   silently.
 - 2019 February: Public disclosure of the 2018 BCTV14 counterfeiting
   vulnerability.
 - 2019 December: Blossom network upgrade. Halves block time from
-  150s to 75s (ZIP-208).
+  150s to 75s ([ZIP-208](https://zips.z.cash/zip-0208)).
 - 2020 July: Heartwood network upgrade. Adds the chain history MMR
-  (ZIP-221) and shielded coinbase support (ZIP-213).
+  ([ZIP-221](https://zips.z.cash/zip-0221)) and shielded coinbase support ([ZIP-213](https://zips.z.cash/zip-0213)).
 - 2020 November: Canopy network upgrade. Founders' reward sunset,
-  funding streams begin (ZIP-207, ZIP-214). First halving (height
+  funding streams begin ([ZIP-207](https://zips.z.cash/zip-0207), [ZIP-214](https://zips.z.cash/zip-0214)). First halving (height
   1046400).
 - 2022 May: NU5 network upgrade. Introduces the Orchard shielded
   pool with Halo2 proofs (no trusted setup, IPA over Pallas). New
-  v5 transaction format (ZIP-225, ZIP-244 sighash). Canonical
-  encoding enforcement (ZIP-216).
+  v5 transaction format ([ZIP-225](https://zips.z.cash/zip-0225), [ZIP-244](https://zips.z.cash/zip-0244) sighash). Canonical
+  encoding enforcement ([ZIP-216](https://zips.z.cash/zip-0216)).
 - 2024 November: NU6 network upgrade. Establishes the NSM (Network
-  Sustainability Mechanism) for funding (ZIP-1014, ZIP-1015 family).
+  Sustainability Mechanism) for funding ([ZIP-1014](https://zips.z.cash/zip-1014), [ZIP-1015](https://zips.z.cash/zip-1015) family).
   Tightens consensus around funding streams.
 - in progress: NU6.1 and NU7. See file 15.
 
@@ -172,5 +172,5 @@ operators want compatibility.
 ## Exercises
 
 1. List the network upgrades in order and one sentence on what each delivered.
-2. Find the activation height of NU5 on mainnet. Where is it encoded in `zebra-chain`?
+2. Find the activation height of NU5 on mainnet. Where is it encoded in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain)?
 3. Read one ZIP that has not yet activated and explain in three sentences what it changes.

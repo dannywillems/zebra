@@ -49,7 +49,7 @@ Review checklist:
 
 ## Canonical Encoding
 
-ZIP-216 generalized: every consensus-critical encoding must have
+[ZIP-216](https://zips.z.cash/zip-0216) generalized: every consensus-critical encoding must have
 exactly one valid byte representation. Two encodings that decode to
 the same value but differ in bytes are a malleability surface and
 potentially a consensus-split surface.
@@ -81,8 +81,8 @@ into a different valid one for the same message.
 For each scheme in use:
 
 - ECDSA: low-s normalization is required (and enforced by
-  libzcash_script per Bitcoin BIP-146 and ZIP-208).
-- Ed25519: ZIP-215 strict rules eliminate the small-subgroup and
+  libzcash_script per Bitcoin BIP-146 and [ZIP-208](https://zips.z.cash/zip-0208)).
+- Ed25519: [ZIP-215](https://zips.z.cash/zip-0215) strict rules eliminate the small-subgroup and
   non-canonical encoding malleability paths.
 - RedJubjub / RedPallas: re-randomization is *intended*, but the
   randomized key must still verify the same message. Mutation
@@ -127,7 +127,7 @@ Review checklist:
 
 Every BLAKE2 call in Zcash uses a personal string. Most call sites
 have a fixed personal string in the spec; some are parameterized
-(notably ZIP-244).
+(notably [ZIP-244](https://zips.z.cash/zip-0244)).
 
 What to check:
 
@@ -137,7 +137,7 @@ What to check:
 - is it included in every hash invocation in this code path, not
   just the first one?
 - if the personal string is parameterized, is the parameter the one
-  the spec defines? (ZIP-244 mixes consensus branch ID into multiple
+  the spec defines? ([ZIP-244](https://zips.z.cash/zip-0244) mixes consensus branch ID into multiple
   personalizations.)
 
 Review checklist:
@@ -156,7 +156,7 @@ vector tests. Examples:
 - zero scalar: a "signature" with a zero scalar is often valid or
   invalid in unexpected ways; the spec should rule one way.
 - small-subgroup elements: Edwards curves like Ed25519 have an
-  8-torsion subgroup. ZIP-215 mandates explicit rejection.
+  8-torsion subgroup. [ZIP-215](https://zips.z.cash/zip-0215) mandates explicit rejection.
 - field elements above the modulus: see canonical encoding above.
 - recipient is sender: shielded transactions where the sender is
   also the recipient can exercise out-viewing-key paths that are
@@ -174,7 +174,7 @@ Review checklist:
 - `rand::rngs::OsRng` for security-relevant randomness.
 - never `rand::thread_rng()` for nonces in cryptographic
   signatures.
-- per ZIP-32 derivation, randomness from a deterministic source is
+- per [ZIP-32](https://zips.z.cash/zip-0032) derivation, randomness from a deterministic source is
   acceptable for diversifier search but not for spend authorizers.
 
 Review checklist:
@@ -206,7 +206,7 @@ expect a network compatibility incident if you fix only one side.
 Concrete practice:
 
 - every consensus-critical port should link to the spec section and
-  to the matching `zcash/zcash` C++ line, as the `zebra-script`
+  to the matching `zcash/zcash` C++ line, as the [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script)
   doc comments do.
 - when you find a discrepancy, file an issue on the `zcash/zips`
   repo before changing code.

@@ -63,12 +63,13 @@ Day-by-day:
 - **day 1**: read all 12 Zebra RFCs in `book/src/dev/rfcs/`. They
   are short and they are the architectural source of truth.
 - **day 2**: pick three recently-merged PRs from `main`. For each,
-  read the diff and ask: would I have caught issues a maintainer
-  caught? Compare to the actual review comments. This is the single
-  best way to calibrate review judgment.
-- **day 3**: read `zebra-chain/src/lib.rs` and the top-level files
-  of each `zebra-chain` submodule. Build a mental directory.
-- **day 4**: read `zebra-consensus/src/lib.rs` and walk through one
+  read the diff and ask whether the reader would have caught the
+  issues a maintainer caught. Compare to the actual review
+  comments. This is the single best way to calibrate review
+  judgment.
+- **day 3**: read [`zebra-chain/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/lib.rs) and the top-level files
+  of each [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) submodule. Build a mental directory.
+- **day 4**: read [`zebra-consensus/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/lib.rs) and walk through one
   primitive verifier (`groth16/`, `halo2.rs`, or `redjubjub/`).
 - **day 5**: in your fork's onboarding branch, add notes from this
   week's reading. Push them.
@@ -84,18 +85,19 @@ Goals:
 
 Day-by-day:
 
-- **day 1**: pick ZIP-244 sighash as the deep dive target. Open the
-  spec section, the ZIP, the `zebra-chain` code, and the
+- **day 1**: pick [ZIP-244](https://zips.z.cash/zip-0244) sighash as the deep dive target. Open the
+  spec section, the ZIP, the [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) code, and the
   `zcash_primitives` code in parallel.
 - **day 2**: trace one example sighash computation from raw
   transaction bytes through every BLAKE2 call. Write your trace down
   as a numbered sequence of inputs and personal strings.
-- **day 3**: compare your trace to the ZIP-244 test vectors. They
+- **day 3**: compare your trace to the [ZIP-244](https://zips.z.cash/zip-0244) test vectors. They
   should match byte for byte.
 - **day 4**: read file 16 of this onboarding. Pick a formalisation
   target. Outline a Lean datatype for v5 transactions.
-- **day 5**: present a one-page note "I propose to formalize X
-  because Y" to a ZF or ZODL contact. Ask for feedback.
+- **day 5**: write a one-page note proposing the formalisation
+  target ("formalise X because Y") and circulate it to a ZF or
+  ZODL contact. Request feedback.
 - **weekend**: read files 09 through 11 of this onboarding.
 
 ## Week 4: Networking and RPC
@@ -107,10 +109,10 @@ Goals:
 
 Day-by-day:
 
-- **day 1**: read `zebra-network/src/lib.rs` end to end. Open a
+- **day 1**: read [`zebra-network/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/lib.rs) end to end. Open a
   packet capture against your running node and identify each
   message type by hand.
-- **day 2**: read `zebra-network/src/protocol/external/message.rs`
+- **day 2**: read [`zebra-network/src/protocol/external/message.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/protocol/external/message.rs)
   and `zebra-network/src/peer/connection/`. Trace one inbound and
   one outbound request.
 - **day 3**: read `zebra-rpc/src/methods/` end to end. List every
@@ -174,7 +176,7 @@ Goals:
 
 By the end of week 12, you should be able to:
 
-- read any commit in `zebra-chain` or `zebra-consensus` and
+- read any commit in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) or [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus) and
   predict whether tests will pass.
 - look at a block at a given height and say which consensus rules
   apply.

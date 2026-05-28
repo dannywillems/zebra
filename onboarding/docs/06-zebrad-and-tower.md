@@ -8,7 +8,7 @@ description: "How the binary wires services together via Tower, backpressure, an
 
 ## Why This Chapter Exists
 
-`zebrad` is the binary. It does almost no logic itself; it wires Tower services into a graph. Until you can read a `tower::Service` and know what `poll_ready` returning `Pending` means in this graph, the rest of the codebase reads as magic.
+[`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) is the binary. It does almost no logic itself; it wires Tower services into a graph. Until you can read a `tower::Service` and know what `poll_ready` returning `Pending` means in this graph, the rest of the codebase reads as magic.
 
 ## Tower in Three Sentences
 
@@ -56,19 +56,19 @@ verifier: Groth16, Halo2, Ed25519, RedJubjub, RedPallas.
 
 Files to read:
 
-- `tower-batch-control/src/service.rs`: the batched service itself.
-- `tower-batch-control/src/worker.rs`: the worker task that drains
+- [`tower-batch-control/src/service.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/tower-batch-control/src/service.rs): the batched service itself.
+- [`tower-batch-control/src/worker.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/tower-batch-control/src/worker.rs): the worker task that drains
   the batch.
-- `tower-batch-control/src/layer.rs`: the Tower `Layer` adapter.
+- [`tower-batch-control/src/layer.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/tower-batch-control/src/layer.rs): the Tower `Layer` adapter.
 
 ## Tower-fallback
 
-Pairs naturally with `tower-batch-control`. When a batch fails as a
+Pairs naturally with [`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control). When a batch fails as a
 whole (one bad item invalidates the whole batch), the fallback
 service re-runs each item individually so the offending one can be
 identified and reported. Lives at `tower-fallback/`.
 
-Read `tower-fallback/src/service.rs` to see the simple "try
+Read [`tower-fallback/src/service.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/tower-fallback/src/service.rs) to see the simple "try
 primary, then fallback" semantics.
 
 ## zebrad
@@ -117,7 +117,7 @@ order.
 
 ### Config
 
-`zebrad/src/config.rs` defines the top-level `ZebradConfig`. Sub-
+[`zebrad/src/config.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebrad/src/config.rs) defines the top-level `ZebradConfig`. Sub-
 configs live in the relevant crates: `zebra-network::Config`,
 `zebra-state::Config`, `zebra-consensus::Config`,
 `zebra-rpc::config::Config`, etc. The full TOML is documented in
@@ -150,7 +150,7 @@ Zebra verify many blocks in flight.
    passed to `zebra_network::init`. What `Request` variants does it
    handle?
 3. open any verifier in `zebra-consensus/src/primitives/` and trace
-   how `tower-batch-control` and `tower-fallback` are layered
+   how [`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control) and [`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback) are layered
    together.
 4. read `zebrad/src/components/mempool/` alongside the mempool spec.
    What is the difference between the "transaction queue" and the
@@ -159,7 +159,7 @@ Zebra verify many blocks in flight.
 ## Spec Pointers
 
 - [Tower documentation](https://docs.rs/tower/latest/tower/).
-- `tower-batch-control` and `tower-fallback` in this workspace: the project-specific Tower glue.
+- [`tower-batch-control`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-batch-control) and [`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback) in this workspace: the project-specific Tower glue.
 
 ## Exercises
 

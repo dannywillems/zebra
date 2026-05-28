@@ -44,7 +44,7 @@ References to read end to end:
 - the BCTV14 paper and the Groth16 paper.
 - Daira Hopwood's post-mortem.
 
-## ZIP-216: Canonical Jubjub Encoding
+## [ZIP-216](https://zips.z.cash/zip-0216): Canonical Jubjub Encoding
 
 Pre-NU5 Zcash accepted non-canonical Jubjub point encodings. Two
 encodings could decode to the same point if one was canonical and
@@ -55,7 +55,7 @@ proofs by re-encoding points, producing a different transaction with
 the same effect. Different implementations could disagree on
 acceptance, opening a consensus-split surface as well.
 
-ZIP-216 mandates canonical Jubjub encodings at NU5. The activation
+[ZIP-216](https://zips.z.cash/zip-0216) mandates canonical Jubjub encodings at NU5. The activation
 required every node implementation to enforce canonicity strictly
 from NU5 onwards while still accepting non-canonical historical
 encodings before NU5.
@@ -72,12 +72,12 @@ Lessons:
 ## Sighash Regressions
 
 The most recent example in this repo: v5 transactions with a
-`SIGHASH_SINGLE` flag and no corresponding output. ZIP-244 section
+`SIGHASH_SINGLE` flag and no corresponding output. [ZIP-244](https://zips.z.cash/zip-0244) section
 S.2a states this is a consensus failure; zcashd throws an exception
 in `SignatureHash` and `CheckSig` catches it to fail the script.
 Zebra did not initially reject this case. The fix shipped as
 v4.4.1; the merge commit is `1ec1078e2` and the rejection logic is
-in `zebra-script/src/lib.rs`'s `calculate_sighash` closure.
+in [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs)'s `calculate_sighash` closure.
 
 Lessons:
 
@@ -89,7 +89,7 @@ Lessons:
   other value must be rejected, also in the same closure.
 - the porting discipline "every consensus-critical port links to the
   exact C++ line numbers" exists for a reason. Read the doc
-  comments in `zebra-script/src/lib.rs` for the established pattern.
+  comments in [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) for the established pattern.
 
 ## Libzcash_script CVE GHSA-gq4h-3grw-2rhv
 
@@ -120,7 +120,7 @@ Lessons:
 
 ## The Libzcash_script Callback Failure Propagation Issue
 
-Inline at `zebra-script/src/lib.rs` around the `calculate_sighash`
+Inline at [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) around the `calculate_sighash`
 closure: the libzcash_script C++ verifier does not propagate
 callback failure back through `verify_callback`. Returning `None`
 from the Rust callback (the "I cannot compute this sighash") would
@@ -181,17 +181,17 @@ publishes audit reports on their website. Read at least the most
 recent one before doing serious work. The audit findings often
 become permanent items in the design vocabulary.
 
-## A Personal Exercise
+## Recommended Exercise
 
 For each incident above, write three lines:
 
 1. what would have caught it earlier (test, fuzz, formal proof,
    review checklist).
-2. what is the symmetric bug class I should look for next.
+2. what symmetric bug class the reader should look for next.
 3. what does Zebra currently do to defend against the symmetric
    bug.
 
-Do this once and the threat model in file 09 becomes second nature.
+Done once, the threat model in file 09 becomes second nature.
 
 ## See Also
 

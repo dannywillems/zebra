@@ -21,7 +21,7 @@ Tests are layered:
 - integration tests, under each crate's top-level `tests/`
   directory. These exercise crate-public APIs.
 - workspace-level acceptance tests in `zebrad/tests/`. These spawn
-  `zebrad` as a subprocess and drive it.
+  [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) as a subprocess and drive it.
 - network sync tests, also in `zebrad/tests/`, organized into
   nextest profiles in `.config/nextest.toml`.
 
@@ -48,10 +48,10 @@ They are documented in `book/src/dev/continuous-integration.md`.
 Every consensus-relevant type implements `proptest::Arbitrary` (gated
 behind the `proptest-impl` feature). This is what makes "for any
 valid transaction, serialize then deserialize is identity" tests
-feasible at scale. The `zebra-test` crate aggregates shared
+feasible at scale. The [`zebra-test`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-test) crate aggregates shared
 generators.
 
-Read `zebra-chain/src/tests.rs` and any of the `prop.rs` files. The
+Read [`zebra-chain/src/tests.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/tests.rs) and any of the `prop.rs` files. The
 patterns to learn:
 
 - generators bounded by network upgrade. v5 transactions can only be
@@ -90,7 +90,7 @@ Key workflows:
 - `zfnd-ci-integration-tests-gcp.yml`: integration sync tests on
   GCP-hosted runners.
 - `book.yml`: builds and deploys the Zebra Book.
-- `zfnd-deploy-nodes-gcp.yml`: deploys canary `zebrad` nodes.
+- `zfnd-deploy-nodes-gcp.yml`: deploys canary [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) nodes.
 
 ## Release Process
 
@@ -116,7 +116,7 @@ how operators actually run Zebra.
 `book/src/dev/profiling-and-benchmarking.md` is the canonical guide.
 Tools mentioned: `tracing-flame`, `pprof`, `cargo flamegraph`,
 `tokio-console`. Benchmarks live under `benches/` directories in the
-relevant crates (mostly `zebra-chain` for serialization and
+relevant crates (mostly [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) for serialization and
 hashing).
 
 ## What "Done" Looks Like for a Pr
@@ -144,7 +144,7 @@ file in this repo enforces this for any AI-assisted work as well.
 ## Suggested Exercises
 
 1. run the full CI sequence locally and time each step.
-2. write a proptest for one of the simpler types in `zebra-chain`
+2. write a proptest for one of the simpler types in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain)
    (for example `Height` arithmetic) and run it under `nextest`.
 3. open `.github/workflows/tests-unit.yml` and identify the exact
    test commands CI runs. Reproduce them locally.

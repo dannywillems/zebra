@@ -8,11 +8,11 @@ description: "The peer gossip layer in zebra-network and the zcashd-compatible R
 
 ## Why This Chapter Exists
 
-Two surfaces, both attacker-controlled. `zebra-network` is the gossip layer (P2P, attackers connect to it); `zebra-rpc` is the local management surface (less hostile, still untrusted in shared environments). If you contribute here, you are in the part of the codebase most likely to ship a CVE.
+Two surfaces, both attacker-controlled. [`zebra-network`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network) is the gossip layer (P2P, attackers connect to it); [`zebra-rpc`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc) is the local management surface (less hostile, still untrusted in shared environments). If you contribute here, you are in the part of the codebase most likely to ship a CVE.
 
 ## zebra-network
 
-The module-level doc in `zebra-network/src/lib.rs` is the best
+The module-level doc in [`zebra-network/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/lib.rs) is the best
 single document on the Zebra P2P design. Read it end to end before
 you read any subdirectory.
 
@@ -114,7 +114,7 @@ The module-level doc is sparse; the right entry point is `methods/`.
 ### Structure
 
 - `server/`: HTTP server using `jsonrpsee`. Mounted in
-  `zebrad`'s startup.
+  [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad)'s startup.
 - `methods/types/`: per-method DTOs. Read this directory directly
   to see the full RPC surface.
 - `methods.rs` and `methods/`: the handler implementations.
@@ -143,7 +143,7 @@ interesting code paths:
 - `validateaddress`, `z_validateaddress`: shielded and transparent
   address parsing.
 - `getpeerinfo`, `getnetworkinfo`: introspection into
-  `zebra-network`.
+  [`zebra-network`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network).
 
 ### zcashd Compatibility
 
@@ -152,7 +152,7 @@ existing wallets (lightwalletd) can use Zebra without change. Every
 method's wire format and error code is meant to match zcashd.
 Compatibility tests exist under
 `zebra-rpc/src/tests/`; integration tests run a real `lightwalletd`
-against a syncing `zebrad`.
+against a syncing [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad).
 
 ### The Indexer
 
@@ -172,14 +172,14 @@ Key consensus rules to know:
 
 - transactions in the mempool must verify against the current tip
   context. On reorg, mempool entries are re-verified.
-- transactions expire on a per-height basis using ZIP-203 expiry.
+- transactions expire on a per-height basis using [ZIP-203](https://zips.z.cash/zip-0203) expiry.
 - a separate "transaction queue" feeds the mempool: transactions
   enter via `sendrawtransaction` or peer gossip, queue up, then
   flush into the mempool batch by batch.
 
 ## Suggested Exercises
 
-1. open `zebra-network/src/protocol/external/message.rs` and list
+1. open [`zebra-network/src/protocol/external/message.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/protocol/external/message.rs) and list
    every Zcash P2P message type. For each, identify whether it is a
    request, a response, or unsolicited.
 2. follow a `getblocks` request from a peer. Which task receives

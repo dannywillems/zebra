@@ -42,13 +42,13 @@ A transaction is admitted to the mempool if it passes:
 - structural validation (well-formed bytes).
 - semantic validation (signatures, proofs, scripts, sigops).
 - contextual validation (anchors, nullifiers, UTXOs).
-- mempool-specific limits (fee minimums, size bounds, ZIP-401 weight
+- mempool-specific limits (fee minimums, size bounds, [ZIP-401](https://zips.z.cash/zip-0401) weight
   limits).
 - non-conflict with existing mempool entries.
 
-### ZIP-401 Anti-dos
+### [ZIP-401](https://zips.z.cash/zip-0401) Anti-dos
 
-ZIP-401 defines the weight-based admission rules that bound mempool
+[ZIP-401](https://zips.z.cash/zip-0401) defines the weight-based admission rules that bound mempool
 memory and CPU costs. Each transaction has a weight (a function of
 size, sigops, proof count). The mempool maintains a total weight
 budget; when full, it evicts by lowest fee-per-weight. The exact
@@ -137,7 +137,7 @@ APIs as follows.
 
 ### Lightwalletd
 
-The `lightwalletd` daemon (ECC) sits in front of `zebrad` or
+The `lightwalletd` daemon (ECC) sits in front of [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) or
 `zcashd` and exposes a gRPC interface tailored for light clients.
 It is the original light-client server.
 
@@ -147,7 +147,7 @@ What lightwalletd needs from Zebra:
 - a stable stream of new blocks as they arrive.
 
 The integration tests behind the `lightwalletd-grpc-tests` Cargo
-feature run a real `lightwalletd` against `zebrad`.
+feature run a real `lightwalletd` against [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad).
 
 ### Zaino
 

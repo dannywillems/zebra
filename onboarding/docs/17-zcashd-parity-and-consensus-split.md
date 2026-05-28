@@ -68,7 +68,7 @@ output fix (file 10) is exactly this pattern.
 ### Encoding Tolerance
 
 Permissive encoding in one implementation, strict encoding in the
-other. ZIP-216 was a planned tightening of this. Watch for any new
+other. [ZIP-216](https://zips.z.cash/zip-0216) was a planned tightening of this. Watch for any new
 deserialization path that accepts more or fewer encodings than the
 spec mandates.
 
@@ -76,7 +76,7 @@ spec mandates.
 
 Rust panics on overflow in debug, wraps in release; C++ undefined-
 behaves on signed overflow and wraps on unsigned. The `Amount` type
-in `zebra-chain` enforces explicit checked arithmetic to defend
+in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) enforces explicit checked arithmetic to defend
 against this divergence. Any direct `as` cast or `u64 +` in
 consensus code is a red flag.
 
@@ -120,7 +120,7 @@ in proof generation or verification is caught here.
 
 ### The `Comparison-interpreter` Feature
 
-`zebra-script` has a Cargo feature `comparison-interpreter` that
+[`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) has a Cargo feature `comparison-interpreter` that
 runs the Rust port of the zcash script interpreter (`zcash_script`)
 alongside the C++ `libzcash_script`. They are compared on every
 script evaluation and a divergence is logged.
@@ -147,7 +147,7 @@ When you see a divergence (a block accepted by one and rejected by
 the other, or a different chain tip), the workflow:
 
 1. capture the block in question. Hash, height, full raw bytes.
-2. on the rejecting side, get the explicit error. `zebra-state`'s
+2. on the rejecting side, get the explicit error. [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state)'s
    error types are specific (`CommitSemanticallyVerifiedError`,
    `ValidateContextError`, etc.). zcashd's debug.log usually has a
    `bad-blk-*` reason.

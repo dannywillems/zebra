@@ -149,7 +149,7 @@ then the ZIP for context.
 ## Spec Pointers
 
 - Powers of Tau and Sapling MPC writeups under [zcash/mpc](https://github.com/zcash/mpc).
-- ZIP 251 and the NU5 ceremony notes.
+- [ZIP 251](https://zips.z.cash/zip-0251) and the NU5 ceremony notes.
 
 ## Exercises
 

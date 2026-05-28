@@ -8,9 +8,9 @@ description: "Blocks, transactions, sapling and orchard bundles, transparent UTX
 
 ## Why This Chapter Exists
 
-Every other crate depends on `zebra-chain`. If a type here is wrong, every downstream invariant is suspect. The chapter is also the friendliest entry point because it is purely synchronous: no Tokio, no Tower, no I/O. By the end you should be able to read a raw transaction byte string and tell which version, which Sapling/Orchard bundles, and which transparent inputs and outputs it contains.
+Every other crate depends on [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain). If a type here is wrong, every downstream invariant is suspect. The chapter is also the friendliest entry point because it is purely synchronous: no Tokio, no Tower, no I/O. By the end you should be able to read a raw transaction byte string and tell which version, which Sapling/Orchard bundles, and which transparent inputs and outputs it contains.
 
-`zebra-chain` is the sync-only crate that defines every consensus-
+[`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) is the sync-only crate that defines every consensus-
 critical data type Zebra manipulates. No async, no Tokio, no Tower.
 Everything here is either:
 
@@ -21,7 +21,7 @@ Everything here is either:
 - a numeric type with consensus-relevant invariants (amount, height,
   value balance, work, difficulty).
 
-Start with `zebra-chain/src/lib.rs` for the module map. The crate is
+Start with [`zebra-chain/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/lib.rs) for the module map. The crate is
 declared with `recursion_limit = "256"` because of bitvec macros.
 
 ## Module Tour
@@ -85,10 +85,10 @@ Read in this order:
 2. `serialize.rs` for the on-wire format. v5 uses a different layout
    from v4, including the per-pool separation of authorization and
    non-authorizing data.
-3. `txid.rs` and `auth_digest.rs` for ZIP-244 transaction id and
+3. `txid.rs` and `auth_digest.rs` for [ZIP-244](https://zips.z.cash/zip-0244) transaction id and
    authorizing data digest computation (NU5+).
 4. `sighash.rs` for the signature hash computation. v4 uses a v4
-   sighash; v5 uses the ZIP-244 sighash, which is also exposed for
+   sighash; v5 uses the [ZIP-244](https://zips.z.cash/zip-0244) sighash, which is also exposed for
    transparent signers via the `SigHasher` type.
 5. `hash.rs` for the bound `Hash` type and Display order conventions.
 6. `lock_time.rs`, `memo.rs`, `joinsplit.rs`, `builder.rs`,
@@ -120,7 +120,7 @@ Each pool gets its own module with the same shape:
   Sapling v4 or v5 transaction, or an Orchard v5 transaction.
 
 `sinsemilla.rs` under `orchard/` exposes the Sinsemilla hash. It is
-the only Sinsemilla call site inside `zebra-chain`; everything else
+the only Sinsemilla call site inside [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain); everything else
 calls into the `orchard` crate (ECC).
 
 The internals of the proofs themselves (Groth16 for Sapling, Halo2 for
@@ -135,12 +135,12 @@ inputs are.
 - `byte_array.rs`: helpers.
 - `proofs/`: opaque proof byte types (Groth16, Halo2). The verifier
   for these lives in `zebra-consensus/src/primitives/`.
-- `zcash_history/`: chain history tree (ZIP-221).
+- `zcash_history/`: chain history tree ([ZIP-221](https://zips.z.cash/zip-0221)).
 - `zcash_note_encryption.rs`: note encryption wrapper around the
   `zcash_note_encryption` crate.
 - `zcash_primitives.rs`: conversions to/from the `zcash_primitives`
   representation, used wherever Zebra hands a transaction to ECC code
-  (for example to compute a sighash via ZIP-244 in `librustzcash`).
+  (for example to compute a sighash via [ZIP-244](https://zips.z.cash/zip-0244) in `librustzcash`).
 
 ### Work and Difficulty
 
@@ -157,7 +157,7 @@ inputs are.
 ### History_tree
 
 `history_tree/` is the chain history MMR introduced in Heartwood
-(ZIP-221). Each block commits to the root of this tree, so the
+([ZIP-221](https://zips.z.cash/zip-0221)). Each block commits to the root of this tree, so the
 history tree is computed and stored as part of the state.
 
 ### Value_balance, Amount
@@ -215,7 +215,7 @@ services to decide whether to participate in gossip.
 ## Spec Pointers
 
 - Zcash protocol spec sections 7.1 (transaction format) and 7.6 (block format).
-- ZIP 225 (transaction format v5).
+- [ZIP 225](https://zips.z.cash/zip-0225) (transaction format v5).
 - BIP 144 (witness serialization), referenced by Zcash transparent inputs.
 
 ## Exercises
