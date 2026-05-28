@@ -26,7 +26,7 @@ Indicators of NU7 in this repo:
 - `NetworkUpgrade::Nu7` variant in
   [`zebra-chain/src/parameters/network_upgrade.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/parameters/network_upgrade.rs).
 - the `cfg(zcash_unstable, values("nu7"))` lint-allowed config flag
-  in `Cargo.toml`. Code gated on `nu7` is implementing-not-active.
+  in [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml). Code gated on `nu7` is implementing-not-active.
 - consensus branch IDs and activation heights pinned in
   [`zebra-chain/src/parameters/network/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/parameters/network/constants.rs). Activation
   heights for NU7 may be placeholders until governance ratifies.
@@ -67,7 +67,7 @@ What to read:
 NU7 may introduce a v6 transaction format to carry ZSA support,
 trailing metadata, or other features. Version bumps are
 backward-incompatible at the consensus layer; expect
-implementation effort in `zebra-chain/src/transaction/` and the
+implementation effort in [`zebra-chain/src/transaction/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/transaction) and the
 sighash code path.
 
 ### Lightclient and Mempool ZIPs
@@ -128,7 +128,7 @@ integration into Zebra.
 
 - 12-protocol-history-and-governance.md.
 - 14-zips-and-ceremonies.md.
-- `book/src/dev/ecc-updates.md` for the Zebra-side update process.
+- [`book/src/dev/ecc-updates.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/ecc-updates.md) for the Zebra-side update process.
 - [`zebra-chain/src/parameters/network_upgrade.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/parameters/network_upgrade.rs) for the variants
   currently declared.
 

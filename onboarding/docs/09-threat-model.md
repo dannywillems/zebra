@@ -98,7 +98,7 @@ accordingly.
 An adversary surrounding a node with malicious peers can hide blocks
 or feed a private fork. Defenses:
 
-- diverse seed peers and DNS seeds (`zebra-network/src/config.rs`
+- diverse seed peers and DNS seeds ([`zebra-network/src/config.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/config.rs)
   defaults).
 - address book persistence: long-lived honest peers survive restarts.
 - peer rotation under `peer_set/initialize/`.
@@ -112,7 +112,7 @@ inbound-only eclipses applies here too.
 
 Attempts to bias the difficulty algorithm by stamping blocks with
 distorted timestamps. Zcash's difficulty adjustment uses median time
-past with bounded jitter (see `zebra-state/src/service/check/` and
+past with bounded jitter (see [`zebra-state/src/service/check/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state/src/service/check) and
 RFC 0006). See also file `20-time-clocks-and-difficulty.md` once
 written.
 
@@ -120,7 +120,7 @@ written.
 
 If a checkpoint is wrong (bug or attacker-fed parameter), the chain
 splits. Zebra's checkpoints are compiled in from
-`zebra-chain/src/parameters/checkpoint/`. Adding a new checkpoint
+[`zebra-chain/src/parameters/checkpoint/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/parameters/checkpoint). Adding a new checkpoint
 requires re-syncing and verifying the resulting hash; the
 `zebra-checkpoints` tool in `zebra-utils/` is the canonical
 generator.
@@ -175,7 +175,7 @@ Anyone exploiting bugs in the node itself.
 ### Resource Exhaustion (DoS)
 
 - malformed messages that trigger huge allocations: defended by
-  `TrustedPreallocate` in `zebra-chain/src/serialization/`. Every
+  `TrustedPreallocate` in [`zebra-chain/src/serialization/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/serialization). Every
   deserializer for attacker-controlled bytes must compute a hard
   upper bound on its allocation.
 - request floods: defended by Tower backpressure, bounded channels,
@@ -201,7 +201,7 @@ implementation against the C++ one to catch divergence.
 
 ### Supply Chain
 
-The dependency surface (see `Cargo.toml`) is large. `deny.toml`
+The dependency surface (see `Cargo.toml`) is large. [`deny.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/deny.toml)
 configures `cargo-deny` for license, advisory, and source checks.
 The `supply-chain/` directory in the repo root holds the
 `cargo-vet` audit data.
@@ -224,9 +224,9 @@ node from a robust one.
 
 - 10-incidents-and-audits.md (concrete past examples).
 - 11-cryptographic-correctness-practices.md (the discipline).
-- `book/src/dev/rfcs/0003-inventory-tracking.md` (network defense
+- [`book/src/dev/rfcs/0003-inventory-tracking.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/rfcs/0003-inventory-tracking.md) (network defense
   detail).
-- `SECURITY.md` at the repo root for responsible disclosure.
+- [`SECURITY.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/SECURITY.md) at the repo root for responsible disclosure.
 
 ## Spec Pointers
 

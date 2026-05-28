@@ -131,23 +131,23 @@ A rough mapping from spec sections to Zebra source you can use as a
 two-way table:
 
 - consensus rules for block headers: spec sections 7.1 to 7.5;
-  `zebra-chain/src/block/`, [`zebra-consensus/src/block/check.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/block/check.rs).
+  [`zebra-chain/src/block/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/block), [`zebra-consensus/src/block/check.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/block/check.rs).
 - transaction validity: spec section 7.1 family;
-  `zebra-consensus/src/transaction/`.
+  [`zebra-consensus/src/transaction/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/transaction).
 - transparent script: spec section 4.6 and Bitcoin script docs;
   `zebra-script/`.
 - Sprout: spec section 4.7 (note plaintext), 4.8 (proof),
-  `zebra-chain/src/sprout/`.
+  [`zebra-chain/src/sprout/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/sprout).
 - Sapling: spec section 4.5 (KDF), 4.7 (note encryption), 4.10
   (Spend proof), 4.11 (Output proof);
-  `zebra-chain/src/sapling/`, `zebra-consensus/src/primitives/
+  [`zebra-chain/src/sapling/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/sapling), `zebra-consensus/src/primitives/
   groth16/`, [`zebra-consensus/src/primitives/sapling.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/sapling.rs).
-- Orchard: spec section 4.9-4.13 family; `zebra-chain/src/orchard/`,
+- Orchard: spec section 4.9-4.13 family; [`zebra-chain/src/orchard/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/orchard),
   [`zebra-consensus/src/primitives/halo2.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/halo2.rs).
 - [ZIP-244](https://zips.z.cash/zip-0244) txid and sighash: spec section 5 family;
   [`zebra-chain/src/transaction/txid.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/transaction/txid.rs), `sighash.rs`.
-- history tree: spec section 7.7; `zebra-chain/src/history_tree/`.
-- difficulty: spec section 7.6; `zebra-chain/src/work/difficulty/`.
+- history tree: spec section 7.7; [`zebra-chain/src/history_tree/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/history_tree).
+- difficulty: spec section 7.6; [`zebra-chain/src/work/difficulty/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/work/difficulty).
 
 Section numbers shift across spec revisions; treat this as a
 template, not gospel.

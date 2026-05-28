@@ -20,10 +20,10 @@ Tests are layered:
   (allocation-bound tests for deserializers).
 - integration tests, under each crate's top-level `tests/`
   directory. These exercise crate-public APIs.
-- workspace-level acceptance tests in `zebrad/tests/`. These spawn
+- workspace-level acceptance tests in [`zebrad/tests/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad/tests). These spawn
   [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) as a subprocess and drive it.
-- network sync tests, also in `zebrad/tests/`, organized into
-  nextest profiles in `.config/nextest.toml`.
+- network sync tests, also in [`zebrad/tests/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad/tests), organized into
+  nextest profiles in [`.config/nextest.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.config/nextest.toml).
 
 Run them with the obvious command:
 
@@ -41,7 +41,7 @@ cargo nextest run --profile sync-large-checkpoints-empty
 ```
 
 The nextest profiles are how CI organizes long-running sync tests.
-They are documented in `book/src/dev/continuous-integration.md`.
+They are documented in [`book/src/dev/continuous-integration.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/continuous-integration.md).
 
 ## Property Testing
 
@@ -63,13 +63,13 @@ patterns to learn:
 
 For consensus parity, Zebra ports vectors from zcashd and the spec
 test corpus. Look for files literally named `vectors.rs` and the data
-directories under `zebra-test/src/`. Keep the vectors when porting a
+directories under [`zebra-test/src/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-test/src). Keep the vectors when porting a
 new ZIP; they are the most reliable defense against subtle
 serialization or hashing bugs.
 
 ## Ffi-related Test Setup
 
-`Cargo.toml` overrides `[profile.dev.package.libzcash_script]` to
+[`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) overrides `[profile.dev.package.libzcash_script]` to
 opt-level 3 (lines 296 to 302). The comment cites the advisory
 `GHSA-gq4h-3grw-2rhv` which only reproduces in release mode because
 C++ array zero-initialization in debug mode masks the buffer issue.
@@ -80,7 +80,7 @@ release".
 
 CI runs via GitHub Actions; the entry point is
 `.github/workflows/`. The architecture is documented at
-`.github/workflows/README.md` and reproduced at the bottom of the
+[`.github/workflows/README.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.github/workflows/README.md) and reproduced at the bottom of the
 top-level README.
 
 Key workflows:
@@ -94,26 +94,26 @@ Key workflows:
 
 ## Release Process
 
-Documented in `book/src/dev/release-process.md` and
+Documented in [`book/src/dev/release-process.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/release-process.md) and
 `.github/workflows/`. Releases are tagged on `main`. Versioning is
 documented in the same file. `release.toml` configures
 `cargo-release`.
 
-The `CHANGELOG.md` is the authoritative user-facing change record.
-Per `AGENTS.md`, any user-visible change requires a `CHANGELOG`
-update in `[Unreleased]` plus a per-crate `CHANGELOG.md` for
+The [`CHANGELOG.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/CHANGELOG.md) is the authoritative user-facing change record.
+Per [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md), any user-visible change requires a `CHANGELOG`
+update in `[Unreleased]` plus a per-crate [`CHANGELOG.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/CHANGELOG.md) for
 library-consumer-visible changes.
 
 ## Docker
 
 `docker/` holds the Dockerfiles and entrypoint shell. The production
 images are published as `zfnd/zebra` on Docker Hub. Read
-`book/src/user/docker.md` and `book/src/user/mining-docker.md` for
+[`book/src/user/docker.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/docker.md) and [`book/src/user/mining-docker.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/mining-docker.md) for
 how operators actually run Zebra.
 
 ## Benchmarks and Profiling
 
-`book/src/dev/profiling-and-benchmarking.md` is the canonical guide.
+[`book/src/dev/profiling-and-benchmarking.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/profiling-and-benchmarking.md) is the canonical guide.
 Tools mentioned: `tracing-flame`, `pprof`, `cargo flamegraph`,
 `tokio-console`. Benchmarks live under `benches/` directories in the
 relevant crates (mostly [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) for serialization and
@@ -121,7 +121,7 @@ hashing).
 
 ## What "Done" Looks Like for a Pr
 
-Per the contribution gate in `AGENTS.md`, before opening a PR:
+Per the contribution gate in [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md), before opening a PR:
 
 1. confirm scope. Zebra is a validator node.
 2. keep the change focused.
@@ -146,16 +146,16 @@ file in this repo enforces this for any AI-assisted work as well.
 1. run the full CI sequence locally and time each step.
 2. write a proptest for one of the simpler types in [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain)
    (for example `Height` arithmetic) and run it under `nextest`.
-3. open `.github/workflows/tests-unit.yml` and identify the exact
+3. open [`.github/workflows/tests-unit.yml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.github/workflows/tests-unit.yml) and identify the exact
    test commands CI runs. Reproduce them locally.
-4. read `book/src/dev/state-db-upgrades.md`. Sketch what a
+4. read [`book/src/dev/state-db-upgrades.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/state-db-upgrades.md). Sketch what a
    hypothetical database migration would look like for adding a new
    column family.
 
 ## Spec Pointers
 
 - `.github/workflows/`: the CI graph the local commands mirror.
-- `cargo nextest` profiles in `.config/nextest.toml` (if present) for the integration-test matrix.
+- `cargo nextest` profiles in [`.config/nextest.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.config/nextest.toml) (if present) for the integration-test matrix.
 
 ## Exercises
 

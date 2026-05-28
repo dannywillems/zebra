@@ -107,11 +107,11 @@ using random linear combinations. They are sound under the bilinear
 or DLOG assumption when the random scalars are uniform and
 unpredictable to the prover.
 
-What to check in `zebra-consensus/src/primitives/`:
+What to check in [`zebra-consensus/src/primitives/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives):
 
 - random scalars come from an OS RNG, not a deterministic source.
 - batch size is bounded so a malicious prover cannot exhaust memory.
-- the fallback path (`tower-fallback`) re-verifies items
+- the fallback path ([`tower-fallback`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/tower-fallback)) re-verifies items
   individually when the batch fails. Otherwise an attacker can
   invalidate a whole block by inserting a single bad item.
 

@@ -41,7 +41,7 @@ Day-by-day:
 - **day 2**: enable Prometheus (`prometheus` feature) and a local
   Grafana. Watch the metrics dashboard as sync proceeds. Identify
   the `sync.*`, `state.*`, `peer.*` namespaces from real data.
-- **day 3**: read `book/src/user/run.md`, `metrics.md`, and
+- **day 3**: read [`book/src/user/run.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/run.md), `metrics.md`, and
   `tracing.md`. Configure tracing to a file.
 - **day 4**: introduce yourself in the ZF Discord (zebra-dev or
   similar). Mention you are joining ZODL and ask for the cadence
@@ -60,7 +60,7 @@ Goals:
 
 Day-by-day:
 
-- **day 1**: read all 12 Zebra RFCs in `book/src/dev/rfcs/`. They
+- **day 1**: read all 12 Zebra RFCs in [`book/src/dev/rfcs/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/book/src/dev/rfcs). They
   are short and they are the architectural source of truth.
 - **day 2**: pick three recently-merged PRs from `main`. For each,
   read the diff and ask whether the reader would have caught the
@@ -113,9 +113,9 @@ Day-by-day:
   packet capture against your running node and identify each
   message type by hand.
 - **day 2**: read [`zebra-network/src/protocol/external/message.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-network/src/protocol/external/message.rs)
-  and `zebra-network/src/peer/connection/`. Trace one inbound and
+  and [`zebra-network/src/peer/connection/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network/src/peer/connection). Trace one inbound and
   one outbound request.
-- **day 3**: read `zebra-rpc/src/methods/` end to end. List every
+- **day 3**: read [`zebra-rpc/src/methods/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc/src/methods) end to end. List every
   RPC method by name and what it returns.
 - **day 4**: call every RPC method by hand against your node using
   curl or a JSON-RPC client. Verify the response shapes match what
@@ -160,7 +160,7 @@ Steps:
 - discuss the approach on Discord and in a comment on the issue.
   Wait for a maintainer to acknowledge.
 - prepare the change in your fork's branch. Run the full CI sequence
-  locally. Include a CHANGELOG entry per `AGENTS.md` rules.
+  locally. Include a CHANGELOG entry per [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md) rules.
 - request review when the maintainer is ready.
 
 Do **not** rush this. The contribution gate exists for a reason; a
@@ -189,7 +189,7 @@ By the end of week 12, you should be able to:
 
 - do not open a PR against `ZcashFoundation/zebra` without a
   maintainer-acknowledged issue. The contribution gate in
-  `AGENTS.md` is binding.
+  [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md) is binding.
 - do not propose consensus changes in your first month. Listen
   first.
 - do not assume your prior experience translates directly. Zcash
@@ -212,8 +212,8 @@ By the end of week 12, you should be able to:
 ## See Also
 
 - all other files in this onboarding.
-- `AGENTS.md` for the binding contribution policy.
-- `book/src/dev/CONTRIBUTING.md` for the maintainer-facing version.
+- [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md) for the binding contribution policy.
+- [`book/src/dev/CONTRIBUTING.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/CONTRIBUTING.md) for the maintainer-facing version.
 
 ## Spec Pointers
 

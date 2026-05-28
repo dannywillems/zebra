@@ -103,7 +103,7 @@ sync tests against testnet and mainnet after such an update.
 
 ### Nextest Integration Profiles
 
-`.config/nextest.toml` defines profiles that run real-chain sync
+[`.config/nextest.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.config/nextest.toml) defines profiles that run real-chain sync
 tests. They are the truest "are we consensus-equivalent" tests.
 Profiles include:
 
@@ -137,7 +137,7 @@ RFC index has a discussion of vector test discipline.
 
 ### Regtest and Private Testnet
 
-`book/src/user/regtest.md` and `book/src/user/fork-zebra-testnet.md`
+[`book/src/user/regtest.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/regtest.md) and [`book/src/user/fork-zebra-testnet.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/fork-zebra-testnet.md)
 document how to spin up a local network that includes both Zebra
 and zcashd nodes for testing consensus parity manually.
 
@@ -194,8 +194,8 @@ implementation, at the same activation height, in the same upgrade.
 - 09-threat-model.md (consensus adversaries).
 - 10-incidents-and-audits.md (every entry there is a parity
   incident).
-- `book/src/dev/ecc-updates.md`.
-- `book/src/dev/continuous-integration.md`.
+- [`book/src/dev/ecc-updates.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/ecc-updates.md).
+- [`book/src/dev/continuous-integration.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/continuous-integration.md).
 - the `zcash/zcash` repository, especially `src/main.cpp` and
   `src/script/`.
 

@@ -55,7 +55,7 @@ The last chapter, [First 90 Days](./22-first-90-days.md), is a reading and contr
 
 ## Contribution Gate (Read Before Opening a PR)
 
-The upstream `CLAUDE.md` enforces a contribution gate: **no PR before issue discussion with a Zcash Foundation team member**. The detail is in [chapter 22](./22-first-90-days.md) and in the upstream [`CLAUDE.md`](https://github.com/ZcashFoundation/zebra/blob/main/CLAUDE.md). Skipping it gets the PR closed regardless of how good the code is.
+The upstream [`CLAUDE.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/CLAUDE.md) enforces a contribution gate: **no PR before issue discussion with a Zcash Foundation team member**. The detail is in [chapter 22](./22-first-90-days.md) and in the upstream [`CLAUDE.md`](https://github.com/ZcashFoundation/zebra/blob/main/CLAUDE.md). Skipping it gets the PR closed regardless of how good the code is.
 
 ## License Note
 

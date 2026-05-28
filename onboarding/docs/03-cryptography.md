@@ -36,9 +36,9 @@ The Zcash cryptographic stack splits roughly like this:
 
 Inside Zebra, those primitives appear in three places:
 
-1. `zebra-chain/src/primitives/` for byte-level wrappers and
+1. [`zebra-chain/src/primitives/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/primitives) for byte-level wrappers and
    serialization.
-2. `zebra-consensus/src/primitives/` for the verifier services
+2. [`zebra-consensus/src/primitives/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives) for the verifier services
    (Tower services with batching).
 3. [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) for the FFI to `libzcash_script`.
 
@@ -82,16 +82,16 @@ the spec.
 - Ed25519: Sprout JoinSplit signatures. Provided by `ed25519-zebra`,
   a ZF-maintained crate with stricter signature malleability rules
   ([ZIP-215](https://zips.z.cash/zip-0215)). Verifier at
-  `zebra-consensus/src/primitives/ed25519/`.
+  [`zebra-consensus/src/primitives/ed25519/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/ed25519).
 - RedJubjub: Sapling spend authorization and binding signatures, a
   Schnorr scheme over Jubjub. Defined in [ZIP-200](https://zips.z.cash/zip-0200) / Sapling spec
   section 4.1.6. Provided by `redjubjub`. Verifier at
-  `zebra-consensus/src/primitives/redjubjub/`.
+  [`zebra-consensus/src/primitives/redjubjub/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/redjubjub).
 - RedPallas: same construction over Pallas, used by Orchard. [ZIP-221](https://zips.z.cash/zip-0221)
   family. Provided by `reddsa`. Verifier at
-  `zebra-consensus/src/primitives/redpallas/`.
+  [`zebra-consensus/src/primitives/redpallas/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/redpallas).
 
-All four verifiers in `zebra-consensus/src/primitives/` are Tower
+All four verifiers in [`zebra-consensus/src/primitives/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives) are Tower
 services wrapped in batch-control middleware. They accept verify
 requests, accumulate them into a batch, verify the batch, and on batch
 failure fall back to per-signature verification using
@@ -155,7 +155,7 @@ https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tre
 ```
 
 ```rust reference title="zebra-chain/src/sapling/tree.rs (root)"
-https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tree.rs#L381-L390
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tree.rs#L378-L403
 ```
 
 A few invariants follow:
@@ -180,8 +180,8 @@ finalized/non-finalized state split.
 enough confirmations, its anchors are written to dedicated column
 families. Each pool has its own family:
 
-```rust reference title="zebra-state/src/service/finalized_state/zebra_db/shielded.rs (contains_sapling_anchor)"
-https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/finalized_state/zebra_db/shielded.rs#L100-L115
+```rust reference title="zebra-state/src/service/finalized_state/zebra_db/shielded.rs (contains_*_anchor)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/finalized_state/zebra_db/shielded.rs#L100-L117
 ```
 
 The column families are named `sprout_anchors`, `sapling_anchors`,
@@ -198,7 +198,7 @@ and as a `BTreeMap<Height, Root>` (so the chain can be unwound on a
 reorg):
 
 ```rust reference title="zebra-state/src/service/non_finalized_state/chain.rs (anchor fields)"
-https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/non_finalized_state/chain.rs#L160-L192
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/non_finalized_state/chain.rs#L155-L191
 ```
 
 The `MultiSet` matters: two distinct blocks can have the same final
@@ -225,8 +225,8 @@ multiple spends from the same pool.
 The two cases are encoded in the `AnchorVariant` trait so that the
 `Spend` struct can be reused for both shapes:
 
-```rust reference title="zebra-chain/src/sapling/spend.rs (AnchorVariant impls)"
-https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/spend.rs#L28-L60
+```rust reference title="zebra-chain/src/sapling/shielded_data.rs (AnchorVariant trait and impls)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/shielded_data.rs#L45-L67
 ```
 
 ### The Consensus Rule
@@ -237,7 +237,7 @@ treestate of *some earlier block on the same chain*. The check
 lives in the state crate:
 
 ```rust reference title="zebra-state/src/service/check/anchors.rs (sapling_orchard_anchors_refer_to_final_treestates)"
-https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/anchors.rs#L22-L60
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/anchors.rs#L20-L78
 ```
 
 The verifier looks up the anchor in the non-finalized chain's
@@ -261,7 +261,7 @@ for the rule live in [`zebra-state/src/service/check/tests/anchors.rs`](https://
   serialization will give a root that disagrees with `zcashd` or
   `librustzcash`. The regression surfaces as a refused transaction
   on mainnet that other nodes accept. Caught by the test vectors
-  in `zebra-chain/src/sapling/tests/` and the integration tests
+  in [`zebra-chain/src/sapling/tests/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/sapling/tests) and the integration tests
   that sync against checkpoints.
 - **Allowing a non-final anchor.** If the consensus check accepts
   an anchor that is the *intermediate* treestate after some but
@@ -322,7 +322,7 @@ Two systems in use:
    proofs, and the Sprout JoinSplit proof (BCTV14 originally, swapped
    to Groth16 in Sapling-on-BCTV14 vs Sapling-on-Groth16 era; modern
    Sprout proofs are Groth16). Verifier at
-   `zebra-consensus/src/primitives/groth16/`. Proving keys come from
+   [`zebra-consensus/src/primitives/groth16/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/groth16). Proving keys come from
    the Sapling and Sprout MPC ceremonies; verifying keys are
    compiled-in constants. Provided by `bellman` (proving) and
    `bls12_381` (curve).
@@ -409,7 +409,7 @@ zk-SNARK verifying keys are needed at runtime. For Sapling and Sprout
 they are constants compiled in via `zcash_proofs`. There are
 parameter files that historical zcashd versions downloaded; modern
 Zebra and zcashd embed them. See the user-facing doc
-`book/src/user/parameters.md` for the user-facing story.
+[`book/src/user/parameters.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/parameters.md) for the user-facing story.
 
 ## What to Read Alongside
 
@@ -426,7 +426,7 @@ Zebra and zcashd embed them. See the user-facing doc
 
 1. trace a v5 transaction from the wire to the point where a Halo2
    proof is verified. List every crate it touches.
-2. open `zebra-consensus/src/primitives/groth16/` and answer: what
+2. open [`zebra-consensus/src/primitives/groth16/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/groth16) and answer: what
    is a "batch", how is it formed, and what happens when it fails?
 3. read [`zebra-script/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs) end to end. Identify every place
    where a sighash decision would differ between v4 and v5+.

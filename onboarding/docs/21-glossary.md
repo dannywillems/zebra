@@ -238,7 +238,7 @@ MPC ceremony. Sapling's trusted setup was built on top of this.
 is RedDSA over Jubjub; RedPallas is RedDSA over Pallas.
 
 **Regtest**: a private testnet mode for local testing. Documented
-at `book/src/user/regtest.md`.
+at [`book/src/user/regtest.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/regtest.md).
 
 ## S
 
@@ -349,7 +349,7 @@ assets in the Orchard pool. Likely in NU7.
 
 - the Zcash Protocol Specification glossary (section 2).
 - the ZIP repository, README.
-- `book/src/user/` for user-facing terminology.
+- [`book/src/user/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/book/src/user) for user-facing terminology.
 
 ## Spec Pointers
 

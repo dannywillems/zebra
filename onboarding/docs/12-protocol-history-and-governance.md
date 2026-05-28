@@ -67,7 +67,7 @@ need, or a governance decision drives the upgrade.
 - NU6: funding mechanism update.
 
 For every upgrade, the activation height is in
-`zebra-chain/src/parameters/network/` constants and the variant is
+[`zebra-chain/src/parameters/network/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/parameters/network) constants and the variant is
 in `network_upgrade.rs`.
 
 ## The Actors
@@ -161,7 +161,7 @@ operators want compatibility.
 - 13-reading-the-spec.md (how to use the protocol spec).
 - 14-zips-and-ceremonies.md (the ZIP process up close).
 - 15-nu7-and-future-work.md (current upgrades).
-- `book/src/dev/ecc-updates.md` (the Zebra-side process for
+- [`book/src/dev/ecc-updates.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/ecc-updates.md) (the Zebra-side process for
   updating ECC dependencies).
 
 ## Spec Pointers

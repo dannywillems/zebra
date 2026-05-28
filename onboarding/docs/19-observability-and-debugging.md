@@ -20,13 +20,13 @@ structured fields; every event carries a level and a target.
 
 ### Log Levels and Filters
 
-Defaults (per `zebrad/src/lib.rs`): the binary ignores `debug` and
+Defaults (per [`zebrad/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebrad/src/lib.rs)): the binary ignores `debug` and
 `trace` logs in release builds, courtesy of compile-time tracing
 filters. To enable them, set the environment variable
 `ZEBRA_LOG_LEVEL=debug` or use the runtime filter API when the
 `filter-reload` feature is on.
 
-The convention from `AGENTS.md`: production log level must be
+The convention from [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md): production log level must be
 `info` or above. Never run mainnet at `debug` level.
 
 ### Span Structure
@@ -43,7 +43,7 @@ existing pattern is consistent.
 
 ### Tracing Sinks
 
-`zebrad/src/components/tracing/` configures the output:
+[`zebrad/src/components/tracing/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad/src/components/tracing) configures the output:
 
 - stdout / stderr by default.
 - file output via `tracing.log_file` config.
@@ -78,7 +78,7 @@ prefixes (per `AGENTS.md`):
 
 Behind the `prometheus` Cargo feature, Zebra exposes a `/metrics`
 endpoint. The metrics list is documented at
-`book/src/user/metrics.md`.
+[`book/src/user/metrics.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/metrics.md).
 
 For local development: enable `prometheus`, spin up Prometheus and
 Grafana via the `docker-compose.metric.yml` (or whatever the
@@ -168,13 +168,13 @@ Recent commit `d4cd662c7` adds a startup warning if Linux TCP
 `net.ipv4.tcp_slow_start_after_idle` is on. This is a real
 operational issue (sync stalls after idle periods because TCP
 windows reset). The warning is in
-`zebrad/src/components/`. If you see this in operator logs, the
+[`zebrad/src/components/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad/src/components). If you see this in operator logs, the
 fix is `sysctl -w net.ipv4.tcp_slow_start_after_idle=0`.
 
 ## The "Health" Endpoint
 
 The `health/` component exposes liveness and readiness HTTP probes.
-Documented at `book/src/user/health.md`. Used by Kubernetes
+Documented at [`book/src/user/health.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/health.md). Used by Kubernetes
 deployments to know when to restart Zebra.
 
 ## A Reference Debugging Kit
@@ -191,10 +191,10 @@ The toolset to have ready before day one of operations work:
 
 ## See Also
 
-- `book/src/user/tracing.md`, `book/src/user/metrics.md`,
-  `book/src/user/health.md`.
-- `book/src/dev/profiling-and-benchmarking.md`.
-- `AGENTS.md` on logging hygiene and metric naming.
+- [`book/src/user/tracing.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/tracing.md), [`book/src/user/metrics.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/metrics.md),
+  [`book/src/user/health.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/health.md).
+- [`book/src/dev/profiling-and-benchmarking.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/profiling-and-benchmarking.md).
+- [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md) on logging hygiene and metric naming.
 
 ## Spec Pointers
 

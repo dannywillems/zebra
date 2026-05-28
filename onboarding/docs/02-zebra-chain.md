@@ -26,7 +26,7 @@ declared with `recursion_limit = "256"` because of bitvec macros.
 
 ## Module Tour
 
-Each item below maps to a directory under `zebra-chain/src/`.
+Each item below maps to a directory under [`zebra-chain/src/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src).
 
 ### Serialization
 
@@ -39,7 +39,7 @@ first; almost every type implements `ZcashSerialize`/
 Important: any deserialization that consumes attacker-controlled bytes
 must use `TrustedPreallocate` (also defined in this module) to bound
 allocation size. This is a security invariant called out in
-`AGENTS.md`.
+[`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md).
 
 ### Parameters
 
@@ -134,7 +134,7 @@ inputs are.
 - `address.rs`: unified types and routing.
 - `byte_array.rs`: helpers.
 - `proofs/`: opaque proof byte types (Groth16, Halo2). The verifier
-  for these lives in `zebra-consensus/src/primitives/`.
+  for these lives in [`zebra-consensus/src/primitives/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives).
 - `zcash_history/`: chain history tree ([ZIP-221](https://zips.z.cash/zip-0221)).
 - `zcash_note_encryption.rs`: note encryption wrapper around the
   `zcash_note_encryption` crate.

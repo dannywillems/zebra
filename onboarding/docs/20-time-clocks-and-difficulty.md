@@ -39,7 +39,7 @@ For each new block, the block timestamp must satisfy:
   can decrease, as long as MTP increases.
 
 Implementation:
-- past bound is checked in `zebra-state/src/service/check/`.
+- past bound is checked in [`zebra-state/src/service/check/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state/src/service/check).
 - future bound is checked at block reception, in
   [`zebra-consensus`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus).
 
@@ -78,7 +78,7 @@ target by their ratio, clamped to the up/down bounds.
 Implementation:
 - algorithm in [`zebra-state/src/service/check/difficulty.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/difficulty.rs) (or
   similar; verify in the current tree).
-- relevant constants in `zebra-chain/src/work/difficulty/`.
+- relevant constants in [`zebra-chain/src/work/difficulty/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/work/difficulty).
 - the RFC discussion is in `book/src/dev/rfcs/0006-contextual-
   difficulty.md`.
 
@@ -157,7 +157,7 @@ clock offset metric and alert operators to large drift.
 
 ## See Also
 
-- `book/src/dev/rfcs/0006-contextual-difficulty.md`.
+- [`book/src/dev/rfcs/0006-contextual-difficulty.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/rfcs/0006-contextual-difficulty.md).
 - [ZIP-203](https://zips.z.cash/zip-0203) (transaction expiry).
 - [ZIP-208](https://zips.z.cash/zip-0208) (Blossom block time changes).
 - Bitcoin time-warp literature for context.

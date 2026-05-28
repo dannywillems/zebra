@@ -17,7 +17,7 @@ these three surfaces.
 
 ## The Mempool
 
-The spec is at `book/src/dev/mempool-specification.md`. Read it
+The spec is at [`book/src/dev/mempool-specification.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/mempool-specification.md). Read it
 end to end before reading this file.
 
 ### Invariants the Mempool Must Maintain
@@ -67,8 +67,8 @@ the mempool.
 
 ### Mempool Sources
 
-In Zebra, the mempool is split between `zebra-rpc/src/queue/` (the
-RPC-facing queue) and `zebrad/src/components/mempool/` (the
+In Zebra, the mempool is split between [`zebra-rpc/src/queue/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc/src/queue) (the
+RPC-facing queue) and [`zebrad/src/components/mempool/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad/src/components/mempool) (the
 component running the rules). The split exists because the queue
 needs to be reachable from the RPC handlers, while the mempool
 proper is owned by the orchestrator.
@@ -121,7 +121,7 @@ Coinbase transactions carry:
 - the miner's payout (the residual).
 
 The funding-stream addresses and percentages are in
-`zebra-chain/src/parameters/`. Any miss in the coinbase math
+[`zebra-chain/src/parameters/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain/src/parameters). Any miss in the coinbase math
 produces an invalid block.
 
 ### The Internal-miner Feature
@@ -203,9 +203,9 @@ before they show up as consensus incidents.
 ## See Also
 
 - 09-threat-model.md (mempool DoS, mining-pool adversaries).
-- `book/src/dev/mempool-specification.md`.
-- `book/src/dev/diagrams/mempool-architecture.md`.
-- `book/src/user/mining.md` and `book/src/user/mining-docker.md`.
+- [`book/src/dev/mempool-specification.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/mempool-specification.md).
+- [`book/src/dev/diagrams/mempool-architecture.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/diagrams/mempool-architecture.md).
+- [`book/src/user/mining.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/mining.md) and [`book/src/user/mining-docker.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/user/mining-docker.md).
 - the `lightwalletd`, `zaino`, and `zallet` repositories.
 
 ## Spec Pointers

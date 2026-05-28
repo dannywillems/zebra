@@ -93,7 +93,7 @@ Lessons:
 
 ## Libzcash_script CVE GHSA-gq4h-3grw-2rhv
 
-Cited in `Cargo.toml` lines 290 to 302. The advisory reproduces
+Cited in [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) lines 290 to 302. The advisory reproduces
 reliably only when the bundled libzcash_script C++ code is compiled
 in *release* mode because it relies on a stack buffer not being
 zero-initialized (C++ debug-mode arrays are usually zeroed). The
@@ -171,7 +171,7 @@ recent incidents. The pattern is usually:
    operators re-sync.
 
 These are excellent reading material because the same patterns
-recur. The Zebra Book sections under `book/src/dev/diagrams/` and
+recur. The Zebra Book sections under [`book/src/dev/diagrams/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/book/src/dev/diagrams) and
 the RFC index reference some of these.
 
 ## Ongoing Audits
@@ -195,7 +195,7 @@ Done once, the threat model in file 09 becomes second nature.
 
 ## See Also
 
-- `SECURITY.md` at the repo root.
+- [`SECURITY.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/SECURITY.md) at the repo root.
 - 09-threat-model.md.
 - 11-cryptographic-correctness-practices.md.
 - ECC and ZF security advisories on GitHub.

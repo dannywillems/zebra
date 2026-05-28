@@ -13,14 +13,14 @@ This is the map. You return here every time you need to remember which crate own
 ## The 12 Crates
 
 Zebra is a single Cargo workspace. The canonical members list lives
-in `Cargo.toml` at the repo root, pinned here to `v4.4.1`:
+in [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) at the repo root, pinned here to `v4.4.1`:
 
 ```toml reference title="Cargo.toml"
 https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml#L1-L20
 ```
 
 `zebra-grpc` and `zebra-scan` directories exist on disk but are not
-in the workspace; check `Cargo.toml` for the current canonical list
+in the workspace; check [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) for the current canonical list
 before assuming anything.
 
 ## The Dependency Graph
@@ -99,7 +99,7 @@ Three rules to remember:
 
 ## The Workspace Cargo File
 
-`Cargo.toml` at the repo root pins workspace-wide dependency versions
+[`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) at the repo root pins workspace-wide dependency versions
 and lint policy. Read it once end to end:
 
 - `workspace.dependencies` (lines 31 to 174) is the dependency
@@ -128,28 +128,32 @@ and lint policy. Read it once end to end:
 
 From the README:
 
-- Rust toolchain. `rust-toolchain.toml` pins `channel = "stable"`.
-  Per `Cargo.toml`, the workspace MSRV is 1.85.1 for libraries and
-  the [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) binary itself targets 1.91 per `AGENTS.md`.
+- Rust toolchain. [`rust-toolchain.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/rust-toolchain.toml) pins `channel = "stable"`.
+  Per [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml), the workspace MSRV is 1.85.1 for libraries and
+  the [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad) binary itself targets 1.91 per [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md).
 - libclang (for bindgen, used by RocksDB).
 - a C++ compiler (for `libzcash_script` and RocksDB).
 - protoc, optional, only required for some gRPC paths.
 
 ## Build, Test, Lint Commands
 
-The canonical CI sequence is documented in `AGENTS.md`:
+The canonical CI sequence is documented in [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md). The
+commands live in a runnable script under this site's source tree
+and are embedded here verbatim, so the docs cannot drift from what
+actually runs:
 
-```
-cargo build --workspace --locked
-cargo fmt --all -- --check
-cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
+```bash reference title="onboarding/scripts/ci-sequence.sh"
+https://github.com/dannywillems/zebra/blob/onboarding/onboarding/scripts/ci-sequence.sh
 ```
 
 For broader coverage, the CI uses nextest profiles. See
-`.config/nextest.toml` for the profile list. The integration sync
+[`.config/nextest.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.config/nextest.toml) for the profile list. The integration sync
 profiles (`sync-large-checkpoints-empty`, etc.) drive a real chain
-sync against testnet and are the most realistic end-to-end test.
+sync against testnet and are the most realistic end-to-end test:
+
+```bash reference title="onboarding/scripts/nextest-sync-large-checkpoints.sh"
+https://github.com/dannywillems/zebra/blob/onboarding/onboarding/scripts/nextest-sync-large-checkpoints.sh
+```
 
 ## Feature Flags Worth Knowing
 
@@ -172,12 +176,12 @@ From [`zebrad/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/
 
 For the [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state) crate specifically, the `proptest-impl` and
 `indexer` features unlock additional public re-exports
-(`zebra-state/src/lib.rs`).
+([`zebra-state/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/lib.rs)).
 
 ## Docs and Book
 
-- `book/src/SUMMARY.md` is the table of contents for the Zebra Book.
-  The developer section under `book/src/dev/` contains the RFCs that
+- [`book/src/SUMMARY.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/SUMMARY.md) is the table of contents for the Zebra Book.
+  The developer section under [`book/src/dev/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/book/src/dev) contains the RFCs that
   document Zebra's architecture decisions. Read all RFCs at least
   once.
 - `docs/decisions/` holds long-form ADR-style decision logs.
@@ -191,17 +195,17 @@ For the [`zebra-state`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zeb
 - explain why [`zebra-chain`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-chain) is sync-only.
 - explain why [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) and [`zebra-node-services`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-node-services) exist as
   separate crates.
-- locate any cryptographic dependency in `Cargo.toml`.
+- locate any cryptographic dependency in [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml).
 - run the full CI sequence locally.
 
 ## Spec Pointers
 
-- `Cargo.toml` at the repo root: workspace declaration and the canonical crate list.
-- `book/src/SUMMARY.md`: the upstream Zebra book; treat it as the navigable index for design docs.
+- [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) at the repo root: workspace declaration and the canonical crate list.
+- [`book/src/SUMMARY.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/SUMMARY.md): the upstream Zebra book; treat it as the navigable index for design docs.
 - `.github/workflows/`: the CI graph that translates the local commands in this chapter to the gates that block merges upstream.
 
 ## Exercises
 
-1. Open `Cargo.toml` and list every workspace member that is *not* declared here but exists on disk (hint: there are at least two). Explain why each is excluded.
+1. Open [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) and list every workspace member that is *not* declared here but exists on disk (hint: there are at least two). Explain why each is excluded.
 2. Run `cargo test -p zebra-chain block::serialize::tests::block_test_vectors` and identify which test vectors are loaded. Cite the file and line.
 3. Add a [`zebra-script`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-script) test that fails on purpose (e.g. assert false). Confirm `cargo test --workspace` catches it. Revert.

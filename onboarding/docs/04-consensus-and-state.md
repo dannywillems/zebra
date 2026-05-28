@@ -26,16 +26,21 @@ straight from the module-level doc in [`zebra-consensus/src/lib.rs`](https://git
 
 ## zebra-consensus
 
-The crate exposes a small public surface (`zebra-consensus/src/lib.rs`):
+The crate exposes a small public surface ([`zebra-consensus/src/lib.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/lib.rs)):
 
-- `block::{Request, VerifyBlockError, MAX_BLOCK_SIGOPS}`,
-- `checkpoint::{VerifyCheckpointError, MAX_CHECKPOINT_BYTE_COUNT,
-  MAX_CHECKPOINT_HEIGHT_GAP}`,
-- `config::Config`,
-- `error::BlockError`,
-- `primitives::{ed25519, groth16, halo2, redjubjub, redpallas}`,
-- `router::RouterError`,
-- `transaction`.
+- [`block`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/block): `Request`, `VerifyBlockError`, `MAX_BLOCK_SIGOPS`.
+- [`checkpoint`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/checkpoint): `VerifyCheckpointError`,
+  `MAX_CHECKPOINT_BYTE_COUNT`, `MAX_CHECKPOINT_HEIGHT_GAP`.
+- [`config`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/config.rs): `Config`.
+- [`error`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/error.rs): `BlockError`.
+- [`primitives`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives):
+  [`ed25519`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/ed25519),
+  [`groth16`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/groth16),
+  [`halo2`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-consensus/src/primitives/halo2.rs),
+  [`redjubjub`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/redjubjub),
+  [`redpallas`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/primitives/redpallas).
+- [`router`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/router): `RouterError`.
+- [`transaction`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-consensus/src/transaction).
 
 ### The Router
 
@@ -166,7 +171,7 @@ encoding live in `disk_format/`. Read these in order:
 There is a schema version constant in
 [`zebra-state/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/constants.rs). Any change to disk layout requires
 bumping it and writing migration code. The dev book has a chapter on
-this: `book/src/dev/state-db-upgrades.md`.
+this: [`book/src/dev/state-db-upgrades.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/state-db-upgrades.md).
 
 ### Storage Layout: What Is on Disk
 
@@ -192,7 +197,7 @@ In practice, on Linux the path is:
 ```
 
 with `<MAJOR>` the current major database format version (constant
-in `zebra-state/src/constants.rs`) and `<network>` one of `mainnet`,
+in [`zebra-state/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/constants.rs)) and `<network>` one of `mainnet`,
 `testnet`, `regtest`. The format version is incremented on any
 breaking schema change. Forgetting to bump it is the canonical way
 to corrupt a user's database on upgrade.
@@ -307,8 +312,8 @@ Three options, from least to most invasive.
 1. **Read Zebra's own startup logs.** At debug level the disk_db
    wrapper emits column family sizes for every CF on the disk:
 
-   ```bash
-   RUST_LOG=zebra_state=debug zebrad start 2>&1 | grep "Column families and sizes"
+   ```bash reference title="onboarding/scripts/inspect-state-logs.sh"
+   https://github.com/dannywillems/zebra/blob/onboarding/onboarding/scripts/inspect-state-logs.sh
    ```
 
    This is the fastest way to confirm the database opened, the
@@ -330,19 +335,11 @@ Three options, from least to most invasive.
 3. **Drop to `ldb`, the RocksDB shell.** `ldb` is the RocksDB CLI;
    on Debian and Ubuntu it ships in the `rocksdb-tools` package.
    It must be the same major version as the RocksDB Zebra is
-   linked against (check `Cargo.lock` for the `rocksdb` crate).
+   linked against (check [`Cargo.lock`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.lock) for the `rocksdb` crate).
    With Zebra stopped:
 
-   ```bash
-   # List column families.
-   ldb --db=~/.cache/zebra/state/v27/mainnet/ list_column_families
-
-   # Iterate one column family. Keys and values are raw bytes (the
-   # `IntoDisk` / `FromDisk` encoding), so add --hex to make sense of
-   # the output.
-   ldb --db=~/.cache/zebra/state/v27/mainnet/ \
-       --column_family=tip_chain_value_pool \
-       scan --hex
+   ```bash reference title="onboarding/scripts/inspect-state-ldb.sh"
+   https://github.com/dannywillems/zebra/blob/onboarding/onboarding/scripts/inspect-state-ldb.sh
    ```
 
    Decoding key and value bytes requires the matching
@@ -360,7 +357,7 @@ inspection is either "read the logs" or "open RocksDB directly".
   change in `disk_format/`. The on-disk bytes diverge from what the
   reader expects and a silent corruption ships in the next release.
   The constant is at [`zebra-state/src/constants.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/constants.rs); the upgrade
-  procedure is in `book/src/dev/state-db-upgrades.md`.
+  procedure is in [`book/src/dev/state-db-upgrades.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/state-db-upgrades.md).
 - **Treating an indexing column as consensus-critical.** If a
   consensus check starts reading from `tx_loc_by_hash` or any other
   indexing family, the chain is no longer reproducible from the
@@ -405,7 +402,7 @@ a Stream.
 
 This is the right place to learn the Zebra pattern of "use `watch`
 channels for shared async state, never `Mutex`". This is also called
-out in `AGENTS.md`.
+out in [`AGENTS.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/AGENTS.md).
 
 ## The `MAX_BLOCK_REORG_HEIGHT` Constant
 
@@ -441,13 +438,13 @@ timeout, called out at the top of [`zebra-state/src/lib.rs`](https://github.com/
 
 ## Suggested Exercises
 
-1. open the RFCs under `book/src/dev/rfcs/` and read them in order
+1. open the RFCs under [`book/src/dev/rfcs/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/book/src/dev/rfcs) and read them in order
    0001 to 0012. They are short and they are the canonical
    architecture document for the state and consensus crates.
 2. trace a single block from "received over P2P" to "written to
    RocksDB". Which crate does what at each step? Which queues hold
    it?
-3. open `zebra-state/src/service/finalized_state/disk_format/` and
+3. open [`zebra-state/src/service/finalized_state/disk_format/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-state/src/service/finalized_state/disk_format) and
    list every column family. For each, what is the key and what is
    the value?
 4. given a 101-block reorg attempt, where exactly is it rejected?

@@ -151,7 +151,7 @@ Zebra targets the JSON-RPC of `zcashd` so that mining pools and
 existing wallets (lightwalletd) can use Zebra without change. Every
 method's wire format and error code is meant to match zcashd.
 Compatibility tests exist under
-`zebra-rpc/src/tests/`; integration tests run a real `lightwalletd`
+[`zebra-rpc/src/tests/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc/src/tests); integration tests run a real `lightwalletd`
 against a syncing [`zebrad`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad).
 
 ### The Indexer
@@ -163,9 +163,9 @@ Zaino consume.
 
 ## The Mempool
 
-The mempool is split between `zebrad/src/components/mempool/` (the
-orchestration) and `zebra-rpc/src/queue/` (the RPC-side queue). The
-mempool spec lives at `book/src/dev/mempool-specification.md`; read
+The mempool is split between [`zebrad/src/components/mempool/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebrad/src/components/mempool) (the
+orchestration) and [`zebra-rpc/src/queue/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc/src/queue) (the RPC-side queue). The
+mempool spec lives at [`book/src/dev/mempool-specification.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/mempool-specification.md); read
 it before reading the code.
 
 Key consensus rules to know:
@@ -184,14 +184,14 @@ Key consensus rules to know:
    request, a response, or unsolicited.
 2. follow a `getblocks` request from a peer. Which task receives
    it, which service answers it, which response message goes out?
-3. open `zebra-rpc/src/methods/types/get_block_template/` and
+3. open [`zebra-rpc/src/methods/types/get_block_template/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-rpc/src/methods/types/get_block_template) and
    sketch the full lifecycle of a `getblocktemplate` long-poll.
 4. find every place where `MAX_TX_INV_IN_SENT_MESSAGE` is used. Why
    is there a limit, and why this number?
 
 ## Spec Pointers
 
-- Bitcoin/Zcash P2P protocol: `zebra-network/src/protocol/`.
+- Bitcoin/Zcash P2P protocol: [`zebra-network/src/protocol/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/zebra-network/src/protocol).
 - zcashd RPC reference for the methods Zebra must emulate.
 - `TrustedPreallocate` discipline: required reading before allocating from any external byte stream.
 

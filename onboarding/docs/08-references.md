@@ -23,14 +23,14 @@ which onboarding file they support.
   `book/src/`.
 - Zebra internal API docs (rustdoc on the main branch):
   https://zebra.zfnd.org/internal.
-- Zebra rfcs: `book/src/dev/rfcs/` 0001 through 0012.
+- Zebra rfcs: [`book/src/dev/rfcs/`](https://github.com/ZcashFoundation/zebra/tree/v4.4.1/book/src/dev/rfcs) 0001 through 0012.
 
 ## File 01 (Architecture)
 
-- `Cargo.toml` workspace root.
-- `book/src/dev/overview.md`.
-- `book/src/dev/diagrams/zebra-network.md` and
-  `book/src/dev/diagrams/mempool-architecture.md`.
+- [`Cargo.toml`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml) workspace root.
+- [`book/src/dev/overview.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/overview.md).
+- [`book/src/dev/diagrams/zebra-network.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/diagrams/zebra-network.md) and
+  [`book/src/dev/diagrams/mempool-architecture.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/diagrams/mempool-architecture.md).
 
 ## File 02 (zebra-chain)
 
@@ -84,7 +84,7 @@ which onboarding file they support.
 - [ZIP-239](https://zips.z.cash/zip-0239) for Zcash-specific block sync semantics.
 - Lightwalletd protocol: https://github.com/zcash/lightwalletd.
 - zcashd JSON-RPC reference (zcashd source `src/rpc/`).
-- Zebra mempool spec: `book/src/dev/mempool-specification.md`.
+- Zebra mempool spec: [`book/src/dev/mempool-specification.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/mempool-specification.md).
 
 ## File 06 (zebrad and Tower)
 
@@ -99,9 +99,9 @@ which onboarding file they support.
 
 - nextest book: https://nexte.st/.
 - proptest book: https://altsysrq.github.io/proptest-book/.
-- `.github/workflows/README.md`.
-- `book/src/dev/continuous-integration.md` and
-  `book/src/dev/continuous-delivery.md`.
+- [`.github/workflows/README.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/.github/workflows/README.md).
+- [`book/src/dev/continuous-integration.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/continuous-integration.md) and
+  [`book/src/dev/continuous-delivery.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/book/src/dev/continuous-delivery.md).
 
 ## People and Channels
 
