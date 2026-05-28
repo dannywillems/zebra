@@ -1,6 +1,16 @@
-# 06. zebrad and the tower pattern
+---
+sidebar_position: 6
+title: "zebrad and the Tower Pattern"
+description: "How the binary wires services together via Tower, backpressure, and structured shutdown."
+---
 
-## tower in three sentences
+# zebrad and the Tower Pattern
+
+## Why This Chapter Exists
+
+`zebrad` is the binary. It does almost no logic itself; it wires Tower services into a graph. Until you can read a `tower::Service` and know what `poll_ready` returning `Pending` means in this graph, the rest of the codebase reads as magic.
+
+## Tower in Three Sentences
 
 A `tower::Service<Request>` is an asynchronous function from
 `Request` to `Result<Response, Error>` with two extras: a
@@ -27,7 +37,7 @@ Two non-obvious rules from `AGENTS.md`:
   the original into a task makes the service unusable from the
   caller's site.
 
-## tower-batch-control
+## Tower-batch-control
 
 A middleware crate. Lives at `tower-batch-control/`. Used to batch
 many requests of one type so an inner service can verify them in one
@@ -51,7 +61,7 @@ Files to read:
   the batch.
 - `tower-batch-control/src/layer.rs`: the Tower `Layer` adapter.
 
-## tower-fallback
+## Tower-fallback
 
 Pairs naturally with `tower-batch-control`. When a batch fails as a
 whole (one bad item invalidates the whole batch), the fallback
@@ -65,7 +75,7 @@ primary, then fallback" semantics.
 
 The binary. Built on `abscissa`, a small CLI/application framework.
 
-### entry points
+### Entry Points
 
 `zebrad/src/bin/` holds the binary entry point. `zebrad/src/
 application.rs` wires the application: command parsing, config
@@ -75,7 +85,7 @@ subcommand: `start`, `generate` (config), `copy_state`,
 
 `start.rs` is the meat. It launches the components.
 
-### components
+### Components
 
 `zebrad/src/components/`:
 
@@ -105,7 +115,7 @@ to its peers and downstreams via channels or service clones, and
 shutdown is propagated through `oneshot` channels and graceful drop
 order.
 
-### config
+### Config
 
 `zebrad/src/config.rs` defines the top-level `ZebradConfig`. Sub-
 configs live in the relevant crates: `zebra-network::Config`,
@@ -117,7 +127,7 @@ A pattern called out in `AGENTS.md`: every config struct uses
 `#[serde(deny_unknown_fields, default)]` so unrecognized fields are
 errors but old configs remain valid as defaults fill in new fields.
 
-## the parallel verification RFC
+## The Parallel Verification RFC
 
 The single most important document for understanding the
 shape of Zebra's runtime is RFC 0002, "Parallel Verification", at
@@ -130,7 +140,7 @@ the state service. The state service queues requests until their
 dependencies are met. Combined with batched cryptography, this lets
 Zebra verify many blocks in flight.
 
-## suggested exercises
+## Suggested Exercises
 
 1. read RFC 0002 and 0004 in `book/src/dev/rfcs/`. Then open
    `zebrad/src/components/sync/` and find the place that turns "I
@@ -145,3 +155,14 @@ Zebra verify many blocks in flight.
 4. read `zebrad/src/components/mempool/` alongside the mempool spec.
    What is the difference between the "transaction queue" and the
    mempool?
+
+## Spec Pointers
+
+- [Tower documentation](https://docs.rs/tower/latest/tower/).
+- `tower-batch-control` and `tower-fallback` in this workspace: the project-specific Tower glue.
+
+## Exercises
+
+1. Find the entry point of `zebrad start` and list every service it constructs in order.
+2. Pick one service and trace where `poll_ready` is implemented. What backpressure does it expose?
+3. Add a metric (`zebrad.startup.duration_ms` or similar) that fires once at startup. Confirm it appears in `/metrics`.

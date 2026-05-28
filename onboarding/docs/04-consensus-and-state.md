@@ -1,4 +1,14 @@
-# 04. consensus and state
+---
+sidebar_position: 4
+title: "Consensus and State"
+description: "Checkpoint vs semantic verification, the finalized RocksDB store, the non-finalized fork forest, and rollback rules."
+---
+
+# Consensus and State
+
+## Why This Chapter Exists
+
+A consensus bug here splits the chain. The chapter is what separates "I know the format" (chapter 02) from "I can change a verification rule without breaking mainnet". You must leave knowing the difference between checkpoint verification, semantic verification, and what `ReadRequest` vs `Request` actually does in `zebra-state`.
 
 Verification in Zebra is split into three telescoping levels, taken
 straight from the module-level doc in `zebra-consensus/src/lib.rs`:
@@ -27,7 +37,7 @@ The crate exposes a small public surface (`zebra-consensus/src/lib.rs`):
 - `router::RouterError`,
 - `transaction`.
 
-### the router
+### The Router
 
 `router/` chooses between two verification paths depending on whether
 the block height is below the latest checkpoint or above it.
@@ -41,7 +51,7 @@ the block height is below the latest checkpoint or above it.
 Read `router/service_trait.rs` to see how the router exposes itself
 as a single Tower service.
 
-### checkpoint verification
+### Checkpoint Verification
 
 `checkpoint/` holds the checkpoint table (lifted from
 `zebra-chain::parameters::checkpoint`) and the checkpoint verifier.
@@ -57,7 +67,7 @@ There is a generator tool under `zebra-utils/` named
 `zebra-checkpoints` that builds the checkpoint table by walking an
 already-synced state.
 
-### block verification (full path)
+### Block Verification (Full Path)
 
 `block/check.rs` implements the per-block semantic checks: header
 checks, time bounds, difficulty target, coinbase rules, subsidy,
@@ -70,7 +80,7 @@ matches zcashd's `GetLegacySigOpCount + GetP2SHSigOpCount`. The
 matching code is in `zebra-script/src/lib.rs` (see `Sigops` trait
 and `p2sh_sigop_count`).
 
-### transaction verification
+### Transaction Verification
 
 `transaction/` implements the per-transaction semantic checks as a
 Tower service. The service:
@@ -92,7 +102,7 @@ Each spawned subtask is itself a Tower service call, batched by
 than zcashd at verification: every cryptographic check is batched and
 parallelized.
 
-### primitives (verifier services)
+### Primitives (Verifier Services)
 
 `primitives/` contains the verifier services for the cryptography
 listed in `03-cryptography.md`. Each follows the same pattern:
@@ -113,7 +123,7 @@ hold the signature verifiers.
 Spend the most time on these directories; they are where
 cryptographic correctness lives in Zebra proper.
 
-### script
+### Script
 
 `script/` is a thin Tower wrapper around `zebra-script`. It
 serializes script verifications so a single FFI call is in flight at
@@ -137,7 +147,7 @@ The state crate is split into:
 - `service/read/`: read-only operations.
 - `service/write.rs`: the single writer task.
 
-### finalized vs non-finalized
+### Finalized vs Non-finalized
 
 A block is "finalized" once it is at least `MAX_BLOCK_REORG_HEIGHT`
 (100) blocks below the tip. Below that depth, no reorg is permitted;
@@ -158,7 +168,7 @@ There is a schema version constant in
 bumping it and writing migration code. The dev book has a chapter on
 this: `book/src/dev/state-db-upgrades.md`.
 
-### non-finalized state
+### Non-finalized State
 
 `non_finalized_state/` stores forks as a tree of `Chain` objects.
 Each `Chain` is a sequence of blocks plus the deltas they cause
@@ -168,7 +178,7 @@ The crate documents the read/write split in
 `ReadRequest`. They are separate Tower services and only the read
 service is cheap to clone.
 
-### contextual verification
+### Contextual Verification
 
 `service/check/` implements the contextual checks: nullifier
 non-revealedness, anchor existence, UTXO presence, transparent
@@ -177,7 +187,7 @@ invariants (no pool may go negative). The relevant RFC is `book/
 src/dev/rfcs/0006-contextual-difficulty.md`. Value pool rules are in
 RFC 0012.
 
-### tip and watchers
+### Tip and Watchers
 
 `chain_tip/` exposes `LatestChainTip`, `ChainTipChange`, and
 `ChainTipSender`. These give other components a `Stream` of tip
@@ -189,7 +199,7 @@ This is the right place to learn the Zebra pattern of "use `watch`
 channels for shared async state, never `Mutex`". This is also called
 out in `AGENTS.md`.
 
-## the `MAX_BLOCK_REORG_HEIGHT` constant
+## The `MAX_BLOCK_REORG_HEIGHT` Constant
 
 100 blocks. Anything more than 100 blocks below the tip is final.
 Used by:
@@ -200,7 +210,7 @@ Used by:
 - the checkpoint generator (a checkpoint must be at least
   `MAX_BLOCK_REORG_HEIGHT` below tip).
 
-## the await UTXO pattern
+## The Await UTXO Pattern
 
 When verifying a transaction, the verifier may need a UTXO that has
 not yet been written to disk because its block is still being
@@ -221,7 +231,7 @@ timeout, called out at the top of `zebra-state/src/lib.rs`:
 > Otherwise, verification of out-of-order and invalid blocks can
 > hang indefinitely.
 
-## suggested exercises
+## Suggested Exercises
 
 1. open the RFCs under `book/src/dev/rfcs/` and read them in order
    0001 to 0012. They are short and they are the canonical
@@ -236,3 +246,15 @@ timeout, called out at the top of `zebra-state/src/lib.rs`:
 5. find the place where `MAX_BLOCK_SIGOPS` is checked. Now find
    every place in `zebra-script` that would contribute to that
    total.
+
+## Spec Pointers
+
+- Zcash protocol spec sections 3 (consensus rules) and 7.7 (block subsidy and reward).
+- ZIPs 200 to 226 cover the Sapling-to-NU5 consensus deltas.
+- `zebra-state/src/constants.rs`: the canonical database-format version.
+
+## Exercises
+
+1. Find one consensus rule in `zebra-consensus` that has a corresponding spec citation and confirm the citation matches the relevant section.
+2. Trace the path of a single block from `zebrad` to the finalized state. Name every Tower service it passes through.
+3. Add a debug log in the non-finalized state showing the depth at which a fork resolves. Run a regtest sync and confirm the log fires.

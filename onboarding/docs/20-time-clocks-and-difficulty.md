@@ -1,9 +1,19 @@
-# 20. time, clocks, and difficulty
+---
+sidebar_position: 20
+title: "Time, Clocks, and Difficulty Adjustment"
+description: "Median-time-past, future-time tolerance, the difficulty adjustment algorithm, and the clock-skew defences."
+---
+
+# Time, Clocks, and Difficulty Adjustment
+
+## Why This Chapter Exists
+
+Time-based attacks on consensus (false-time blocks, clock skew) are easy to get wrong. The chapter pins down median-time-past, future-time tolerance, and the difficulty adjustment algorithm so you can audit any time-touching PR.
 
 Consensus-critical time logic is consistently underrated as a bug
 source. This file is the survival guide.
 
-## three notions of time in zcash
+## Three Notions of Time in Zcash
 
 1. **block timestamp (header.time)**: a uint32 Unix timestamp in
    the block header. The miner chooses it, within consensus bounds.
@@ -17,7 +27,7 @@ source. This file is the survival guide.
 These three are *not* interchangeable. The consensus rules specify
 exactly which one applies to each check.
 
-## block timestamp consensus rules
+## Block Timestamp Consensus Rules
 
 For each new block, the block timestamp must satisfy:
 
@@ -33,7 +43,7 @@ Implementation:
 - future bound is checked at block reception, in
   `zebra-consensus`.
 
-## why MTP exists
+## Why MTP Exists
 
 A single miner can stamp a block 30 minutes in the future to bias
 difficulty downward (older "now" means more time passed, means
@@ -48,7 +58,7 @@ Used for:
   `OP_CHECKSEQUENCEVERIFY` (when in MTP mode).
 - lock-time evaluation for transactions.
 
-## difficulty adjustment
+## Difficulty Adjustment
 
 Zcash uses a per-block difficulty adjustment based on a rolling
 window. The relevant constants (per the spec):
@@ -72,7 +82,7 @@ Implementation:
 - the RFC discussion is in `book/src/dev/rfcs/0006-contextual-
   difficulty.md`.
 
-## time-warp considerations
+## Time-warp Considerations
 
 A time-warp attack tries to bias the difficulty algorithm by
 stamping blocks with carefully chosen timestamps. Bitcoin's
@@ -91,7 +101,7 @@ Things to verify when reviewing time-related code:
   mandates MTP.
 - the clamp is applied symmetrically (both up and down).
 
-## blossom changes
+## Blossom Changes
 
 Blossom (December 2019) halved `PoWTargetSpacing` from 150s to 75s
 and adjusted the founders' reward / subsidy schedule to match. The
@@ -102,7 +112,7 @@ height-dependent constant.
 When reviewing any subsidy or difficulty calculation, confirm the
 spacing is the post-Blossom value above the activation height.
 
-## transaction expiry
+## Transaction Expiry
 
 Transactions carry an `expiryHeight` field (since Overwinter,
 ZIP-203). A transaction is invalid if included in a block at a
@@ -112,7 +122,7 @@ meaning "no expiry").
 Implication for the mempool: entries are evicted when the tip height
 exceeds their `expiryHeight`. See file 18.
 
-## the network-adjusted-time clock
+## The Network-adjusted-time Clock
 
 `zebra-network` samples peer clock offsets during the `version`
 handshake. The local "now" is then median-adjusted. This is used
@@ -123,7 +133,7 @@ all running in a similar wrong-time configuration, the
 network-adjusted clock confirms the wrong time. Defense: monitor the
 clock offset metric and alert operators to large drift.
 
-## what to watch when porting time-related code
+## What to Watch When Porting Time-related Code
 
 - always specify which clock (MTP, header.time, network-adjusted)
   is being used.
@@ -134,7 +144,7 @@ clock offset metric and alert operators to large drift.
 - never store a chrono `DateTime<Utc>` for consensus-relevant data;
   use the integer Unix timestamp the spec specifies.
 
-## suggested exercises
+## Suggested Exercises
 
 1. find `header.time` in `zebra-chain/src/block/header.rs`. Where
    is it bounded above, and where is it bounded below?
@@ -145,9 +155,20 @@ clock offset metric and alert operators to large drift.
 4. find every use of `network-adjusted time` and confirm none of
    them feed into a consensus rule (only into reception filtering).
 
-## see also
+## See Also
 
 - `book/src/dev/rfcs/0006-contextual-difficulty.md`.
 - ZIP-203 (transaction expiry).
 - ZIP-208 (Blossom block time changes).
 - Bitcoin time-warp literature for context.
+
+## Spec Pointers
+
+- Zcash protocol spec section 7.6 (block header) and 7.7.5 (difficulty).
+- ZIP 208 (blossom timing rules).
+
+## Exercises
+
+1. Find the median-time-past implementation in `zebra-chain` and confirm the window length.
+2. Identify the difficulty-adjustment function and step through one example.
+3. Add a test that submits a block with `time = now + 3 hours` to verification and confirm it is rejected.

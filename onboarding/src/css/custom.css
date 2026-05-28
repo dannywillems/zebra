@@ -1,0 +1,74 @@
+/* Course palette: amber accent for the disclaimer bar, neutral content. */
+
+:root {
+  --ifm-color-primary: #b45309; /* amber 700 */
+  --ifm-color-primary-dark: #92400e;
+  --ifm-color-primary-darker: #78350f;
+  --ifm-color-primary-darkest: #451a03;
+  --ifm-color-primary-light: #d97706;
+  --ifm-color-primary-lighter: #f59e0b;
+  --ifm-color-primary-lightest: #fbbf24;
+  --ifm-code-font-size: 92%;
+  --docusaurus-highlighted-code-line-bg: rgba(180, 83, 9, 0.12);
+}
+
+[data-theme="dark"] {
+  --ifm-color-primary: #fbbf24;
+  --ifm-color-primary-dark: #f59e0b;
+  --ifm-color-primary-darker: #d97706;
+  --ifm-color-primary-darkest: #b45309;
+  --ifm-color-primary-light: #fcd34d;
+  --ifm-color-primary-lighter: #fde68a;
+  --ifm-color-primary-lightest: #fef3c7;
+  --docusaurus-highlighted-code-line-bg: rgba(251, 191, 36, 0.18);
+}
+
+/* Make the announcement bar stick to the top of the viewport. The disclaimer
+   must remain visible on long pages, otherwise readers forget the site is
+   auto-generated. The Docusaurus navbar (which is sticky by default) is
+   stacked below, with its top offset shifted by the bar height. */
+:root {
+  --course-announcement-height: 2.6rem;
+}
+
+div[class*="announcementBar_"] {
+  position: sticky;
+  top: 0;
+  z-index: calc(var(--ifm-z-index-fixed) + 1);
+  font-size: 0.95rem;
+  font-weight: 500;
+  min-height: var(--course-announcement-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Drop the navbar below the (now sticky) announcement bar so both stay
+   visible on scroll. Docusaurus sets `top: 0` on the navbar by default. */
+.navbar--fixed-top,
+.navbar {
+  top: var(--course-announcement-height);
+}
+
+/* Re-anchor the scroll target offset and the table-of-contents so that
+   in-page anchors do not land underneath the doubled sticky header. */
+:root {
+  --ifm-navbar-height: 3.75rem;
+  scroll-padding-top: calc(
+    var(--course-announcement-height) + var(--ifm-navbar-height)
+  );
+}
+
+.theme-doc-toc-desktop {
+  top: calc(
+    var(--course-announcement-height) + var(--ifm-navbar-height) + 1rem
+  );
+}
+
+/* KaTeX: keep math from drifting into the line spacing on long display
+   blocks. */
+.katex-display {
+  margin: 1.2em 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}

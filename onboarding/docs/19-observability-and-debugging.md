@@ -1,14 +1,24 @@
-# 19. observability and debugging
+---
+sidebar_position: 19
+title: "Observability and Debugging"
+description: "Tracing, metrics, log levels, and the runtime knobs that let you debug a stuck or forked node."
+---
+
+# Observability and Debugging
+
+## Why This Chapter Exists
+
+When a node stalls, you have minutes. The chapter is the list of knobs that buy you those minutes: log levels, trace spans, metrics, runtime flags.
 
 When something goes wrong in production, you have logs, metrics,
 and traces. This file is how to use them.
 
-## tracing
+## Tracing
 
 Zebra uses the `tracing` crate. Every span is annotated with
 structured fields; every event carries a level and a target.
 
-### log levels and filters
+### Log Levels and Filters
 
 Defaults (per `zebrad/src/lib.rs`): the binary ignores `debug` and
 `trace` logs in release builds, courtesy of compile-time tracing
@@ -19,7 +29,7 @@ filters. To enable them, set the environment variable
 The convention from `AGENTS.md`: production log level must be
 `info` or above. Never run mainnet at `debug` level.
 
-### span structure
+### Span Structure
 
 Spans correspond to operations. The important ones to know:
 
@@ -31,7 +41,7 @@ Spans correspond to operations. The important ones to know:
 Use `#[instrument(skip(large_arg))]` on instrumented functions; the
 existing pattern is consistent.
 
-### tracing sinks
+### Tracing Sinks
 
 `zebrad/src/components/tracing/` configures the output:
 
@@ -42,7 +52,7 @@ existing pattern is consistent.
 - flamegraph via the `flamegraph` feature.
 - tokio-console via the `tokio-console` feature.
 
-### reading a log
+### Reading a Log
 
 A useful pattern: when reproducing a bug, redirect the log to a
 file, then `grep` for the relevant block height or hash. The
@@ -51,7 +61,7 @@ structured-field format makes this easy: `grep 'height=1234567'`.
 For consensus mismatches, log both implementations at info-or-debug
 and `diff` the event sequences around the divergent height.
 
-## metrics
+## Metrics
 
 Metrics use dot-separated hierarchical names with established
 prefixes (per `AGENTS.md`):
@@ -64,7 +74,7 @@ prefixes (per `AGENTS.md`):
 - `zcash.chain.*`: chain-state metrics (tip height, value pool
   balances, etc.).
 
-### prometheus
+### Prometheus
 
 Behind the `prometheus` Cargo feature, Zebra exposes a `/metrics`
 endpoint. The metrics list is documented at
@@ -75,7 +85,7 @@ Grafana via the `docker-compose.metric.yml` (or whatever the
 current name) configuration in `docker/`, and watch a sync in real
 time.
 
-### key metrics to watch
+### Key Metrics to Watch
 
 - `state.queued_blocks.count`: backlog of out-of-order blocks. If
   this grows unbounded, sync has stalled.
@@ -87,7 +97,7 @@ time.
 - `tx::verify.duration`: per-tx verification cost. Spikes indicate
   pathological transactions or verifier batch failures.
 
-## tokio-console
+## Tokio-console
 
 With the `tokio-console` feature and the right compile flags
 (`book/src/dev/tokio-console.md`), you can attach `tokio-console` to
@@ -100,7 +110,7 @@ When to use:
 - you suspect a deadlock on a channel.
 - you want to see which task is hot.
 
-## flamegraph
+## Flamegraph
 
 With the `flamegraph` feature, Zebra records tracing spans into a
 flamegraph. Useful for finding CPU hotspots in verification.
@@ -108,7 +118,7 @@ flamegraph. Useful for finding CPU hotspots in verification.
 For lower-overhead profiling, `pprof` and `cargo flamegraph` work
 against an externally-running Zebra without re-compilation.
 
-## debugger usage
+## Debugger Usage
 
 Zebra is `panic = "abort"` in both dev and release profiles, so on
 panic the process dies. A debugger attached before the panic can
@@ -122,7 +132,7 @@ For async debugging:
 - conditional breakpoints on a specific block height or transaction
   hash localize quickly.
 
-## bisecting a regression
+## Bisecting a Regression
 
 Standard `git bisect`:
 
@@ -136,7 +146,7 @@ git bisect run cargo test -p zebra-consensus --features ... -- specific_test
 For consensus regressions, run the relevant nextest sync profile in
 the bisect script. This is slow but unambiguous.
 
-## bisecting a consensus mismatch
+## Bisecting a Consensus Mismatch
 
 When Zebra and zcashd diverge:
 
@@ -152,7 +162,7 @@ When Zebra and zcashd diverge:
 The `zebra-checkpoints` utility and the regtest setup help with
 the reproduction.
 
-## the slow-start-after-idle warning
+## The Slow-start-after-idle Warning
 
 Recent commit `d4cd662c7` adds a startup warning if Linux TCP
 `net.ipv4.tcp_slow_start_after_idle` is on. This is a real
@@ -161,13 +171,13 @@ windows reset). The warning is in
 `zebrad/src/components/`. If you see this in operator logs, the
 fix is `sysctl -w net.ipv4.tcp_slow_start_after_idle=0`.
 
-## the "health" endpoint
+## The "Health" Endpoint
 
 The `health/` component exposes liveness and readiness HTTP probes.
 Documented at `book/src/user/health.md`. Used by Kubernetes
 deployments to know when to restart Zebra.
 
-## a personal debugging kit
+## A Personal Debugging Kit
 
 What I would have ready before day one of operations work:
 
@@ -179,9 +189,20 @@ What I would have ready before day one of operations work:
   (https://github.com/zcash/zcash/blob/master/doc/release-notes/).
 - spec quick-lookup PDF open in a tab.
 
-## see also
+## See Also
 
 - `book/src/user/tracing.md`, `book/src/user/metrics.md`,
   `book/src/user/health.md`.
 - `book/src/dev/profiling-and-benchmarking.md`.
 - `AGENTS.md` on logging hygiene and metric naming.
+
+## Spec Pointers
+
+- [tracing](https://docs.rs/tracing/latest/tracing/) documentation.
+- `metrics` crate, used by `zebrad` for the Prometheus endpoint.
+
+## Exercises
+
+1. Run `RUST_LOG=zebra_state=debug zebrad start` and confirm the state crate logs are visible.
+2. Identify the metric that exposes the current chain height. Curl `/metrics` and read it.
+3. Find a long-running operation that is not currently traced. Add `#[instrument]` and confirm it appears.

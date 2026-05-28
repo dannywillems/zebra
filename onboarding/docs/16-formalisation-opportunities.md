@@ -1,4 +1,14 @@
-# 16. formalisation opportunities
+---
+sidebar_position: 16
+title: "Formalisation Opportunities"
+description: "Concrete places in the consensus rules and crypto layer where a formal proof would change the cost of audit."
+---
+
+# Formalisation Opportunities
+
+## Why This Chapter Exists
+
+Some of these rules are well-defined and would benefit from a Lean or Coq proof. Others are not. The chapter is opinionated: it lists what is ripe and what is not, with the reasoning.
 
 This file is specifically for you. Your prior Lean / Mathlib /
 CSLib autoformalisation work positions you to do high-leverage
@@ -6,7 +16,7 @@ formal verification on cryptographic specifications that are
 currently checked only by review and tests. This file maps the
 candidates.
 
-## why formalise
+## Why Formalise
 
 Zcash's privacy guarantees rest on the soundness of a small number
 of mathematical constructions and on the correctness of their byte-
@@ -19,11 +29,11 @@ Several pieces are not currently formalised anywhere. Your work
 could establish the first machine-checked specification of these
 constructions.
 
-## low-hanging targets (specifications)
+## Low-hanging Targets (Specifications)
 
 The following are pure math, well-scoped, and well-documented.
 
-### blake2 personal-string registry
+### blake2 Personal-string Registry
 
 A relational specification: every Zcash hash invocation maps to a
 specific 8-byte personal string and a specific input schema. A
@@ -35,7 +45,7 @@ References:
 - spec appendices: hash personalizations table.
 - `librustzcash` source: grep `Personal::`.
 
-### ZIP-244 transaction id and sighash
+### ZIP-244 Transaction Id and Sighash
 
 A purely deterministic, finitely-typed computation: given a
 transaction, compute a 32-byte digest. Recursive structure mirrors
@@ -51,7 +61,7 @@ Formalisation work:
 
 This is the most concrete, smallest, most useful first target.
 
-### canonical encoding (ZIP-216)
+### Canonical Encoding (ZIP-216)
 
 A round-trip property: for any byte string, `parse` then `encode`
 is identity, and `parse` rejects non-canonical inputs. Lean's
@@ -62,7 +72,7 @@ This generalizes: every consensus-critical encoding in Zcash has a
 round-trip property. Formalising a few of them establishes the
 pattern.
 
-### amount and value-balance arithmetic
+### Amount and Value-balance Arithmetic
 
 `zebra-chain/src/amount.rs` and `value_balance.rs` encode
 consensus-critical integer-arithmetic invariants. The type system
@@ -71,22 +81,22 @@ prove the type discipline correct.
 
 This is small, self-contained, and would catch real bugs.
 
-### difficulty adjustment
+### Difficulty Adjustment
 
 The PoW median-time-past difficulty adjustment is a deterministic
 function of the last `PoWAveragingWindow` blocks. Formalising the
 arithmetic over the rolling window would catch off-by-one errors
 that have caused testnet incidents in PoW chains.
 
-### history tree (ZIP-221)
+### History Tree (ZIP-221)
 
 An incremental MMR with explicit balance and root computation.
 Mathlib already has trees; a formalisation here is constructing the
 specific MMR shape and proving its concat / append operations.
 
-## medium-difficulty targets (algebraic constructions)
+## Medium-difficulty Targets (Algebraic Constructions)
 
-### pedersen and sinsemilla
+### Pedersen and Sinsemilla
 
 Both are committing hash functions over fixed bases. Formalising
 their algebraic properties (collision resistance under DLOG) is
@@ -96,7 +106,7 @@ construction precisely and prove it well-typed) is tractable.
 Mathlib has elliptic curve definitions; the bridge is to use them
 with the specific Jubjub or Pallas curves.
 
-### value commitments and binding signatures
+### Value Commitments and Binding Signatures
 
 The homomorphism: sum of value commitments equals commitment to
 sum, times generator. This is a one-line algebraic identity. Proving
@@ -104,9 +114,9 @@ it in Lean against the Mathlib elliptic curve abstractions is a
 clean exercise and demonstrates the binding-signature soundness
 argument.
 
-## hard targets (proof-system soundness)
+## Hard Targets (Proof-system Soundness)
 
-### groth16 verification equation
+### groth16 Verification Equation
 
 The pairing-product verification equation is the consensus-relevant
 side of Groth16. Formalising:
@@ -120,7 +130,7 @@ This intersects with existing work on the formal verification of
 SNARK verifiers (Lurk, snarkVM auditors, academic projects).
 Coordinate with anyone already working in this area.
 
-### halo2 IPA verifier
+### halo2 IPA Verifier
 
 The inner-product argument verifier is more complex but well-
 specified. The `halo2_proofs` codebase is the reference.
@@ -128,7 +138,7 @@ specified. The `halo2_proofs` codebase is the reference.
 A small first step: formalise the polynomial commitment scheme
 underlying Halo2 IPA and prove the binding property.
 
-## proving-system-adjacent work in the ecosystem
+## Proving-system-adjacent Work in the Ecosystem
 
 Check for existing formal work before duplicating:
 
@@ -141,7 +151,7 @@ Check for existing formal work before duplicating:
 
 Avoid restating existing work; instead, build on top of it.
 
-## tooling recommendations
+## Tooling Recommendations
 
 Given your stated preferences in `~/.claude/rules/lean.md`:
 
@@ -157,7 +167,7 @@ For round-trip property tests in Lean, the `decide` tactic over
 small concrete inputs is fast; for large inputs, prefer general
 proofs.
 
-## proposed concrete projects (pick one to start)
+## Proposed Concrete Projects (Pick One to Start)
 
 In rough order of impact-per-week:
 
@@ -175,7 +185,7 @@ In rough order of impact-per-week:
 6. anything Groth16 or Halo2 related. Multiple months; coordinate
    widely first.
 
-## how to use this
+## How to Use This
 
 After your first sync of mainnet (day one), pick item 1 above and
 spend a few hours sketching the Lean datatype. Drop the sketch into
@@ -183,9 +193,20 @@ a `notes/` directory in your own fork and present it on the next
 Zebra dev call. Even at the sketch stage this is a contribution
 that no one else is making.
 
-## see also
+## See Also
 
 - 11-cryptographic-correctness-practices.md (informal version of
   the same discipline).
 - `~/.claude/rules/lean.md` (your own Lean conventions).
 - the Mathlib FieldTheory and AlgebraicGeometry directories.
+
+## Spec Pointers
+
+- Mathlib4 modules listed in `~/.claude/rules/lean.md` for the relevant primitives.
+- The Zcash protocol spec, sections 3 and 5, for the rules most easily lifted to formal statements.
+
+## Exercises
+
+1. Pick one consensus rule and write a one-paragraph informal statement of the theorem you would prove about it.
+2. Search Mathlib for the smallest set of definitions you would need to encode that theorem.
+3. List one rule from the spec that is *not* a good formalisation target and explain why.

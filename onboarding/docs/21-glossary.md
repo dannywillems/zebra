@@ -1,4 +1,14 @@
-# 21. glossary
+---
+sidebar_position: 21
+title: "Glossary"
+description: "Domain abbreviations and protocol terms used throughout the course, with pointers to the file where each is defined."
+---
+
+# Glossary
+
+## Why This Chapter Exists
+
+A flat list of the domain abbreviations the codebase uses internally. Every entry should link to the file where the term is defined.
 
 Every term you will hear used as common knowledge in Zcash work,
 with a crisp definition and a pointer to where it lives. If you
@@ -335,8 +345,18 @@ proof system class to which Groth16 and Halo2 belong.
 **ZSA**: Zcash Shielded Assets. The proposal to support user-defined
 assets in the Orchard pool. Likely in NU7.
 
-## see also
+## See Also
 
 - the Zcash Protocol Specification glossary (section 2).
 - the ZIP repository, README.
 - `book/src/user/` for user-facing terminology.
+
+## Spec Pointers
+
+The body of this chapter is itself a reference; every term should point at the source that defines it.
+
+## Exercises
+
+1. Pick three terms in this glossary and confirm the linked file actually defines them.
+2. Find one term used in the codebase that is missing from this glossary. Add it.
+3. Identify one term in the protocol spec that is *not* used in Zebra source. Decide whether to include it.

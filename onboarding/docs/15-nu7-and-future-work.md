@@ -1,11 +1,21 @@
-# 15. nu7 and future work
+---
+sidebar_position: 15
+title: "NU7 and Future Work"
+description: "Scheduled and proposed network upgrades, what they touch in the codebase, and where to follow the discussion."
+---
+
+# NU7 and Future Work
+
+## Why This Chapter Exists
+
+If you contribute today, your code may have to survive NU7. Knowing what is coming tells you which parts of the codebase are about to move under your feet.
 
 This file dates fast. Treat it as a snapshot of the in-flight
 protocol work as of the file's writing date and verify each item on
 the `zcash/zips` repo, the Zcash Foundation forum, and Discord
 before relying on it.
 
-## what is "nu7"
+## What Is "nu7"
 
 NU7 is the next-major Zcash network upgrade after NU6 (active on
 mainnet since November 2024). NU6.1 is a smaller cleanup upgrade
@@ -21,12 +31,12 @@ Indicators of NU7 in this repo:
   `zebra-chain/src/parameters/network/constants.rs`. Activation
   heights for NU7 may be placeholders until governance ratifies.
 
-## candidate features
+## Candidate Features
 
 Items widely discussed for inclusion in NU7 or a follow-up upgrade.
 Each is a separate ZIP and may or may not actually land in NU7.
 
-### zsas (zcash shielded assets)
+### Zsas (Zcash Shielded Assets)
 
 A scheme for issuing and transferring user-defined assets in the
 Orchard shielded pool. The shielded asset framework extends the
@@ -40,7 +50,7 @@ What to read:
 - the QEDIT prototype work (the original implementation).
 - the `orchard-zsa` branch of the `orchard` crate.
 
-### crosslink
+### Crosslink
 
 A hybrid PoW-PoS construction proposed for adding finality to
 Zcash without abandoning Equihash mining. The PoS layer ratifies
@@ -52,7 +62,7 @@ What to read:
 - the Crosslink paper (Hopwood, et al.).
 - forum discussions on PoS migration.
 
-### transaction version bump (v6)
+### Transaction Version Bump (v6)
 
 NU7 may introduce a v6 transaction format to carry ZSA support,
 trailing metadata, or other features. Version bumps are
@@ -60,18 +70,18 @@ backward-incompatible at the consensus layer; expect
 implementation effort in `zebra-chain/src/transaction/` and the
 sighash code path.
 
-### lightclient and mempool ZIPs
+### Lightclient and Mempool ZIPs
 
 A handful of smaller ZIPs improving lightclient sync (block-data
 shape, treestate availability) and mempool admission rules (anti-DoS
 tweaks, fee tightening) are likely to land alongside NU7.
 
-### post-quantum exploration
+### Post-quantum Exploration
 
 Not in NU7, but expect to see early discussion of post-quantum
 migration paths.
 
-## status surfaces to monitor
+## Status Surfaces to Monitor
 
 - `zcash/zips` PR feed: most authoritative for what is being
   written.
@@ -84,7 +94,7 @@ migration paths.
 - the orchard, sapling-crypto, halo2 repos: for primitive-level
   changes.
 
-## how nu7 will land in zebra
+## How nu7 Will Land in Zebra
 
 Based on prior upgrades, the rough sequence:
 
@@ -102,7 +112,7 @@ Your likely role: cryptographic review of the implementing ZIP,
 contribution to the primitives crates (Orchard, sapling-crypto), and
 integration into Zebra.
 
-## things to do before NU7
+## Things to Do Before NU7
 
 - finish reading files 09 through 14 of this onboarding.
 - read every recently-activated ZIP (NU5 and NU6 sets) cover to
@@ -114,10 +124,21 @@ integration into Zebra.
   cross-implementation weekly) if invited; this is where compat
   conversations happen.
 
-## see also
+## See Also
 
 - 12-protocol-history-and-governance.md.
 - 14-zips-and-ceremonies.md.
 - `book/src/dev/ecc-updates.md` for the Zebra-side update process.
 - `zebra-chain/src/parameters/network_upgrade.rs` for the variants
   currently declared.
+
+## Spec Pointers
+
+- ZIPs labelled `draft` or `proposed` for upcoming upgrades.
+- The `nu7` branch or feature flag in the source, when present.
+
+## Exercises
+
+1. Identify one open ZIP intended for NU7 and find any in-progress code that references it.
+2. Read the upstream NU7 tracking issue and list the three biggest open items.
+3. Find one piece of dead code that an NU7 deprecation could remove. Propose a follow-up issue.

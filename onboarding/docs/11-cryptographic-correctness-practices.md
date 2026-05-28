@@ -1,11 +1,21 @@
-# 11. cryptographic correctness practices
+---
+sidebar_position: 11
+title: "Cryptographic Correctness Practices"
+description: "Constant-time discipline, test vectors, batch verification, and what the audit checklist actually checks."
+---
+
+# Cryptographic Correctness Practices
+
+## Why This Chapter Exists
+
+Zebra is not a crypto library, but it consumes them and gets the parts where it composes them wrong at its peril. This chapter is the checklist: constant-time discipline, batch verification, test vectors, malleability.
 
 The engineering discipline that turns mathematically correct
 cryptography into operationally correct cryptography. This file is
 the checklist you should mentally run through every time you review
 or write code that touches crypto.
 
-## constant-time discipline
+## Constant-time Discipline
 
 A constant-time operation runs in time independent of secret inputs.
 The threat is a remote attacker measuring response time to recover
@@ -37,7 +47,7 @@ Review checklist:
 - does this code use `==` on byte arrays containing secrets? (Use
   `subtle::ConstantTimeEq` instead.)
 
-## canonical encoding
+## Canonical Encoding
 
 ZIP-216 generalized: every consensus-critical encoding must have
 exactly one valid byte representation. Two encodings that decode to
@@ -63,7 +73,7 @@ Review checklist:
 - proptest: for any byte string, if it parses, it must round-trip
   back to itself.
 
-## signature and proof malleability
+## Signature and Proof Malleability
 
 Malleability is the ability to mutate a valid signature or proof
 into a different valid one for the same message.
@@ -90,7 +100,7 @@ Review checklist:
 - can two distinct signatures verify for the same (key, message)?
   If yes, document why this is acceptable here.
 
-## batch verification soundness
+## Batch Verification Soundness
 
 Batch verifiers reduce a set of n equations to a single equation
 using random linear combinations. They are sound under the bilinear
@@ -113,7 +123,7 @@ Review checklist:
 - is the failure mode "reject the batch and surface the bad item"
   rather than "reject everything in the batch silently"?
 
-## domain separation and personal strings
+## Domain Separation and Personal Strings
 
 Every BLAKE2 call in Zcash uses a personal string. Most call sites
 have a fixed personal string in the spec; some are parameterized
@@ -136,7 +146,7 @@ Review checklist:
 - map each to a spec section.
 - compare the bytes literally, not the constant name.
 
-## edge cases: identity, zero, small subgroup
+## Edge Cases: Identity, Zero, Small Subgroup
 
 Cryptographic operations have edge cases that are rarely covered by
 vector tests. Examples:
@@ -159,7 +169,7 @@ Review checklist:
 - proptest with biased generators that produce these cases more
   often than uniform.
 
-## randomness
+## Randomness
 
 - `rand::rngs::OsRng` for security-relevant randomness.
 - never `rand::thread_rng()` for nonces in cryptographic
@@ -173,7 +183,7 @@ Review checklist:
 - classify each as "ok to be predictable" or "must be unpredictable".
 - if "must be unpredictable", confirm `OsRng` or equivalent.
 
-## trusted setup assumptions
+## Trusted Setup Assumptions
 
 Sapling Groth16 verification is sound under the q-PKE assumption
 *given* the trusted setup was honest. If the MPC was fully
@@ -187,7 +197,7 @@ What this means for review:
 - when wrapping new shielded crypto, prefer schemes without trusted
   setup if a credible alternative exists.
 
-## the "spec is the source of truth" rule
+## The "Spec Is the Source of Truth" Rule
 
 When the spec and the code disagree, the spec wins. When the spec
 and the C++ reference implementation disagree, the spec wins, but
@@ -201,7 +211,7 @@ Concrete practice:
 - when you find a discrepancy, file an issue on the `zcash/zips`
   repo before changing code.
 
-## a review checklist you can paste into PR reviews
+## A Review Checklist You Can Paste Into PR Reviews
 
 ```
 - [ ] constant-time concerns documented for any secret-input code.
@@ -218,9 +228,21 @@ Concrete practice:
 - [ ] for any ported zcashd behavior, the C++ source line is linked.
 ```
 
-## see also
+## See Also
 
 - 09-threat-model.md.
 - 10-incidents-and-audits.md (every incident is a failure of one
   item on this checklist).
 - the Zcash Protocol Specification, sections 4 and 5.
+
+## Spec Pointers
+
+- [RFC 7748](https://datatracker.ietf.org/doc/html/rfc7748) for X25519 (used in note encryption).
+- [RFC 8032](https://datatracker.ietf.org/doc/html/rfc8032) for Ed25519 (where Zebra still consumes it).
+- Zcash spec section 5 for the primitives used by the protocol.
+
+## Exercises
+
+1. Find one place in Zebra where a secret-dependent branch could leak timing. Confirm it is gated by a constant-time primitive.
+2. Identify a test vector imported from the protocol spec and confirm it round-trips.
+3. Add a benchmark that exercises batch verification on a synthetic 100-signature workload. Compare against single-signature throughput.

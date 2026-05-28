@@ -1,16 +1,26 @@
-# 18. mempool, mining, and the wallet ecosystem
+---
+sidebar_position: 18
+title: "Mempool, Mining, and the Wallet Ecosystem"
+description: "What Zebra exposes for mempool, mining (Stratum/getblocktemplate), and the wallets that talk to it (Zaino, Zallet)."
+---
+
+# Mempool, Mining, and the Wallet Ecosystem
+
+## Why This Chapter Exists
+
+Zebra is a validator node. Wallets, miners, and explorers consume it. You must know where Zebra's responsibility ends and theirs begins, or you will accept PRs that drag those scopes into Zebra.
 
 The operational realities at the boundaries of the validator node.
 Even though Zebra is "only" a validator, every interaction with
 wallets, mining pools, indexers, and lightclients flows through
 these three surfaces.
 
-## the mempool
+## The Mempool
 
 The spec is at `book/src/dev/mempool-specification.md`. Read it
 end to end before reading this file.
 
-### invariants the mempool must maintain
+### Invariants the Mempool Must Maintain
 
 1. every transaction in the mempool must verify against the current
    chain tip context (anchor existence, nullifier non-revealedness,
@@ -25,7 +35,7 @@ end to end before reading this file.
 5. expiry: transactions with a height-based expiry past the current
    tip are evicted.
 
-### admission rules
+### Admission Rules
 
 A transaction is admitted to the mempool if it passes:
 
@@ -36,7 +46,7 @@ A transaction is admitted to the mempool if it passes:
   limits).
 - non-conflict with existing mempool entries.
 
-### ZIP-401 anti-DoS
+### ZIP-401 Anti-dos
 
 ZIP-401 defines the weight-based admission rules that bound mempool
 memory and CPU costs. Each transaction has a weight (a function of
@@ -44,7 +54,7 @@ size, sigops, proof count). The mempool maintains a total weight
 budget; when full, it evicts by lowest fee-per-weight. The exact
 formula is in the ZIP; verify against the current spec section.
 
-### eviction order
+### Eviction Order
 
 - expired transactions first.
 - transactions made invalid by a reorg next.
@@ -55,7 +65,7 @@ buffer in front of the mempool. New transactions arrive here from
 `sendrawtransaction` or peer gossip, batch-verify, then flush into
 the mempool.
 
-### mempool sources
+### Mempool Sources
 
 In Zebra, the mempool is split between `zebra-rpc/src/queue/` (the
 RPC-facing queue) and `zebrad/src/components/mempool/` (the
@@ -66,7 +76,7 @@ proper is owned by the orchestrator.
 The relevant diagram is at `book/src/dev/diagrams/
 mempool-architecture.md`.
 
-## mining and getblocktemplate
+## Mining and getblocktemplate
 
 Mining pools and miners interact with Zebra through JSON-RPC. The
 key methods:
@@ -75,7 +85,7 @@ key methods:
 - `submitblock`.
 - `getblocksubsidy`, `getmininginfo`, `getnetworkhashps`.
 
-### the getblocktemplate flow
+### The getblocktemplate Flow
 
 The full sequence, end to end:
 
@@ -100,7 +110,7 @@ The full sequence, end to end:
 The relevant code is in `zebra-rpc/src/methods/types/
 get_block_template/`. `long_poll.rs` is the long-poll mechanism.
 
-### coinbase math
+### Coinbase Math
 
 Coinbase transactions carry:
 
@@ -114,18 +124,18 @@ The funding-stream addresses and percentages are in
 `zebra-chain/src/parameters/`. Any miss in the coinbase math
 produces an invalid block.
 
-### the internal-miner feature
+### The Internal-miner Feature
 
 Behind the `internal-miner` Cargo feature, Zebra can mine in-
 process. Documented as testnet-only; not for production. Useful
 for regtest and integration testing.
 
-## the wallet ecosystem
+## The Wallet Ecosystem
 
 Zebra is a node, not a wallet. The wallet world consumes Zebra's
 APIs as follows.
 
-### lightwalletd
+### Lightwalletd
 
 The `lightwalletd` daemon (ECC) sits in front of `zebrad` or
 `zcashd` and exposes a gRPC interface tailored for light clients.
@@ -139,7 +149,7 @@ What lightwalletd needs from Zebra:
 The integration tests behind the `lightwalletd-grpc-tests` Cargo
 feature run a real `lightwalletd` against `zebrad`.
 
-### zaino
+### Zaino
 
 `zingolabs/zaino` is the successor light-client server, written in
 Rust, designed to consume Zebra's indexer gRPC directly. Aimed at
@@ -151,17 +161,17 @@ What zaino needs from Zebra:
 - block streams.
 - spend-lookup-by-nullifier and other denormalized indexes.
 
-### zallet
+### Zallet
 
 `zcash/wallet` (Zallet) is the official ECC wallet effort
 post-`zcashd`. Consumes Zebra's indexer and JSON-RPC.
 
-### other wallets
+### Other Wallets
 
 YWallet, Nighthawk, Zashi, ZecWallet Lite (legacy), and others
 consume one of: lightwalletd, zaino, or direct JSON-RPC to Zebra.
 
-### the indexer surface
+### The Indexer Surface
 
 The indexer gRPC (Zebra crate `zebra-rpc/src/indexer/`) exposes:
 
@@ -174,7 +184,7 @@ This is what wallet servers use to scan for incoming notes
 efficiently. The exact methods evolve; consult the proto definitions
 in the codebase.
 
-## what this means for the validator side
+## What This Means for the Validator Side
 
 Even though Zebra is a validator, every of these consumers is a
 constraint:
@@ -190,10 +200,22 @@ constraint:
 Bugs in any of these surfaces show up as wallet incidents long
 before they show up as consensus incidents.
 
-## see also
+## See Also
 
 - 09-threat-model.md (mempool DoS, mining-pool adversaries).
 - `book/src/dev/mempool-specification.md`.
 - `book/src/dev/diagrams/mempool-architecture.md`.
 - `book/src/user/mining.md` and `book/src/user/mining-docker.md`.
 - the `lightwalletd`, `zaino`, and `zallet` repositories.
+
+## Spec Pointers
+
+- [Zaino](https://github.com/zingolabs/zaino) for the lightwalletd-compatible indexer.
+- [Zallet](https://github.com/zcash/wallet) for the reference wallet.
+- `librustzcash` for the wallet-side cryptography.
+
+## Exercises
+
+1. Identify one feature that Zebra deliberately does not implement (wallet, block explorer, etc.) and find a closed PR that proposed it.
+2. List the RPC methods Zebra exposes that Zaino consumes.
+3. Find the Stratum or `getblocktemplate` entry point and explain in one sentence what it returns.

@@ -1,4 +1,14 @@
-# 02. zebra-chain: the data model
+---
+sidebar_position: 2
+title: "zebra-chain: The Data Model"
+description: "Blocks, transactions, sapling and orchard bundles, transparent UTXOs, addresses, and serialization."
+---
+
+# zebra-chain: The Data Model
+
+## Why This Chapter Exists
+
+Every other crate depends on `zebra-chain`. If a type here is wrong, every downstream invariant is suspect. The chapter is also the friendliest entry point because it is purely synchronous: no Tokio, no Tower, no I/O. By the end you should be able to read a raw transaction byte string and tell which version, which Sapling/Orchard bundles, and which transparent inputs and outputs it contains.
 
 `zebra-chain` is the sync-only crate that defines every consensus-
 critical data type Zebra manipulates. No async, no Tokio, no Tower.
@@ -14,11 +24,11 @@ Everything here is either:
 Start with `zebra-chain/src/lib.rs` for the module map. The crate is
 declared with `recursion_limit = "256"` because of bitvec macros.
 
-## module tour
+## Module Tour
 
 Each item below maps to a directory under `zebra-chain/src/`.
 
-### serialization
+### Serialization
 
 `serialization/` defines the Zcash binary wire format. Zcash inherits
 Bitcoin's `CompactSize` varints, little-endian fixed-width integers,
@@ -31,7 +41,7 @@ must use `TrustedPreallocate` (also defined in this module) to bound
 allocation size. This is a security invariant called out in
 `AGENTS.md`.
 
-### parameters
+### Parameters
 
 `parameters/` defines `Network` (Mainnet, Testnet variants), the
 `NetworkUpgrade` enum (`Genesis`, `BeforeOverwinter`, `Overwinter`,
@@ -49,7 +59,7 @@ configuration (used for Regtest and private testnets), so it is the
 right place to learn what parameters are actually tunable per
 network.
 
-### block
+### Block
 
 `block/` defines `Block`, `Header`, `Hash`, `Height`, the Merkle root
 helper, the genesis hash table, and block commitment. The
@@ -61,7 +71,7 @@ NU5).
 The `serialize.rs` here is critical: it defines the block header on-
 disk and on-wire layout, including the 1344-byte Equihash solution.
 
-### transaction
+### Transaction
 
 `transaction/` defines the union type `Transaction` with variants for
 versions 1, 2 (Sprout), 3 (Overwinter), 4 (Sapling), and 5 (NU5+).
@@ -84,7 +94,7 @@ Read in this order:
 6. `lock_time.rs`, `memo.rs`, `joinsplit.rs`, `builder.rs`,
    `unmined/` for the rest.
 
-### transparent
+### Transparent
 
 `transparent/` defines the Bitcoin-style transparent pool: P2PKH and
 P2SH addresses (`address.rs`), the script bytes wrapper
@@ -93,7 +103,7 @@ P2SH addresses (`address.rs`), the script bytes wrapper
 script` (FFI to libzcash_script). This module only models the bytes
 and addresses.
 
-### sprout, sapling, orchard
+### Sprout, Sapling, Orchard
 
 Each pool gets its own module with the same shape:
 
@@ -117,7 +127,7 @@ The internals of the proofs themselves (Groth16 for Sapling, Halo2 for
 Orchard) are not built here; only the witness types and verifying
 inputs are.
 
-### primitives
+### Primitives
 
 `primitives/` is the cross-pool primitives module. It contains:
 
@@ -132,7 +142,7 @@ inputs are.
   representation, used wherever Zebra hands a transaction to ECC code
   (for example to compute a sighash via ZIP-244 in `librustzcash`).
 
-### work and difficulty
+### Work and Difficulty
 
 `work/` defines:
 
@@ -144,13 +154,13 @@ inputs are.
 - `u256.rs`: a 256-bit unsigned big-endian integer used in work
   comparisons.
 
-### history_tree
+### History_tree
 
 `history_tree/` is the chain history MMR introduced in Heartwood
 (ZIP-221). Each block commits to the root of this tree, so the
 history tree is computed and stored as part of the state.
 
-### value_balance, amount
+### Value_balance, Amount
 
 `amount.rs` and `value_balance.rs` enforce that values are within
 constructed bounds. `Amount<C>` is parameterized by a
@@ -162,7 +172,7 @@ This is one of the most important examples of "use the type system
 to encode consensus invariants" in Zebra. Read `amount.rs` and the
 corresponding tests carefully.
 
-### chain_tip and chain_sync_status
+### Chain_tip and Chain_sync_status
 
 `chain_tip.rs` defines the `ChainTip` trait that lets components
 above the state crate observe the latest tip without coupling to it.
@@ -173,7 +183,7 @@ implemented here.
 (close-to-tip vs far-from-tip). Used by the inbound and mempool
 services to decide whether to participate in gossip.
 
-## things to internalize from zebra-chain
+## Things to Internalize From zebra-chain
 
 - the type-system encoding of consensus invariants (Amount,
   ValueBalance, Height, Hash with byte-order display, Constraint
@@ -187,7 +197,7 @@ services to decide whether to participate in gossip.
   implements `Arbitrary` (gated on `proptest-impl`). This is what
   makes property tests across other crates possible.
 
-## suggested exercises
+## Suggested Exercises
 
 1. find the activation height of every network upgrade on mainnet and
    on the default testnet without reading the comments. Hint: the
@@ -201,3 +211,15 @@ services to decide whether to participate in gossip.
 4. open `transaction/sighash.rs` and trace the v5 sighash
    computation back into `zcash_primitives`. Where exactly does
    Zebra hand control to ECC code?
+
+## Spec Pointers
+
+- Zcash protocol spec sections 7.1 (transaction format) and 7.6 (block format).
+- ZIP 225 (transaction format v5).
+- BIP 144 (witness serialization), referenced by Zcash transparent inputs.
+
+## Exercises
+
+1. Find the `ZcashSerialize` impl for `Transaction` and trace which fields are written for each version. Cite the file and line.
+2. Build a v5 transaction with one Sapling spend and one Orchard action and serialize it round-trip. Where do the bundle digests live?
+3. Add a property test that round-trips a randomly generated `transparent::Input` and confirms equality. Run it with `cargo test -p zebra-chain`.

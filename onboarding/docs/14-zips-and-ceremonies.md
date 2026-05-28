@@ -1,11 +1,21 @@
-# 14. zips and trusted-setup ceremonies
+---
+sidebar_position: 14
+title: "ZIPs and Trusted Setup Ceremonies"
+description: "The ZIP process, the Sapling MPC and Powers of Tau ceremonies, and what their outputs mean for Zebra."
+---
 
-## the zip process
+# ZIPs and Trusted Setup Ceremonies
+
+## Why This Chapter Exists
+
+The Groth16 trusted setup is a single point of failure that every Sapling note still depends on. The MPC ceremonies are what mitigate it. If you do not understand the threat model of the ceremony, you cannot reason about Sapling soundness.
+
+## The Zip Process
 
 ZIP stands for Zcash Improvement Proposal. The process is modeled on
 Bitcoin's BIPs and Ethereum's EIPs.
 
-### lifecycle states
+### Lifecycle States
 
 A ZIP moves through these states in the `zcash/zips` repo:
 
@@ -22,7 +32,7 @@ A ZIP moves through these states in the `zcash/zips` repo:
 The status is in the YAML front matter at the top of every ZIP
 file. Always check the status before relying on a ZIP as authority.
 
-### the template
+### The Template
 
 Every ZIP has a fixed structure:
 
@@ -45,7 +55,7 @@ Every ZIP has a fixed structure:
 
 A ZIP without test vectors will not be accepted as implementing.
 
-### writing a zip: practical tips
+### Writing a Zip: Practical Tips
 
 - start with a forum post or Discord conversation, not a PR. The
   community discussion uncovers requirements you would otherwise
@@ -58,16 +68,16 @@ A ZIP without test vectors will not be accepted as implementing.
   editors are pedantic by design; this is what keeps the
   specification consistent across years.
 
-### the editors
+### The Editors
 
 ZIP editors as of the time this file was written include Daira-Emma
 Hopwood, with several co-editors. Editors do not approve the
 *content* of a ZIP; they approve its *form* (does it follow the
 template, is the language unambiguous, are the references correct).
 
-## ceremonies and trusted setups
+## Ceremonies and Trusted Setups
 
-### the sprout MPC
+### The Sprout MPC
 
 The original 2016 Zcash launch parameters came from a six-party MPC
 for the BCTV14 setup. Public ceremony with reproducible setup
@@ -79,7 +89,7 @@ discovered) by Groth16 parameters for the Sprout-on-Groth16
 re-proofing path. The Sprout-on-Groth16 setup also came from an
 MPC.
 
-### the sapling MPC
+### The Sapling MPC
 
 Sapling needed a much larger parameter set (the Sapling Spend and
 Output circuits). The ceremony ran in two phases:
@@ -100,7 +110,7 @@ The security argument: at least one participant in each phase was
 honest *and* deleted their toxic waste. If true, the parameters are
 sound. If false, the prover can produce false proofs.
 
-### orchard: no trusted setup
+### Orchard: No Trusted Setup
 
 Halo2's IPA scheme has no trusted setup. The public parameters are
 the Pallas curve and a hash-to-curve construction; no MPC was
@@ -109,7 +119,7 @@ needed. This was a major design goal for NU5.
 Implication: any future shielded protocol added to Zcash should
 prefer a no-setup scheme unless the trade-off is clearly worth it.
 
-### post-quantum considerations
+### Post-quantum Considerations
 
 None of the schemes in active Zcash use are post-quantum secure.
 The discrete log on Pallas is broken by a sufficiently large quantum
@@ -118,7 +128,7 @@ candidate post-quantum SNARK frameworks include STARKs and various
 lattice-based constructions. This is a likely subject of future
 ZIPs.
 
-## how zips and the spec relate
+## How Zips and the Spec Relate
 
 The spec is the *normative* document. A ZIP is the change record.
 When a ZIP activates, its specification text is integrated into the
@@ -128,10 +138,21 @@ spec is the source of truth from that point on.
 Reading order for a current change: read the spec section first,
 then the ZIP for context.
 
-## see also
+## See Also
 
 - 12-protocol-history-and-governance.md.
 - 13-reading-the-spec.md.
 - the `zcash/zips` repository.
 - ECC's blog posts on the Sapling MPC ceremony.
 - the Powers of Tau write-up by Sean Bowe.
+
+## Spec Pointers
+
+- Powers of Tau and Sapling MPC writeups under [zcash/mpc](https://github.com/zcash/mpc).
+- ZIP 251 and the NU5 ceremony notes.
+
+## Exercises
+
+1. Identify the file in Zebra that loads the Sapling trusted-setup parameters. Where is the hash of those parameters checked?
+2. Read the Sapling MPC writeup and identify the assumption that fails if every participant colludes.
+3. Explain in three sentences why Halo 2 (Orchard) does not need a trusted setup.

@@ -1,9 +1,19 @@
-# 22. first 90 days
+---
+sidebar_position: 22
+title: "First 90 Days"
+description: "A reading and contribution plan that converges on a real PR you can plausibly open."
+---
+
+# First 90 Days
+
+## Why This Chapter Exists
+
+The course converges here. This is the chapter you read once you have read everything else, and then revisit weekly. It contains the contribution gate, the reading order, and the first PR you should plausibly open.
 
 A concrete, executable plan for the first three months. Adjust to
 your actual situation; deviation is expected.
 
-## week 0 (before start)
+## Week 0 (Before Start)
 
 If you have not started yet:
 
@@ -15,7 +25,7 @@ If you have not started yet:
   Rust 1.91+, libclang, protoc; build `cargo build --workspace
   --locked` once to validate the toolchain.
 
-## week 1: get a mainnet node running
+## Week 1: Get a Mainnet Node Running
 
 Goals:
 
@@ -41,7 +51,7 @@ Day-by-day:
   with public block explorers.
 - **weekend**: read files 05, 06, 07 of this onboarding.
 
-## week 2: shadow review
+## Week 2: Shadow Review
 
 Goals:
 
@@ -64,7 +74,7 @@ Day-by-day:
   week's reading. Push them.
 - **weekend**: read files 08, 13, 14 of this onboarding.
 
-## week 3: dive deep on cryptography
+## Week 3: Dive Deep on Cryptography
 
 Goals:
 
@@ -88,7 +98,7 @@ Day-by-day:
   because Y" to a ZF or ZODL contact. Ask for feedback.
 - **weekend**: read files 09 through 11 of this onboarding.
 
-## week 4: networking and RPC
+## Week 4: Networking and RPC
 
 Goals:
 
@@ -112,7 +122,7 @@ Day-by-day:
   template` once.
 - **weekend**: read files 15, 17 of this onboarding.
 
-## week 5: testing and debugging
+## Week 5: Testing and Debugging
 
 Goals:
 
@@ -133,7 +143,7 @@ Day-by-day:
   debugging kit.
 - **weekend**: read files 20, 21 of this onboarding.
 
-## weeks 6 to 8: first contribution
+## Weeks 6 to 8: First Contribution
 
 Goals:
 
@@ -154,7 +164,7 @@ Steps:
 Do **not** rush this. The contribution gate exists for a reason; a
 hasty first PR is the worst possible first impression.
 
-## weeks 9 to 12: become useful
+## Weeks 9 to 12: Become Useful
 
 Goals:
 
@@ -173,7 +183,7 @@ By the end of week 12, you should be able to:
 - review a cryptographic PR against the checklist in file 11.
 - contribute to a ZIP discussion knowledgeably.
 
-## what not to do in the first 90 days
+## What Not to Do in the First 90 Days
 
 - do not open a PR against `ZcashFoundation/zebra` without a
   maintainer-acknowledged issue. The contribution gate in
@@ -187,7 +197,7 @@ By the end of week 12, you should be able to:
 - do not let perfect be the enemy of good. A small, well-scoped
   contribution beats a perfect contribution that takes six months.
 
-## ongoing habits
+## Ongoing Habits
 
 - read every `zcash/zips` PR as it comes in.
 - attend the cross-implementation calls (Arborist or current
@@ -197,8 +207,19 @@ By the end of week 12, you should be able to:
 - maintain a personal incidents-and-bugs log. Every bug you find
   goes in; review the log monthly.
 
-## see also
+## See Also
 
 - all other files in this onboarding.
 - `AGENTS.md` for the binding contribution policy.
 - `book/src/dev/CONTRIBUTING.md` for the maintainer-facing version.
+
+## Spec Pointers
+
+- Upstream [`CLAUDE.md`](https://github.com/ZcashFoundation/zebra/blob/main/CLAUDE.md) for the contribution gate.
+- The fork's [issues page](https://github.com/dannywillems/zebra/issues) for the running list of follow-ups.
+
+## Exercises
+
+1. Identify a `good first issue` in the upstream tracker and read the existing discussion. Decide whether you understand it well enough to comment.
+2. Run the full local test suite (`cargo test --workspace`) and record how long it takes.
+3. Pick one chapter you skipped and read it. Note one thing the rest of the course misrepresents about it.

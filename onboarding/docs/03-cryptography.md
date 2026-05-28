@@ -1,11 +1,21 @@
-# 03. cryptography in zebra
+---
+sidebar_position: 3
+title: "Cryptography in Zebra"
+description: "Hash functions, Pedersen and Sinsemilla commitments, BLS12-381, Jubjub, Pallas, Vesta, and the Halo 2 transition."
+---
+
+# Cryptography in Zebra
+
+## Why This Chapter Exists
+
+Zcash is, structurally, a Merkle-tree-over-pedersen-commitments + groth16 + halo2 system bolted on top of a transparent UTXO chain. If you do not understand which primitive is used where and why, you cannot read the verification code. The chapter is the minimum you need before chapter 04.
 
 This is the file to spend the most time on. Zebra itself implements
 almost no cryptography directly; instead, it imports primitives from
 the ECC/ZF ecosystem and wires them together with consensus and
 network code. Knowing which crate owns which primitive is essential.
 
-## who owns what
+## Who Owns What
 
 The Zcash cryptographic stack splits roughly like this:
 
@@ -32,7 +42,7 @@ Inside Zebra, those primitives appear in three places:
    (Tower services with batching).
 3. `zebra-script` for the FFI to `libzcash_script`.
 
-## hash functions
+## Hash Functions
 
 The Zcash hash function zoo:
 
@@ -64,7 +74,7 @@ implementations came from a wrong personal string; if you are
 implementing a new verifier, double-check the personal string against
 the spec.
 
-## signature schemes
+## Signature Schemes
 
 - ECDSA over secp256k1: transparent transactions, exactly like
   Bitcoin. Used in `zebra-script` via libzcash_script. The Rust
@@ -88,7 +98,7 @@ failure fall back to per-signature verification using
 `tower-fallback`. This is the architecture worth studying first
 because it shows up again for proof systems.
 
-## commitment and randomness
+## Commitment and Randomness
 
 - Pedersen commitment over Jubjub: Sapling note commitments and
   value commitments. Defined in `sapling-crypto`.
@@ -99,7 +109,7 @@ because it shows up again for proof systems.
   RedPallas key derived from sum of commitment randomness. This is
   the "binding signature" you will see referenced in the spec.
 
-## key derivation
+## Key Derivation
 
 - BIP-32 for transparent keys.
 - ZIP-32 for shielded keys (Sapling and Orchard), provided by the
@@ -110,7 +120,7 @@ because it shows up again for proof systems.
   incoming viewing key gives only the ability to scan for incoming
   notes.
 
-## note encryption
+## Note Encryption
 
 ZIP-216 / spec section 4.7. Implemented in `zcash_note_encryption`,
 re-exported through `zebra-chain/src/primitives/zcash_note_encryption.rs`.
@@ -128,7 +138,7 @@ at carefully:
 - the "out-viewing-key" branch that lets the sender recover their own
   outgoing notes.
 
-## zero-knowledge proofs
+## Zero-knowledge Proofs
 
 Two systems in use:
 
@@ -166,7 +176,7 @@ Things to study in this area:
   the offending item is identified by re-verifying each item in the
   batch.
 
-## script verification
+## Script Verification
 
 `zebra-script` is the FFI boundary. The Rust API is
 `CachedFfiTransaction` which:
@@ -200,7 +210,7 @@ There is also a parallel-Rust implementation behind the
 side by side and compares results. Look at `get_interpreter` to see
 the toggle.
 
-## the `Sigops` trait
+## The `Sigops` Trait
 
 `zebra-script/src/lib.rs` defines `Sigops` (legacy sigop count) and
 the free function `p2sh_sigop_count` (P2SH sigop count). Both must
@@ -210,14 +220,14 @@ quirk. The doc comments link to the exact lines in
 `zcash/zcash/src/main.cpp` for parity. This is a good pattern: every
 consensus-critical port should link the reference C++ source.
 
-## equihash (proof of work)
+## Equihash (Proof of Work)
 
 Zcash uses Equihash(200, 9) with `ZcashPoW` personalization. The
 solution is 1344 bytes. The verifier is in the `equihash` crate;
 Zebra wraps it at `zebra-chain/src/work/equihash.rs`. There is no
 Zebra-side implementation of the algorithm; we just verify.
 
-## groth16 trusted setup parameters
+## groth16 Trusted Setup Parameters
 
 zk-SNARK verifying keys are needed at runtime. For Sapling and Sprout
 they are constants compiled in via `zcash_proofs`. There are
@@ -225,7 +235,7 @@ parameter files that historical zcashd versions downloaded; modern
 Zebra and zcashd embed them. See the user-facing doc
 `book/src/user/parameters.md` for the user-facing story.
 
-## what to read alongside
+## What to Read Alongside
 
 - the Zcash Protocol Specification (NU6 version), sections 3
   (concepts), 4 (abstract protocol), 5 (concrete protocol), 7
@@ -236,7 +246,7 @@ Zebra and zcashd embed them. See the user-facing doc
   (jubjub canonical encoding), ZIP-221 (history tree), ZIP-243
   (Sapling sighash), ZIP-244 (NU5 txid and sighash).
 
-## suggested exercises
+## Suggested Exercises
 
 1. trace a v5 transaction from the wire to the point where a Halo2
    proof is verified. List every crate it touches.
@@ -247,3 +257,15 @@ Zebra and zcashd embed them. See the user-facing doc
 4. find every call site of `blake2b_simd::Params::new()` across the
    workspace and list the personal strings used. (Hint: `grep -rn
    "personal" $WORKSPACE`.)
+
+## Spec Pointers
+
+- Zcash protocol spec sections 5 (cryptographic building blocks) and 4.1 (commitments).
+- [BLS12-381 standard](https://datatracker.ietf.org/doc/draft-irtf-cfrg-pairing-friendly-curves/).
+- [Halo 2 book](https://zcash.github.io/halo2/) for the Orchard proving system.
+
+## Exercises
+
+1. Find a Pedersen commitment call site in `zebra-chain` and list the inputs (the message and the randomness). Where does the randomness come from?
+2. The `equihash` proof-of-work uses parameters `(n, k) = (200, 9)` on mainnet. Find where they are encoded and confirm the chosen path length matches the spec.
+3. Identify one Sinsemilla call site in Orchard code and explain in one sentence what is being committed to.

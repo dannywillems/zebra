@@ -1,32 +1,29 @@
-# 01. workspace, dependency graph, and build
+---
+sidebar_position: 1
+title: "Workspace, Dependency Graph, and Build"
+description: "The 12 Zebra crates, how they depend on each other, and the build commands you run every day."
+---
 
-## the 12 crates
+# Workspace, Dependency Graph, and Build
 
-Zebra is a single Cargo workspace. From `Cargo.toml` at the repo
-root:
+## Why This Chapter Exists
 
-```
-members = [
-    "zebrad",
-    "zebra-chain",
-    "zebra-network",
-    "zebra-state",
-    "zebra-script",
-    "zebra-consensus",
-    "zebra-rpc",
-    "zebra-node-services",
-    "zebra-test",
-    "zebra-utils",
-    "tower-batch-control",
-    "tower-fallback",
-]
+This is the map. You return here every time you need to remember which crate owns what, where a request flows, and which Cargo command exercises a given piece. Without this picture, every other chapter is a sequence of disconnected facts. By the end you should be able to point at any source file and say which crate it belongs to and which of its tests would catch a regression there.
+
+## The 12 Crates
+
+Zebra is a single Cargo workspace. The canonical members list lives
+in `Cargo.toml` at the repo root, pinned here to `v4.4.1`:
+
+```toml reference title="Cargo.toml"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/Cargo.toml#L1-L20
 ```
 
 `zebra-grpc` and `zebra-scan` directories exist on disk but are not
 in the workspace; check `Cargo.toml` for the current canonical list
 before assuming anything.
 
-## the dependency graph
+## The Dependency Graph
 
 ```
                        zebrad
@@ -64,7 +61,7 @@ Three rules to remember:
    cyclic dependencies between crates that need each other's service
    trait shapes (mempool, RPC, state).
 
-## per-crate role at a glance
+## Per-crate Role at a Glance
 
 - `zebra-chain`: the consensus-critical data type layer. Blocks,
   transactions (v1 through v5/v6), Sprout/Sapling/Orchard primitives,
@@ -100,7 +97,7 @@ Three rules to remember:
 - `zebra-utils`: standalone utilities (checkpoint generation,
   block hash computation, search-issue, openapi generator, etc.).
 
-## the workspace cargo file
+## The Workspace Cargo File
 
 `Cargo.toml` at the repo root pins workspace-wide dependency versions
 and lint policy. Read it once end to end:
@@ -127,7 +124,7 @@ and lint policy. Read it once end to end:
   `range_minus_one`, `range_plus_one`, `unnecessary_cast`) and
   Tower-friendly async (`await_holding_lock`).
 
-## build prerequisites
+## Build Prerequisites
 
 From the README:
 
@@ -138,7 +135,7 @@ From the README:
 - a C++ compiler (for `libzcash_script` and RocksDB).
 - protoc, optional, only required for some gRPC paths.
 
-## build, test, lint commands
+## Build, Test, Lint Commands
 
 The canonical CI sequence is documented in `AGENTS.md`:
 
@@ -154,7 +151,7 @@ For broader coverage, the CI uses nextest profiles. See
 profiles (`sync-large-checkpoints-empty`, etc.) drive a real chain
 sync against testnet and are the most realistic end-to-end test.
 
-## feature flags worth knowing
+## Feature Flags Worth Knowing
 
 From `zebrad/src/lib.rs` doc comments:
 
@@ -177,7 +174,7 @@ For the `zebra-state` crate specifically, the `proptest-impl` and
 `indexer` features unlock additional public re-exports
 (`zebra-state/src/lib.rs`).
 
-## docs and book
+## Docs and Book
 
 - `book/src/SUMMARY.md` is the table of contents for the Zebra Book.
   The developer section under `book/src/dev/` contains the RFCs that
@@ -188,7 +185,7 @@ For the `zebra-state` crate specifically, the `proptest-impl` and
   `https://zebra.zfnd.org/internal`. Generate them locally with
   `cargo doc --workspace --no-deps --open`.
 
-## what you should be able to do after reading this file
+## What You Should Be Able to Do After Reading This File
 
 - name each of the 12 crates and what it owns.
 - explain why `zebra-chain` is sync-only.
@@ -196,3 +193,15 @@ For the `zebra-state` crate specifically, the `proptest-impl` and
   separate crates.
 - locate any cryptographic dependency in `Cargo.toml`.
 - run the full CI sequence locally.
+
+## Spec Pointers
+
+- `Cargo.toml` at the repo root: workspace declaration and the canonical crate list.
+- `book/src/SUMMARY.md`: the upstream Zebra book; treat it as the navigable index for design docs.
+- `.github/workflows/`: the CI graph that translates the local commands in this chapter to the gates that block merges upstream.
+
+## Exercises
+
+1. Open `Cargo.toml` and list every workspace member that is *not* declared here but exists on disk (hint: there are at least two). Explain why each is excluded.
+2. Run `cargo test -p zebra-chain block::serialize::tests::block_test_vectors` and identify which test vectors are loaded. Cite the file and line.
+3. Add a `zebra-script` test that fails on purpose (e.g. assert false). Confirm `cargo test --workspace` catches it. Revert.

@@ -1,9 +1,19 @@
-# 12. zcash protocol history and governance
+---
+sidebar_position: 12
+title: "Protocol History and Governance"
+description: "Sprout, Sapling, Blossom, Heartwood, Canopy, NU5, NU6, NU7, and how upgrades are activated."
+---
+
+# Protocol History and Governance
+
+## Why This Chapter Exists
+
+The protocol is the protocol because of the history. Why does NU5 not unify Sapling and Orchard? Because Orchard was a deliberate clean break. Why does Sprout still exist? Because removing it would invalidate existing notes. You will read this chapter once and then need it.
 
 You will hear names and dates as if they are common knowledge. They
 are not. This file gives you the narrative.
 
-## the timeline at a glance
+## The Timeline at a Glance
 
 - 2013: Zerocoin paper (Miers, Garman, Green, Rubin). A way to make
   Bitcoin transactions anonymous via accumulator-based mixing.
@@ -40,7 +50,7 @@ are not. This file gives you the narrative.
   Tightens consensus around funding streams.
 - in progress: NU6.1 and NU7. See file 15.
 
-## why each upgrade happened
+## Why Each Upgrade Happened
 
 The pattern is consistent: a research breakthrough, an engineering
 need, or a governance decision drives the upgrade.
@@ -60,9 +70,9 @@ For every upgrade, the activation height is in
 `zebra-chain/src/parameters/network/` constants and the variant is
 in `network_upgrade.rs`.
 
-## the actors
+## The Actors
 
-### electric coin company (ECC)
+### Electric Coin Company (ECC)
 
 The original company that launched Zcash. Maintains `zcashd` (the
 reference implementation, currently being wound down or transitioned),
@@ -74,32 +84,32 @@ Jack Grigg / str4d (Sapling, zcash_primitives), Kris Nuttycombe
 (librustzcash maintenance), Daira-Emma Hopwood and Madars Virza
 (historical protocol design).
 
-### zcash foundation (ZF)
+### Zcash Foundation (ZF)
 
 Non-profit. Maintains Zebra, FROST (threshold signatures), and
 infrastructure for the broader community. They drive the
 diversification of the implementation set; Zebra exists so the Zcash
 network is not single-implementation.
 
-### zcash community grants (ZCG)
+### Zcash Community Grants (ZCG)
 
 Funds independent development from the developer fund. The
 Zingo/Zaino/Zallet stack, plus academic and tooling grants, flow
 through here.
 
-### zodl
+### Zodl
 
 Your new organization. As of this writing, ZODL's exact remit and
 publicly stated mission may be evolving; verify the current scope on
 the ZODL website and in recent forum posts before assuming any
 specific responsibility split.
 
-### independent contributors and external researchers
+### Independent Contributors and External Researchers
 
 Many ZIPs originate from individuals outside the three main orgs.
 The ZIP process is open.
 
-## how decisions get made
+## How Decisions Get Made
 
 There is no single body that ratifies protocol changes. The process
 in practice:
@@ -123,7 +133,7 @@ There is no on-chain vote. Adoption is by miner and node operator
 choice; in practice the implementation set converges because
 operators want compatibility.
 
-## governance tensions worth knowing
+## Governance Tensions Worth Knowing
 
 - funding model: the funding-stream addresses, payout split, and
   sunset cadence have been the most-discussed governance topic for
@@ -136,7 +146,7 @@ operators want compatibility.
   the wallet side experiments. Working across the boundary requires
   patience.
 
-## who to follow
+## Who to Follow
 
 - the `zcash/zips` PR feed.
 - the Zcash Foundation Discord, especially `zebra-dev`,
@@ -146,10 +156,21 @@ operators want compatibility.
 - the `librustzcash`, `orchard`, `sapling-crypto`, `halo2`
   GitHub activity.
 
-## see also
+## See Also
 
 - 13-reading-the-spec.md (how to use the protocol spec).
 - 14-zips-and-ceremonies.md (the ZIP process up close).
 - 15-nu7-and-future-work.md (current upgrades).
 - `book/src/dev/ecc-updates.md` (the Zebra-side process for
   updating ECC dependencies).
+
+## Spec Pointers
+
+- [ZIPs index](https://zips.z.cash/) for every network upgrade.
+- [Zcash community forum](https://forum.zcashcommunity.com/) for governance discussion.
+
+## Exercises
+
+1. List the network upgrades in order and one sentence on what each delivered.
+2. Find the activation height of NU5 on mainnet. Where is it encoded in `zebra-chain`?
+3. Read one ZIP that has not yet activated and explain in three sentences what it changes.

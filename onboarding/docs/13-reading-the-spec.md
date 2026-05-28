@@ -1,4 +1,14 @@
-# 13. reading the zcash protocol specification
+---
+sidebar_position: 13
+title: "Reading the Zcash Protocol Specification"
+description: "How the protocol PDF is structured, the notation, and how to map a spec section to Zebra code."
+---
+
+# Reading the Zcash Protocol Specification
+
+## Why This Chapter Exists
+
+The protocol spec is dense, mathematical, and required reading. This chapter teaches you how to navigate it: section numbering, notation conventions, and how to translate a spec rule into a code search query.
 
 `protocol.pdf` (the Zcash Protocol Specification, currently the NU6
 edition with NU7 drafts circulating) is the single authoritative
@@ -7,7 +17,7 @@ ZODL needs to read it fluently, not just refer to it occasionally.
 
 The PDF is dense. This file is a guide to using it efficiently.
 
-## structure of the document
+## Structure of the Document
 
 The spec is organized into:
 
@@ -31,7 +41,7 @@ The appendices contain the personal-string registry, group element
 encodings, test vectors, and "for-the-implementer" tables. Bookmark
 them; you will refer to them constantly.
 
-## notation conventions
+## Notation Conventions
 
 The spec uses a mix of mathematical notation and pseudocode. Some
 conventions you must internalize:
@@ -51,7 +61,7 @@ Hash inputs are explicitly bracketed; do not be casual about the
 order of concatenation. ZIP-244 bugs have come from getting the
 order wrong.
 
-## normative vs non-normative
+## Normative vs Non-normative
 
 Anything in the main body of the spec is normative. Footnotes that
 clarify or explain are non-normative. Appendices are usually
@@ -63,7 +73,7 @@ If you find a discrepancy between the spec text and a test vector,
 the test vector wins by convention because it is more precise, but
 file a `zcash/zips` issue immediately. This has happened.
 
-## the pseudocode style
+## The Pseudocode Style
 
 The spec's pseudocode is closer to mathematics than to a programming
 language. A `for each` loop is a set operation; a function defined
@@ -78,7 +88,7 @@ Specific gotchas:
 - "an honest party computes" is a non-normative explainer; the
   consensus rule is whatever the validation rule says.
 
-## the validating-implementer's reading order
+## The Validating-implementer's Reading Order
 
 A first pass should give you:
 
@@ -95,7 +105,7 @@ A first pass should give you:
 Second pass: each time you touch a piece of code, open the
 corresponding spec section and read alongside.
 
-## worked example: ZIP-244 transaction id
+## Worked Example: ZIP-244 Transaction Id
 
 Pick this as your first deep dive. The flow:
 
@@ -115,7 +125,7 @@ which input to which digest under which personal string it
 contributes to. If you cannot, you do not yet read the spec
 fluently. Keep at it.
 
-## skim list per file
+## Skim List Per File
 
 A rough mapping from spec sections to Zebra source you can use as a
 two-way table:
@@ -142,7 +152,7 @@ two-way table:
 Section numbers shift across spec revisions; treat this as a
 template, not gospel.
 
-## tools
+## Tools
 
 - `pdftotext protocol.pdf - | less` for searchable text. The
   rendered PDF is the canonical form, but grep is faster for
@@ -151,7 +161,7 @@ template, not gospel.
 - `katex-header.html` in this repo root suggests the Zebra book
   also renders some spec-style math.
 
-## active reading habits
+## Active Reading Habits
 
 - never read a hash construction without writing the personal
   string into your notes.
@@ -162,7 +172,7 @@ template, not gospel.
 - when in doubt, write down the consensus rule in your own words and
   ask a maintainer to confirm.
 
-## see also
+## See Also
 
 - 12-protocol-history-and-governance.md (why the spec is shaped this
   way).
@@ -170,3 +180,14 @@ template, not gospel.
   revisions).
 - 16-formalisation-opportunities.md (turning spec sections into
   Lean).
+
+## Spec Pointers
+
+- [Zcash protocol spec PDF (latest)](https://zips.z.cash/protocol/protocol.pdf).
+- The LaTeX source under the [zcash-protocol-spec repo](https://github.com/zcash/zips/tree/main/protocol).
+
+## Exercises
+
+1. Pick one consensus rule in the spec and find its implementation in `zebra-consensus`. Cite both.
+2. Identify one piece of notation in the spec that is also used in Zebra code (e.g. for a hash function or a field operation). Confirm the names match.
+3. Find a spec section whose corresponding code lives in more than one crate. Explain in one sentence why.

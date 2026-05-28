@@ -1,15 +1,25 @@
-# 09. threat model
+---
+sidebar_position: 9
+title: "Threat Model"
+description: "Adversary capabilities, formal goals, and where each defence lives in the workspace."
+---
+
+# Threat Model
+
+## Why This Chapter Exists
+
+If you do not know what attack a defence is protecting against, the defence will look like dead code to you and you will remove it. The chapter pairs adversary capabilities with the files and tests that defend against them.
 
 The lens you should be reading the rest of the codebase with. Every
 defensive choice in Zebra exists because of one of the adversaries
 below. Memorize the categories.
 
-## privacy adversaries
+## Privacy Adversaries
 
 Zcash's primary product is privacy. The privacy adversary is anyone
 trying to deanonymize users or link transactions.
 
-### transaction graph linkability
+### Transaction Graph Linkability
 
 Even fully shielded transactions can leak information through:
 
@@ -27,7 +37,7 @@ The validator node defends nothing about value or migration patterns
 (those are wallet concerns), but it does control the timing and
 peer-IP correlation: see below.
 
-### peer-IP and metadata adversary
+### Peer-ip and Metadata Adversary
 
 An adversary running many P2P peers can correlate inbound
 transactions to the IP that first announced them.
@@ -46,7 +56,7 @@ What is not defended at the node level: passive AS-level observers,
 correlated peer-set membership across runs. Wallet users who care
 should run a node themselves or use Tor at the OS level.
 
-### viewing key disclosure and scan attacks
+### Viewing Key Disclosure and Scan Attacks
 
 Out of Zebra's scope (the node has no keys), but worth knowing:
 incoming viewing keys can be shared selectively, and the way wallets
@@ -54,18 +64,18 @@ scan for incoming notes is a recurring source of timing leaks (note
 encryption trial-decryption time depends on hash function timing).
 The note encryption library is `zcash_note_encryption`.
 
-### fingerprinting
+### Fingerprinting
 
 Connection-time fingerprinting (user-agent string, supported
 services, message order) can identify Zebra vs zcashd. Zebra
 deliberately uses a `zcashd`-compatible user agent prefix to blend
 in. See `zebra-network/src/constants.rs`.
 
-## consensus adversaries
+## Consensus Adversaries
 
 Anyone trying to fork the chain, double-spend, or split the network.
 
-### 51% / majority hashpower
+### 51% / Majority Hashpower
 
 Equihash GPU and ASIC mining means a sufficiently funded adversary
 can attempt reorgs. Zebra's defenses:
@@ -83,7 +93,7 @@ What this does not defend against: small reorgs within the
 finalization window. Exchanges must wait for confirmations
 accordingly.
 
-### eclipse and partition attacks
+### Eclipse and Partition Attacks
 
 An adversary surrounding a node with malicious peers can hide blocks
 or feed a private fork. Defenses:
@@ -98,7 +108,7 @@ or feed a private fork. Defenses:
 The relevant Bitcoin literature on Erebus (BGP-level eclipses) and
 inbound-only eclipses applies here too.
 
-### time warp
+### Time Warp
 
 Attempts to bias the difficulty algorithm by stamping blocks with
 distorted timestamps. Zcash's difficulty adjustment uses median time
@@ -106,7 +116,7 @@ past with bounded jitter (see `zebra-state/src/service/check/` and
 RFC 0006). See also file `20-time-clocks-and-difficulty.md` once
 written.
 
-### fork after checkpoint
+### Fork After Checkpoint
 
 If a checkpoint is wrong (bug or attacker-fed parameter), the chain
 splits. Zebra's checkpoints are compiled in from
@@ -115,11 +125,11 @@ requires re-syncing and verifying the resulting hash; the
 `zebra-checkpoints` tool in `zebra-utils/` is the canonical
 generator.
 
-## cryptographic adversaries
+## Cryptographic Adversaries
 
 Anyone trying to forge proofs, signatures, or hashes.
 
-### signature forgery and malleability
+### Signature Forgery and Malleability
 
 - ECDSA: secp256k1 is well-studied; Zebra inherits Bitcoin defenses.
   Low-s normalization is enforced.
@@ -131,7 +141,7 @@ Anyone trying to forge proofs, signatures, or hashes.
   Re-randomization without re-knowledge of the secret should be
   infeasible.
 
-### proof soundness
+### Proof Soundness
 
 - Groth16 (Sapling, Sprout-on-Groth16): pairing-based, sound under
   the q-PKE assumption. Trusted setup is the open exposure (see
@@ -142,7 +152,7 @@ Anyone trying to forge proofs, signatures, or hashes.
 
 Batch verification soundness: see file 11.
 
-### trusted setup compromise
+### Trusted Setup Compromise
 
 If the Sapling MPC was compromised, an attacker can produce valid
 Sapling spend / output proofs for false statements. The MPC was run
@@ -151,18 +161,18 @@ contribution publicly verifiable. The defense is "at least one
 honest participant"; if you do not believe that, you cannot trust
 Sapling. Orchard does not have this exposure.
 
-### hash collision / preimage
+### Hash Collision / Preimage
 
 BLAKE2 and SHA-2 are believed-secure. The interesting failure mode
 is domain separation: every BLAKE2 call in Zcash uses a personal
 string. Bugs in personal-string handling have caused security
 incidents in past ZK systems.
 
-## implementation adversaries
+## Implementation Adversaries
 
 Anyone exploiting bugs in the node itself.
 
-### resource exhaustion (DoS)
+### Resource Exhaustion (DoS)
 
 - malformed messages that trigger huge allocations: defended by
   `TrustedPreallocate` in `zebra-chain/src/serialization/`. Every
@@ -176,33 +186,33 @@ Anyone exploiting bugs in the node itself.
 - panic-on-DoS: clippy lints `unwrap_used`, `expect_used`, `panic`
   in critical paths.
 
-### panic and crash
+### Panic and Crash
 
 Zebra is consensus-critical. A panic is a chain-stall for the
 operator. The lint policy and the AGENTS.md guidance "expect()
 messages must explain why the invariant holds" are the discipline.
 
-### ffi memory issues
+### Ffi Memory Issues
 
 `zebra-script` is the unsafe boundary. The wrapper is single-
 crate so the rest of the workspace can keep `unsafe_code = "deny"`.
 The `comparison-interpreter` feature runs a parallel Rust
 implementation against the C++ one to catch divergence.
 
-### supply chain
+### Supply Chain
 
 The dependency surface (see `Cargo.toml`) is large. `deny.toml`
 configures `cargo-deny` for license, advisory, and source checks.
 The `supply-chain/` directory in the repo root holds the
 `cargo-vet` audit data.
 
-### timing side channels
+### Timing Side Channels
 
 The Rust crypto crates (`jubjub`, `pasta_curves`, `bls12_381`,
 `ed25519-zebra`, `secp256k1`) make varying constant-time
 guarantees. See file 11 for the review discipline.
 
-## what this means in practice
+## What This Means in Practice
 
 When reviewing a PR, walk through each adversary category and ask:
 does this change make any of them easier? When designing a new
@@ -210,10 +220,21 @@ feature, list the adversaries it must defend against before writing
 code. This is the principal-level habit that separates a working
 node from a robust one.
 
-## see also
+## See Also
 
 - 10-incidents-and-audits.md (concrete past examples).
 - 11-cryptographic-correctness-practices.md (the discipline).
 - `book/src/dev/rfcs/0003-inventory-tracking.md` (network defense
   detail).
 - `SECURITY.md` at the repo root for responsible disclosure.
+
+## Spec Pointers
+
+- Published audits: [NCC Group 2020](https://research.nccgroup.com/wp-content/uploads/2020/07/NCC_Group_ZFND_Zebra_Halo2-2020-08-31_v1.0.pdf) and [Trail of Bits 2021](https://github.com/trailofbits/publications/).
+- Zcash Foundation [security policy](https://zfnd.org/zcash-security/).
+
+## Exercises
+
+1. Pick one defence from the threat-model table and confirm the named test still exists. If it does not, that is a real regression: open an issue.
+2. Add a row for a defence the table is missing and propose a test that would catch a regression.
+3. For one row, explain in one sentence what an adversary would do if the defence were removed.

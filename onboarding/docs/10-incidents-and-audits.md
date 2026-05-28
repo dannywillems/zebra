@@ -1,4 +1,14 @@
-# 10. incidents and audits
+---
+sidebar_position: 10
+title: "Incidents and Audits"
+description: "Published audit findings, post-mortems, and the regressions they left in the test suite."
+---
+
+# Incidents and Audits
+
+## Why This Chapter Exists
+
+History repeats itself. Knowing which classes of bug Zebra has shipped before tells you which classes of bug to look for in your PR. The chapter is a punch list of named incidents and the regressions they left in the test suite.
 
 The single best calibration for a principal cryptography engineer is
 reading the post-mortems. Below are the well-known incidents in the
@@ -6,7 +16,7 @@ Zcash ecosystem and the lessons each one teaches. Verify each entry
 against the canonical write-ups; this file is a study guide, not a
 substitute for the originals.
 
-## the 2018 counterfeiting bug (BCTV14)
+## The 2018 Counterfeiting Bug (BCTV14)
 
 The original Sprout zk-SNARK construction was BCTV14, named for the
 Ben-Sasson, Chiesa, Tromer, Virza paper. ECC discovered a soundness
@@ -34,7 +44,7 @@ References to read end to end:
 - the BCTV14 paper and the Groth16 paper.
 - Daira Hopwood's post-mortem.
 
-## ZIP-216: canonical jubjub encoding
+## ZIP-216: Canonical Jubjub Encoding
 
 Pre-NU5 Zcash accepted non-canonical Jubjub point encodings. Two
 encodings could decode to the same point if one was canonical and
@@ -59,7 +69,7 @@ Lessons:
   recurring pattern in Zcash and is a frequent source of off-by-one
   height bugs.
 
-## sighash regressions
+## Sighash Regressions
 
 The most recent example in this repo: v5 transactions with a
 `SIGHASH_SINGLE` flag and no corresponding output. ZIP-244 section
@@ -81,7 +91,7 @@ Lessons:
   exact C++ line numbers" exists for a reason. Read the doc
   comments in `zebra-script/src/lib.rs` for the established pattern.
 
-## libzcash_script CVE GHSA-gq4h-3grw-2rhv
+## Libzcash_script CVE GHSA-gq4h-3grw-2rhv
 
 Cited in `Cargo.toml` lines 290 to 302. The advisory reproduces
 reliably only when the bundled libzcash_script C++ code is compiled
@@ -108,7 +118,7 @@ Lessons:
 - FFI dev-build overrides should be commented with the CVE or issue
   ID that motivated them, as this repo does.
 
-## the libzcash_script callback failure propagation issue
+## The Libzcash_script Callback Failure Propagation Issue
 
 Inline at `zebra-script/src/lib.rs` around the `calculate_sighash`
 closure: the libzcash_script C++ verifier does not propagate
@@ -133,7 +143,7 @@ Lessons:
 - prefer per-call randomness for security workarounds, never a
   hardcoded magic value.
 
-## #10527 coinbase sapling spends
+## #10527 Coinbase Sapling Spends
 
 Visible in recent commits. PR #10527 changed something about
 coinbase Sapling spend handling and broke proptests, then a follow-
@@ -147,7 +157,7 @@ Lessons:
 - coinbase transactions are a special case at every layer. Anything
   that "should not happen on coinbase" needs an explicit assertion.
 
-## historical testnet splits
+## Historical Testnet Splits
 
 Zcash testnet has had at least one notable consensus split between
 Zebra and zcashd in the past several years. Look up the maintainers'
@@ -164,14 +174,14 @@ These are excellent reading material because the same patterns
 recur. The Zebra Book sections under `book/src/dev/diagrams/` and
 the RFC index reference some of these.
 
-## ongoing audits
+## Ongoing Audits
 
 Zebra has been audited by multiple firms; the Zcash Foundation
 publishes audit reports on their website. Read at least the most
 recent one before doing serious work. The audit findings often
 become permanent items in the design vocabulary.
 
-## a personal exercise
+## A Personal Exercise
 
 For each incident above, write three lines:
 
@@ -183,9 +193,20 @@ For each incident above, write three lines:
 
 Do this once and the threat model in file 09 becomes second nature.
 
-## see also
+## See Also
 
 - `SECURITY.md` at the repo root.
 - 09-threat-model.md.
 - 11-cryptographic-correctness-practices.md.
 - ECC and ZF security advisories on GitHub.
+
+## Spec Pointers
+
+- The relevant audit PDFs are linked in chapter 08.
+- Post-mortems live in [issues labelled C-security](https://github.com/ZcashFoundation/zebra/issues?q=label%3AC-security).
+
+## Exercises
+
+1. Pick one incident from this chapter and run the named regression test. Confirm it still passes.
+2. Read one closed issue tagged `C-security` from the last year. Summarize the root cause in one sentence.
+3. Identify a class of bug from the audit history that Zebra does not currently lint for. Propose a clippy lint or a custom check.

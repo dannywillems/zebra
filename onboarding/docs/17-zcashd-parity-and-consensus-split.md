@@ -1,4 +1,14 @@
-# 17. zcashd parity and consensus splits
+---
+sidebar_position: 17
+title: "zcashd Parity and Consensus Split Risk"
+description: "How Zebra mirrors zcashd consensus, where they have diverged, and how to detect a split before mainnet does."
+---
+
+# zcashd Parity and Consensus Split Risk
+
+## Why This Chapter Exists
+
+A consensus split between Zebra and zcashd costs the network confidence and time. The chapter is the procedure for detecting one, locating the divergence, and fixing it without making the split worse.
 
 Zebra exists in a two-implementation network. Both must agree on
 every consensus rule, exactly, byte for byte, on every block. Any
@@ -7,7 +17,7 @@ half and a zcashd half until one side capitulates or fixes its bug.
 
 This file is about how to keep that from happening.
 
-## why parity matters
+## Why Parity Matters
 
 A consensus split is the worst class of operational incident on a
 public chain. Effects:
@@ -24,7 +34,7 @@ are reference incidents. Zcash has had at least one notable testnet
 split between zcashd and Zebra historically; mainnet has avoided
 splits so far through careful compat testing.
 
-## what consensus rules cover
+## What Consensus Rules Cover
 
 Anything that determines whether a block or transaction is valid:
 
@@ -44,25 +54,25 @@ Anything that determines whether a block or transaction is valid:
 Any of these can differ between implementations and split the
 network.
 
-## known divergence sources (historical and structural)
+## Known Divergence Sources (Historical and Structural)
 
 Patterns to watch for:
 
-### implicit C++ control flow
+### Implicit C++ Control Flow
 
 The zcashd implementation throws exceptions where Zebra returns
 `Result`. Some consensus rules are encoded as "C++ throws and the
 caller catches". The recent v5 SIGHASH_SINGLE / no-corresponding-
 output fix (file 10) is exactly this pattern.
 
-### encoding tolerance
+### Encoding Tolerance
 
 Permissive encoding in one implementation, strict encoding in the
 other. ZIP-216 was a planned tightening of this. Watch for any new
 deserialization path that accepts more or fewer encodings than the
 spec mandates.
 
-### integer overflow semantics
+### Integer Overflow Semantics
 
 Rust panics on overflow in debug, wraps in release; C++ undefined-
 behaves on signed overflow and wraps on unsigned. The `Amount` type
@@ -70,28 +80,28 @@ in `zebra-chain` enforces explicit checked arithmetic to defend
 against this divergence. Any direct `as` cast or `u64 +` in
 consensus code is a red flag.
 
-### floating point
+### Floating Point
 
 There is none in Zcash consensus. Any FP in a consensus path is a
 bug.
 
-### nondeterministic iteration
+### Nondeterministic Iteration
 
 Rust's `HashMap` iteration order varies between runs. Any
 consensus output that depends on iteration order over a `HashMap`
 will produce nondeterministic results. Use `BTreeMap` for any
 ordered consensus-relevant collection.
 
-### library upgrades
+### Library Upgrades
 
 A bump in `librustzcash`, `orchard`, `sapling-crypto`, or any
 crypto crate is a potential consensus risk. `book/src/dev/
 ecc-updates.md` documents the Zebra-side process. Always run the
 sync tests against testnet and mainnet after such an update.
 
-## compat test infrastructure
+## Compat Test Infrastructure
 
-### nextest integration profiles
+### Nextest Integration Profiles
 
 `.config/nextest.toml` defines profiles that run real-chain sync
 tests. They are the truest "are we consensus-equivalent" tests.
@@ -103,12 +113,12 @@ Profiles include:
 These run on CI runners with multi-hour budgets. Run them locally
 when you change anything consensus-critical.
 
-### shielded proof vectors
+### Shielded Proof Vectors
 
 Every cryptographic primitive has known-answer test vectors. Drift
 in proof generation or verification is caught here.
 
-### the `comparison-interpreter` feature
+### The `Comparison-interpreter` Feature
 
 `zebra-script` has a Cargo feature `comparison-interpreter` that
 runs the Rust port of the zcash script interpreter (`zcash_script`)
@@ -119,19 +129,19 @@ This is the canonical pattern for porting C++ consensus code to
 Rust: run both side by side until you have enough confidence to flip
 the default.
 
-### vector tests ported from zcashd
+### Vector Tests Ported From zcashd
 
 `zebra-test/` includes vector test data ported from `zcash/zcash`.
 Any update to zcashd's vectors should propagate here. The Zebra
 RFC index has a discussion of vector test discipline.
 
-### regtest and private testnet
+### Regtest and Private Testnet
 
 `book/src/user/regtest.md` and `book/src/user/fork-zebra-testnet.md`
 document how to spin up a local network that includes both Zebra
 and zcashd nodes for testing consensus parity manually.
 
-## how to bisect a divergence
+## How to Bisect a Divergence
 
 When you see a divergence (a block accepted by one and rejected by
 the other, or a different chain tip), the workflow:
@@ -157,7 +167,7 @@ the other, or a different chain tip), the workflow:
    ambiguity) or in the offending implementation's repo (if a bug).
 8. coordinate a fix release across implementations.
 
-## the "test on testnet first" rule
+## The "Test on Testnet First" Rule
 
 Every consensus change activates on testnet first, at an earlier
 height than mainnet. This window is the operational divergence-
@@ -167,7 +177,7 @@ nodes serve as a distributed early warning system.
 If you change anything consensus-relevant, the activation on testnet
 is your final test before mainnet.
 
-## a healthy paranoia
+## A Healthy Paranoia
 
 The Zebra maintainers' policy is to be slow to change consensus
 code. Bug-for-bug compatibility with zcashd is preferred over
@@ -179,7 +189,7 @@ When in doubt, do not "fix" a perceived bug in consensus code
 unless you have confirmed the same fix is going into the other
 implementation, at the same activation height, in the same upgrade.
 
-## see also
+## See Also
 
 - 09-threat-model.md (consensus adversaries).
 - 10-incidents-and-audits.md (every entry there is a parity
@@ -188,3 +198,14 @@ implementation, at the same activation height, in the same upgrade.
 - `book/src/dev/continuous-integration.md`.
 - the `zcash/zcash` repository, especially `src/main.cpp` and
   `src/script/`.
+
+## Spec Pointers
+
+- `zcashd` source: [zcash/zcash](https://github.com/zcash/zcash).
+- The reference test vectors under `zebra-test/`.
+
+## Exercises
+
+1. Find one test vector in `zebra-test/` derived from a `zcashd` test and trace its origin.
+2. Identify one place where Zebra and `zcashd` historically disagreed and how it was reconciled (use `git log -S`).
+3. Run a regtest sync of a small chain against both implementations and confirm the tip matches.

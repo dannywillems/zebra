@@ -1,0 +1,16 @@
+# Docusaurus
+.docusaurus/
+build/
+node_modules/
+
+# Build cache
+.cache-loader
+
+# Editor
+*.swp
+*.swo
+.DS_Store
+
+# Env
+.env
+.env.local
