@@ -109,6 +109,182 @@ because it shows up again for proof systems.
   RedPallas key derived from sum of commitment randomness. This is
   the "binding signature" you will see referenced in the spec.
 
+## Anchors and Note Commitment Trees
+
+The anchor is the load-bearing primitive for shielded transfers. A
+shielded spend does not name which note it is spending; that would
+deanonymize the sender. Instead, the spender proves in zero
+knowledge that "the note I am spending is one of the leaves under
+this Merkle root", and the verifier checks that the cited root,
+the **anchor**, matches some earlier block's final treestate. The
+anchor is therefore both a cryptographic object (a Merkle root
+over note commitments) and a consensus object (the on-chain record
+the verifier checks against).
+
+### What an Anchor Is
+
+Each shielded pool maintains an append-only Merkle tree of note
+commitments. The anchor is its root.
+
+| Pool    | Leaf hash                     | Tree depth | Root type             | Code                                                                  |
+| ------- | ----------------------------- | ---------- | --------------------- | --------------------------------------------------------------------- |
+| Sprout  | SHA-256 (truncated)           | 29         | `[u8; 32]`            | `zebra-chain/src/sprout/tree.rs`                                      |
+| Sapling | Pedersen hash on Jubjub       | 32         | `jubjub::Base` (`Fq`) | `zebra-chain/src/sapling/tree.rs`                                     |
+| Orchard | Sinsemilla hash on Pallas     | 32         | `pallas::Base`        | `zebra-chain/src/orchard/tree.rs`                                     |
+
+The Sapling and Orchard roots wrap a single field element of the
+relevant curve's base field. The tree depths are fixed by the
+protocol:
+
+```rust reference title="zebra-chain/src/sapling/tree.rs (MERKLE_DEPTH)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tree.rs#L40-L40
+```
+
+Empty subtrees are pre-computed once per depth (the "uncommitted"
+values), so that an empty position has a defined hash without
+appending a real leaf.
+
+### How an Anchor Is Updated
+
+For each block, the state crate appends every new note commitment
+in transaction order, then computes the new root. The hot path
+is `NoteCommitmentTree::append(cm)` followed by `tree.root()`:
+
+```rust reference title="zebra-chain/src/sapling/tree.rs (append)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tree.rs#L204-L218
+```
+
+```rust reference title="zebra-chain/src/sapling/tree.rs (root)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/tree.rs#L381-L390
+```
+
+A few invariants follow:
+
+1. The tree is **append-only**. Once a commitment is appended,
+   neither it nor any earlier commitment moves. Rolling back a fork
+   shortens the tree from the right but does not rewrite leaves.
+2. The root is **monotone in block height up to a reorg**: between
+   any two heights on the same chain, the later root commits to a
+   superset of the earlier leaves.
+3. Recomputation is incremental. The implementation uses an
+   `incrementalmerkletree::Frontier`, so each block costs $O(d)$
+   hash invocations per added commitment (where $d$ is the depth),
+   not $O(d \cdot n)$ for the whole tree.
+
+### Where an Anchor Is Stored
+
+Zebra stores anchors in two places, mirroring its
+finalized/non-finalized state split.
+
+**Finalized state (RocksDB column families).** Once a block has
+enough confirmations, its anchors are written to dedicated column
+families. Each pool has its own family:
+
+```rust reference title="zebra-state/src/service/finalized_state/zebra_db/shielded.rs (contains_sapling_anchor)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/finalized_state/zebra_db/shielded.rs#L100-L115
+```
+
+The column families are named `sprout_anchors`, `sapling_anchors`,
+and `orchard_anchors`. For Sprout, the value stored at each anchor
+is the matching note commitment tree (because Sprout spends do not
+share an anchor across joinsplits, and the prover must reconstruct
+auth paths from the tree). For Sapling and Orchard the value is
+unit `()`; only the existence of the anchor matters.
+
+**Non-finalized state (in-memory fork forest).** Each candidate
+chain carries its own anchor sets. They are stored both as a
+`MultiSet<Root>` (for fast membership tests during verification)
+and as a `BTreeMap<Height, Root>` (so the chain can be unwound on a
+reorg):
+
+```rust reference title="zebra-state/src/service/non_finalized_state/chain.rs (anchor fields)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/non_finalized_state/chain.rs#L160-L192
+```
+
+The `MultiSet` matters: two distinct blocks can have the same final
+anchor (when no shielded notes were added between them, the tree is
+unchanged), so the membership count must be decremented exactly
+on rollback.
+
+### Anchors in Transactions
+
+The encoding of the anchor on the wire differs by transaction
+version, because shared anchors save bytes when a transaction has
+multiple spends from the same pool.
+
+- **Sprout (joinsplits)**: each `JoinSplit` carries its own
+  `anchor` field.
+- **Sapling V4 transactions**: each `Spend` description carries
+  `per_spend_anchor`.
+- **Sapling V5 transactions (post-NU5)**: a single
+  `shared_anchor` is encoded at the bundle level and reused by
+  every Spend.
+- **Orchard (V5 only)**: a single `shared_anchor` per Orchard
+  action bundle.
+
+The two cases are encoded in the `AnchorVariant` trait so that the
+`Spend` struct can be reused for both shapes:
+
+```rust reference title="zebra-chain/src/sapling/spend.rs (AnchorVariant impls)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/sapling/spend.rs#L28-L60
+```
+
+### The Consensus Rule
+
+A spending transaction does not invent its anchor; it cites one.
+The consensus rule is that the cited anchor must equal the final
+treestate of *some earlier block on the same chain*. The check
+lives in the state crate:
+
+```rust reference title="zebra-state/src/service/check/anchors.rs (sapling_orchard_anchors_refer_to_final_treestates)"
+https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-state/src/service/check/anchors.rs#L22-L60
+```
+
+The verifier looks up the anchor in the non-finalized chain's
+`MultiSet`, falls back to the finalized state, and rejects the
+transaction if neither contains it. The check is per-pool: a
+Sapling anchor must match a Sapling treestate, an Orchard anchor
+must match an Orchard treestate. Mempool transactions are checked
+against the best-tip treestate; block transactions are checked
+against the treestate at the height of the *parent* block.
+
+There is a subtle floor: the anchor must refer to the **final**
+treestate of an earlier block, not an intermediate state inside the
+current block. This prevents a transaction from spending a note
+that was created by another transaction in the same block. Tests
+for the rule live in `zebra-state/src/service/check/tests/anchors.rs`.
+
+### Failure Modes
+
+- **Computing a different root.** A bug in the incremental Merkle
+  frontier, in the empty-subtree precomputation, or in field
+  serialization will give a root that disagrees with `zcashd` or
+  `librustzcash`. The regression surfaces as a refused transaction
+  on mainnet that other nodes accept. Caught by the test vectors
+  in `zebra-chain/src/sapling/tests/` and the integration tests
+  that sync against checkpoints.
+- **Allowing a non-final anchor.** If the consensus check accepts
+  an anchor that is the *intermediate* treestate after some but
+  not all of the current block's commitments, a transaction can
+  spend a note created earlier in the same block, breaking the
+  intended ordering. Caught by tests under
+  `zebra-state/src/service/check/tests/anchors.rs`.
+- **MultiSet underflow on reorg.** Because identical anchors can
+  repeat across heights, the non-finalized state stores anchors
+  as a `MultiSet`. Decrementing past zero on a rollback is a logic
+  bug that silently corrupts membership; the type's invariant is
+  load-bearing.
+- **Cross-pool anchor reuse.** A Sapling anchor and an Orchard
+  anchor are both single field elements, but in different fields
+  (Jubjub `Fq` vs Pallas `Base`). The type system separates them,
+  but a manual `bytemuck` or `transmute` would defeat it. Do not
+  add such conversions.
+
+See [chapter 04](./04-consensus-and-state.md) for how the anchor
+sits within the broader state machine, including how the tree is
+checkpointed in the finalized database and how the non-finalized
+state recomputes anchors on a reorg.
+
 ## Key Derivation
 
 - BIP-32 for transparent keys.
