@@ -80,6 +80,59 @@ To spend it, the input supplies a signature and the full public key; the script
 duplicates the key, hashes it, checks the hash matches the committed
 `pub_key_hash`, then verifies the signature.
 
+### Compressed vs Uncompressed Public Keys
+
+A secp256k1 public key is a curve point $(x, y)$, each coordinate 32 bytes.
+There are two ways to serialize it:
+
+| Encoding     | Layout                               | Size     |
+| ------------ | ------------------------------------ | -------- |
+| Uncompressed | `0x04` &#124;&#124; x &#124;&#124; y | 65 bytes |
+| Compressed   | `0x02`/`0x03` &#124;&#124; x         | 33 bytes |
+
+The compressed form stores only $x$ plus a one-byte prefix recording the parity
+of $y$ (`0x02` even, `0x03` odd). This works because the curve equation
+$y^2 = x^3 + 7$ fixes $y$ up to sign: given $x$ there are exactly two valid $y$
+values, one even and one odd, and the prefix selects which. Decoding recovers
+the full point with one modular square root.
+
+This is not a free choice at the address layer. The `pub_key_hash` is computed
+over the **serialized** key, so the same point hashes to different values, and
+therefore different `t1.../tm...` addresses, under the two encodings. Zcash
+standardizes on the **compressed** encoding: the protocol spec defines the P2PKH
+hash over a compressed key, and Zebra's
+[`PublicKey`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/transparent/keys.rs)
+deserializer reads exactly 33 bytes, rejecting anything else as an
+`"invalid secp256k1 compressed public key"`. There is no 65-byte path in Zebra.
+
+When were uncompressed keys deprecated? There is no clean "removed at version X"
+answer, and at the consensus level uncompressed keys were never formally
+prohibited for transparent spends:
+
+- A P2PKH output commits only to a 20-byte hash. The spender may reveal any key
+  that hashes to that value, in either encoding, and supply a valid signature.
+  Zcash has no SegWit, so it never inherited Bitcoin's
+  [BIP-143](https://github.com/bitcoin/bips/blob/master/bip-0143.mediawiki)
+  witness rule that requires compressed keys. So an uncompressed key in a legacy
+  P2PKH spend remains script-valid.
+- Compressed has been the **canonical and default** encoding since Zcash's
+  mainnet launch (October 2016), inheriting Bitcoin's 2012 move to
+  compressed-by-default wallets in
+  [Bitcoin Core 0.6.0](https://bitcoin.org/en/release/v0.6.0). Zcash key and
+  address standards built on
+  [BIP-32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+  derivation use compressed keys throughout.
+- The closest Zcash-specific tightening was
+  [zcash/zcash#968](https://github.com/zcash/zcash/issues/968), which made
+  strict-DER signature encoding
+  ([BIP-66](https://github.com/bitcoin/bips/blob/master/bip-0066.mediawiki)) a
+  consensus rule from shortly after launch. That governs signature canonicity,
+  not public-key compression, and does not reject uncompressed keys.
+
+In short: uncompressed keys are legacy and effectively unused, and Zebra's type
+layer only models the compressed encoding, but "deprecated" is a convention and
+a wallet/spec default rather than a consensus prohibition.
+
 ## P2SH and the Redeem Script
 
 A P2SH address commits to a **script**, not a key. The `script_hash` is 20
