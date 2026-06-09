@@ -247,6 +247,57 @@ derivation: `RIPEMD-160(SHA-256(payload))`, always exactly 20 bytes, where the
 payload is the serialized public key for P2PKH and the raw script bytes for
 P2SH.
 
+## CScript and Watch-Only Scripts
+
+Two terms from the Bitcoin and `zcashd` world come up when reading about
+transparent scripts. Neither is a first-class Zebra concept, and knowing why
+clarifies Zebra's scope as a validator.
+
+### CScript
+
+`CScript` is `zcashd`'s (and Bitcoin Core's) C++ class for a script: a byte
+vector with script-aware helpers (push-data parsing, opcode iteration, sigop
+counting). It is the concrete representation of a `scriptPubKey`, a `scriptSig`,
+or a P2SH redeem script in the C++ codebase.
+
+Zebra does not use `CScript`. Its analog is
+[`transparent::Script`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-chain/src/transparent/script.rs),
+a `Vec<u8>` newtype that models the raw bytes and nothing more (no execution
+logic). When Zebra needs to actually run a script, count sigops, or verify a
+signature, it hands the raw bytes across the FFI boundary to `zcashd`'s
+`zcash_script` library through
+[`zebra-script`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-script/src/lib.rs);
+that library reconstructs a `CScript` internally. The `zebra-script` source
+documents this by referencing the upstream methods directly (for example
+`CScript::GetSigOpCount`). So `CScript` is the upstream name for the thing Zebra
+carries as opaque `Script` bytes and only interprets via FFI.
+
+### Watch-Only Scripts
+
+A watch-only script (or address) is a **wallet** concept. It is a script or
+address the wallet tracks to detect incoming funds and report balances, but
+cannot spend, because the wallet holds only the script, public key, or address,
+not the corresponding private key. In `zcashd` this is the `ISMINE_WATCH_ONLY`
+flag, populated by wallet RPCs such as `importaddress` and `importpubkey`.
+
+Zebra is a validator node and ships **no wallet**, so it has no watch-only
+support at all:
+
+- It implements none of the wallet-import RPCs (`importaddress`, `importpubkey`,
+  `z_importviewingkey`, and similar) and no key store.
+- Its address-inspection RPCs reflect this. `validateaddress` and
+  `z_validateaddress` always return `ismine: false`, because Zebra never owns or
+  watches keys; see
+  [`z_validate_address.rs`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/zebra-rpc/src/methods/types/z_validate_address.rs).
+
+Watching addresses on Zcash is the job of separate software (for example
+[Zaino](https://github.com/zingolabs/zaino),
+[Zallet](https://github.com/zcash/wallet), the `zcashd` wallet, or light
+wallets), which query a validator like Zebra over RPC for the chain data they
+need. This split is the same scope boundary called out for wallets, block
+explorers, and mining pools in the project's
+[`CLAUDE.md`](https://github.com/ZcashFoundation/zebra/blob/v4.4.1/CLAUDE.md).
+
 ## Spec Pointers
 
 - Zcash protocol spec, section "Transparent Addresses"
